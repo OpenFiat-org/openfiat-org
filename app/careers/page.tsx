@@ -5,7 +5,7 @@ export const metadata: Metadata = { title: "Careers" };
 export default function Page() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-16">
-      <p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">
+      <p className="text-sm font-semibold uppercase tracking-wide text-brand-hover">
         Join us
       </p>
       <h1 className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">

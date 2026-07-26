@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const LINKS: Array<[string, string]> = [
@@ -18,14 +19,15 @@ export function Nav() {
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
         <Link
           href="/"
-          className="text-lg font-semibold tracking-tight text-white"
+          className="flex items-center gap-2 text-lg font-semibold tracking-tight text-white"
         >
+          <Image src="/logo.png" alt="" width={28} height={28} priority />
           OpenFiat
         </Link>
         <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-300">
           {LINKS.map(([label, href]) => (
             <li key={href}>
-              <Link href={href} className="hover:text-cyan-400">
+              <Link href={href} className="hover:text-brand-hover">
                 {label}
               </Link>
             </li>
