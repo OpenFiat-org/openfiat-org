@@ -1,4 +1,5 @@
 import { AllocationBars } from "@/components/sale/allocation-bars";
+import { RaiseProgress } from "@/components/sale/raise-progress";
 import { SalePanel } from "@/components/sale/sale-panel";
 import { SolanaProvider } from "@/components/sale/wallet-provider";
 import { Button } from "@/components/ui/button";
@@ -78,6 +79,10 @@ export default async function SalePage({ params }: Props) {
             <p className="mt-6 text-lg leading-relaxed text-body">
               {t.sale.whatIsOpenBody}
             </p>
+
+            <div className="mt-12">
+              <RaiseProgress sale={t.sale} locale={locale} />
+            </div>
           </div>
 
           <div>

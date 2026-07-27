@@ -89,6 +89,21 @@ export const SALE_LIVE: boolean =
   SALE.programId !== null && SALE.saleNonce !== null && SALE.opensAt !== null;
 
 /**
+ * Published fundraising target for the community presale, in USD.
+ *
+ * A target, not a ceiling. The presale offers the whole Community Presale
+ * allocation (see `presaleTokens()` in ./tokenomics), so if demand exceeds
+ * $2M the sale can keep selling into that bucket rather than stopping at the
+ * goal. Two separate numbers therefore matter and must not be conflated:
+ *
+ *  - `RAISE_GOAL_USDC` — what we are aiming to raise. Public, editorial.
+ *  - `SALE.hardCapUsdc` — the limit the on-chain program actually enforces on
+ *    this cluster. On devnet that is a small click-through test figure, so it
+ *    is deliberately not shown as the goal.
+ */
+export const RAISE_GOAL_USDC = 2_000_000;
+
+/**
  * Read-only RPC endpoint. Pinned via env rather than falling back to a random
  * public endpoint, so a misconfigured deploy fails visibly instead of quietly
  * talking to somebody else's node.

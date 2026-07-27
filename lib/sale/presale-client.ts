@@ -138,6 +138,44 @@ export async function fetchSaleConfig(program: ReturnType<typeof getProgram>) {
   return program.account.saleConfig.fetch(saleConfigPda(programId, saleNonce));
 }
 
+/**
+ * A wallet that can read and cannot sign.
+ *
+ * `AnchorProvider` insists on a wallet even for an account fetch, so this
+ * satisfies the interface with a zero pubkey and signing methods that throw.
+ * Throwing rather than silently no-op'ing matters: it guarantees a coding
+ * mistake surfaces as an error here instead of producing an unsigned
+ * transaction that gets sent and fails at the cluster.
+ */
+const READ_ONLY_WALLET: AnchorWallet = {
+  publicKey: PublicKey.default,
+  signTransaction() {
+    return Promise.reject(new Error("Read-only connection cannot sign."));
+  },
+  signAllTransactions() {
+    return Promise.reject(new Error("Read-only connection cannot sign."));
+  },
+};
+
+/**
+ * Total raised so far, in whole USDC, read straight from the chain — or null
+ * if the sale isn't configured, the account doesn't exist yet, or the RPC read
+ * fails. Callers render the goal without a progress figure in that case: a
+ * flaky RPC should not be able to claim that nothing has been raised.
+ */
+export async function fetchTotalRaisedUsdc(
+  connection: Connection,
+): Promise<number | null> {
+  if (!SALE.programId || SALE.saleNonce === null) return null;
+  try {
+    const program = getProgram(connection, READ_ONLY_WALLET);
+    const saleConfig = await fetchSaleConfig(program);
+    return saleConfig.totalRaised.toNumber() / 10 ** saleConfig.usdcDecimals;
+  } catch {
+    return null;
+  }
+}
+
 export async function buildContributeUsdcIx(
   program: ReturnType<typeof getProgram>,
   buyer: PublicKey,

@@ -1,5 +1,6 @@
 "use client";
 
+import { TokenLogo } from "@/components/sale/token-logo";
 import { Button } from "@/components/ui/button";
 import type { Dictionary } from "@/lib/i18n";
 import { SALE, SALE_LIVE, TOKEN_SYMBOL } from "@/lib/sale/config";
@@ -37,31 +38,6 @@ type TxState =
   | { status: "pending" }
   | { status: "success"; signature: string }
   | { status: "error"; message: string };
-
-/**
- * Small colored badge standing in for a token logo. Deliberately not a
- * reproduction of any real issuer's trademarked logo (e.g. Circle's USDC
- * mark) — on devnet this mint isn't real USDC anyway, so a generic,
- * color-coded badge is both simpler and more honest than borrowing a brand
- * asset for a test token.
- */
-function TokenIcon({ symbol }: { symbol: string }) {
-  const styles: Record<string, string> = {
-    USDC: "bg-[#2775CA] text-white",
-    SOL: "bg-gradient-to-br from-[#9945FF] to-[#14F195] text-white",
-  };
-  return (
-    <span
-      className={cn(
-        "flex h-5 w-5 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold",
-        styles[symbol] ?? "bg-line text-faint",
-      )}
-      aria-hidden
-    >
-      {symbol[0]}
-    </span>
-  );
-}
 
 /**
  * Wallet connection (with a sign-in verification step), asset selection with
@@ -402,7 +378,7 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
               onClick={() => setAssetPicking((v) => !v)}
               className="flex h-11 items-center gap-2 rounded-sm border border-line bg-bg px-3 font-mono text-sm text-ink disabled:cursor-not-allowed"
             >
-              <TokenIcon symbol={selectedAsset.symbol} />
+              <TokenLogo symbol={selectedAsset.symbol} />
               {selectedAsset.symbol}
               <span aria-hidden className="text-faint">
                 ▾
@@ -421,7 +397,7 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
                       }}
                       className="flex w-full items-center gap-2 rounded-sm px-2 py-2 text-start text-sm text-ink hover:bg-surface-alt"
                     >
-                      <TokenIcon symbol={asset.symbol} />
+                      <TokenLogo symbol={asset.symbol} />
                       {asset.symbol}
                     </button>
                   </li>

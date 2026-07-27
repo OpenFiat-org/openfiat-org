@@ -68,6 +68,18 @@ export function allocationTotal(): number {
   return ALLOCATIONS.reduce((sum, a) => sum + a.sharePct, 0);
 }
 
+/**
+ * OPEN offered in the presale — the entire Community Presale bucket.
+ *
+ * This is the real ceiling on the sale, and it is what makes the $2M target
+ * (RAISE_GOAL_USDC) a goal rather than a cap: the bucket is fixed, the amount
+ * raised against it is not.
+ */
+export function presaleTokens(): number | null {
+  const presale = ALLOCATIONS.find((a) => a.id === "presale");
+  return presale ? tokensFor(presale.sharePct) : null;
+}
+
 export function tokensFor(sharePct: number): number | null {
   return TOTAL_SUPPLY === null
     ? null

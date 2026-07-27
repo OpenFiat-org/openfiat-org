@@ -295,6 +295,11 @@ export const zh: Dictionary = {
       "该钱包不支持消息签名——你仍然可以购买；交易本身的签名即可证明钱包所有权。",
     balance: "余额",
     max: "最大",
+    raisedLabel: "已募集",
+    goalLabel: "目标",
+    offeredLabel: "发售数量",
+    goalNote:
+      "该目标是募集目标，而非上限。预售发售的是全部社区预售份额，因此在需求持续的情况下，募集额可以超过目标继续销售。",
     purchase: "购买 OPEN",
     purchaseDisabled: "销售开放后即可购买",
     amount: "数量",

@@ -291,6 +291,11 @@ export const en = {
       "This wallet doesn't support message signing — you can still purchase; wallet ownership is proven by the transaction signature itself.",
     balance: "Balance",
     max: "Max",
+    raisedLabel: "Raised",
+    goalLabel: "Target",
+    offeredLabel: "Offered",
+    goalNote:
+      "The target is a goal, not a cap. The presale offers the entire Community Presale allocation, so it can keep selling past the target if demand goes further.",
     purchase: "Purchase OPEN",
     purchaseDisabled: "Purchase opens when the sale goes live",
     amount: "Amount",
