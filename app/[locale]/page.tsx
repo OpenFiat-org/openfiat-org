@@ -82,7 +82,7 @@ export default async function Home({ params }: Props) {
             {/* Wallet context mounts only here, same reasoning as /sale:
                 no other page pays for the web3 bundle. */}
             <SolanaProvider>
-              <RewardsCard sale={t.sale} />
+              <RewardsCard sale={t.sale} saleHref={l("/sale")} />
             </SolanaProvider>
           </div>
         </Container>
