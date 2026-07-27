@@ -1,0 +1,946 @@
+{
+  "address": "75rJ9MRAaSnAc8tg4AfeTFVDCVrN6jdD5CqeyE4UoUw7",
+  "metadata": {
+    "name": "presale",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "The OPEN token presale program (OFS-4200 §3).",
+    "repository": "https://github.com/OpenFiat-org/openfiat-core"
+  },
+  "docs": [
+    "`openfiat-presale` — the OPEN token presale program (OFS-4200 §3,",
+    "OFS-4100 §3). Phase 3: full sale lifecycle — initialize, contribute",
+    "(direct USDC or SOL/stablecoin via atomic Jupiter CPI swap), finalize,",
+    "claim, refund."
+  ],
+  "instructions": [
+    {
+      "name": "claim",
+      "discriminator": [62, 198, 214, 193, 213, 159, 108, 210],
+      "accounts": [
+        {
+          "name": "buyer",
+          "signer": true,
+          "relations": ["contribution"]
+        },
+        {
+          "name": "sale_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+              },
+              {
+                "kind": "arg",
+                "path": "sale_nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "open_mint"
+        },
+        {
+          "name": "presale_vault_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112, 114, 101, 115, 97, 108, 101, 95, 118, 97, 117, 108, 116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "presale_vault",
+          "writable": true
+        },
+        {
+          "name": "contribution",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99, 111, 110, 116, 114, 105, 98, 117, 116, 105, 111, 110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sale_config"
+              },
+              {
+                "kind": "account",
+                "path": "buyer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "buyer_open",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        }
+      ],
+      "args": [
+        {
+          "name": "sale_nonce",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "contribute_usdc",
+      "discriminator": [164, 188, 213, 177, 79, 222, 120, 27],
+      "accounts": [
+        {
+          "name": "buyer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sale_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+              },
+              {
+                "kind": "arg",
+                "path": "sale_nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "buyer_usdc",
+          "writable": true
+        },
+        {
+          "name": "usdc_vault",
+          "writable": true
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "contribution",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99, 111, 110, 116, 114, 105, 98, 117, 116, 105, 111, 110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sale_config"
+              },
+              {
+                "kind": "account",
+                "path": "buyer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "sale_nonce",
+          "type": "u64"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "contribute_with_swap",
+      "discriminator": [1, 140, 13, 39, 224, 128, 233, 135],
+      "accounts": [
+        {
+          "name": "buyer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sale_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+              },
+              {
+                "kind": "arg",
+                "path": "sale_nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "source_mint",
+          "docs": [
+            "The asset being contributed — must be wSOL or on the stablecoin",
+            "whitelist, and must not be USDC (use `contribute_usdc` for that)."
+          ]
+        },
+        {
+          "name": "usdc_vault",
+          "writable": true
+        },
+        {
+          "name": "contribution",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99, 111, 110, 116, 114, 105, 98, 117, 116, 105, 111, 110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sale_config"
+              },
+              {
+                "kind": "account",
+                "path": "buyer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "swap_program",
+          "docs": ["below. The actual swap accounts are `remaining_accounts`."]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "sale_nonce",
+          "type": "u64"
+        },
+        {
+          "name": "expected_usdc_out",
+          "type": "u64"
+        },
+        {
+          "name": "swap_instruction_data",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "finalize_sale",
+      "discriminator": [62, 138, 254, 160, 192, 113, 177, 58],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": ["sale_config"]
+        },
+        {
+          "name": "sale_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+              },
+              {
+                "kind": "arg",
+                "path": "sale_nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_vault",
+          "writable": true
+        },
+        {
+          "name": "treasury",
+          "writable": true
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        }
+      ],
+      "args": [
+        {
+          "name": "sale_nonce",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_sale",
+      "discriminator": [208, 103, 34, 154, 179, 6, 125, 208],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sale_config",
+          "docs": [
+            "`sale_nonce` namespaces this sale's PDAs so a new round can be",
+            "initialized without redeploying (v1 production usage is a single",
+            "sale at nonce 0; the nonce exists so this doesn't have to be a hard",
+            "global singleton)."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+              },
+              {
+                "kind": "arg",
+                "path": "sale_nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "open_mint"
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "presale_vault_authority",
+          "docs": [
+            "used only as the expected owner of `presale_vault`. It signs",
+            "`claim`'s OPEN transfer later; never read/written here."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112, 114, 101, 115, 97, 108, 101, 95, 118, 97, 117, 108, 116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "presale_vault",
+          "docs": [
+            "The Community Presale allocation bucket, already funded at genesis",
+            "(Phase 2) — verified here, not created here."
+          ]
+        },
+        {
+          "name": "usdc_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115, 97, 108, 101, 95, 117, 115, 100, 99, 95, 118, 97, 117,
+                  108, 116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "sale_nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "docs": [
+            "Destination for collected USDC once finalized (e.g. a treasury",
+            "multisig's ATA). Not created or owned by this program."
+          ]
+        },
+        {
+          "name": "swap_program",
+          "docs": [
+            "`sale_config.swap_program` — see `contribute_with_swap` for why this",
+            "program isn't invoked or validated further here. Production",
+            "devnet/mainnet deployments must pass Jupiter's real, independently",
+            "verified aggregator program id; test/CI deployments may pass a",
+            "deterministic mock instead."
+          ]
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "sale_nonce",
+          "type": "u64"
+        },
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "InitializeSaleParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "refund",
+      "discriminator": [2, 96, 183, 251, 63, 208, 46, 46],
+      "accounts": [
+        {
+          "name": "buyer",
+          "signer": true,
+          "relations": ["contribution"]
+        },
+        {
+          "name": "sale_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+              },
+              {
+                "kind": "arg",
+                "path": "sale_nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_vault",
+          "writable": true
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "contribution",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99, 111, 110, 116, 114, 105, 98, 117, 116, 105, 111, 110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sale_config"
+              },
+              {
+                "kind": "account",
+                "path": "buyer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "buyer_usdc",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        }
+      ],
+      "args": [
+        {
+          "name": "sale_nonce",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Contribution",
+      "discriminator": [182, 187, 14, 111, 72, 167, 242, 212]
+    },
+    {
+      "name": "SaleConfig",
+      "discriminator": [86, 47, 71, 156, 87, 152, 149, 246]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Only the sale admin may perform this action"
+    },
+    {
+      "code": 6001,
+      "name": "WhitelistTooLong",
+      "msg": "Stablecoin whitelist may not exceed MAX_STABLECOINS entries"
+    },
+    {
+      "code": 6002,
+      "name": "HardCapNotGreaterThanSoftCap",
+      "msg": "hard_cap must be greater than soft_cap"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidContributionBounds",
+      "msg": "min_contribution must be greater than zero and at most max_contribution"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidSaleWindow",
+      "msg": "end_time must be after start_time"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidSlippageBps",
+      "msg": "max_slippage_bps must be between 1 and 10_000"
+    },
+    {
+      "code": 6006,
+      "name": "SaleNotStarted",
+      "msg": "The sale has not started yet"
+    },
+    {
+      "code": 6007,
+      "name": "SaleEnded",
+      "msg": "The sale has already ended"
+    },
+    {
+      "code": 6008,
+      "name": "SaleNotActive",
+      "msg": "The sale is not in the Active state"
+    },
+    {
+      "code": 6009,
+      "name": "AssetNotWhitelisted",
+      "msg": "This asset is not on the presale's accepted-stablecoin whitelist"
+    },
+    {
+      "code": 6010,
+      "name": "UseDirectUsdcPath",
+      "msg": "Use contribute_usdc for direct USDC contributions instead"
+    },
+    {
+      "code": 6011,
+      "name": "BelowMinimumContribution",
+      "msg": "This contribution would be below the minimum required for a wallet's first contribution"
+    },
+    {
+      "code": 6012,
+      "name": "AboveMaximumContribution",
+      "msg": "This contribution would exceed the maximum allowed per wallet"
+    },
+    {
+      "code": 6013,
+      "name": "HardCapExceeded",
+      "msg": "This contribution would exceed the sale's hard cap"
+    },
+    {
+      "code": 6014,
+      "name": "SwapProgramMismatch",
+      "msg": "The swap program account does not match sale_config.swap_program"
+    },
+    {
+      "code": 6015,
+      "name": "SlippageExceeded",
+      "msg": "The swap's actual USDC output was below the required minimum (slippage exceeded)"
+    },
+    {
+      "code": 6016,
+      "name": "SaleNotEnded",
+      "msg": "The sale has not ended yet"
+    },
+    {
+      "code": 6017,
+      "name": "SaleAlreadyResolved",
+      "msg": "The sale has already been finalized or resolved"
+    },
+    {
+      "code": 6018,
+      "name": "SaleNotFinalized",
+      "msg": "Claims are only allowed after the sale has been finalized"
+    },
+    {
+      "code": 6019,
+      "name": "AlreadyClaimed",
+      "msg": "This contribution has already been claimed"
+    },
+    {
+      "code": 6020,
+      "name": "SaleNotRefundable",
+      "msg": "Refunds are only allowed when the sale's soft cap was missed"
+    },
+    {
+      "code": 6021,
+      "name": "AlreadyRefunded",
+      "msg": "This contribution has already been refunded"
+    },
+    {
+      "code": 6022,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    }
+  ],
+  "types": [
+    {
+      "name": "Contribution",
+      "docs": [
+        "Per-buyer contribution record: PDA seeds `[CONTRIBUTION_SEED, sale_config, buyer]`."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "buyer",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount_usdc",
+            "docs": [
+              "Cumulative USDC-equivalent contributed by this wallet, base units."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "open_entitlement",
+            "docs": [
+              "OPEN base units this wallet is entitled to claim (1:1 with amount_usdc",
+              "at the mint's decimals — OFS-4100 §3 confirms no presale vesting)."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "claimed",
+            "type": "bool"
+          },
+          {
+            "name": "refunded",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeSaleParams",
+      "docs": [
+        "Bundled instead of flattened so the generated `#[program]` dispatch entry",
+        "point stays under clippy's too-many-arguments threshold, and so a future",
+        "added field doesn't ripple through every caller's positional arg list."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "hard_cap",
+            "type": "u64"
+          },
+          {
+            "name": "soft_cap",
+            "type": "u64"
+          },
+          {
+            "name": "min_contribution",
+            "type": "u64"
+          },
+          {
+            "name": "max_contribution",
+            "type": "u64"
+          },
+          {
+            "name": "max_slippage_bps",
+            "type": "u16"
+          },
+          {
+            "name": "start_time",
+            "type": "i64"
+          },
+          {
+            "name": "end_time",
+            "type": "i64"
+          },
+          {
+            "name": "stablecoin_whitelist",
+            "type": {
+              "vec": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SaleConfig",
+      "docs": [
+        "Singleton sale configuration + running state (OFS-4200 §3, OFS-4100 §3).",
+        "",
+        "All economic parameters below are set once at `initialize_sale` from",
+        "OFS-4100 §3's PROPOSED figures — they are instruction arguments, not",
+        "compile-time constants, specifically so a later tokenomics sign-off",
+        "(or a devnet-vs-mainnet difference) never requires a code change, only a",
+        "different `initialize_sale` call."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "open_mint",
+            "docs": [
+              "The OPEN token mint (fixed supply, genesis-minted — see Phase 2)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "usdc_mint",
+            "docs": [
+              "The USDC mint contributions are ultimately valued/held in."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "presale_vault",
+            "docs": [
+              "Community Presale allocation bucket (OFS-4100 §2), owned by the",
+              "`presale_vault` PDA — `claim` transfers out of this account."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "usdc_vault",
+            "docs": [
+              "USDC escrow token account (owned by this `SaleConfig` PDA itself)",
+              "that holds contributions until `finalize_sale` sweeps them to",
+              "`treasury`, or `refund` returns them if the soft cap is missed."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury",
+            "docs": [
+              "Destination for collected USDC once the sale finalizes successfully."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "swap_program",
+            "docs": [
+              "The trusted swap-aggregator program CPI'd into by `contribute_with_swap`.",
+              "Production devnet/mainnet deployments must set this to Jupiter's real,",
+              "verified aggregator program id; test/CI deployments may point it at a",
+              "deterministic mock so the swap-forwarding logic is testable without a",
+              "live, flaky mainnet-state clone. See `contribute_with_swap` for why",
+              "this is safe regardless of which program is configured here: the",
+              "*result* (a verified balance increase in `usdc_vault`) is what's",
+              "trusted, not any account layout internal to this program."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "hard_cap",
+            "docs": [
+              "USDC base units (6 decimals). OFS-4100 §3 proposes 30_000_000_000_000."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "soft_cap",
+            "docs": [
+              "USDC base units. OFS-4100 §3 proposes 5_000_000_000_000."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "min_contribution",
+            "docs": [
+              "USDC base units, applies to a wallet's first contribution only."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_contribution",
+            "docs": [
+              "USDC base units, applies to a wallet's cumulative contributions."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_slippage_bps",
+            "docs": [
+              "Basis points; a swap whose realized output falls below",
+              "`expected_out * (10_000 - max_slippage_bps) / 10_000` is rejected."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "open_decimals",
+            "docs": [
+              "Cached from `open_mint`/`usdc_mint` at `initialize_sale` so later",
+              "instructions don't need to pass the mint accounts just to read",
+              "decimals. `initialize_sale` requires open_decimals >= usdc_decimals",
+              "so the USDC->OPEN scale-up below never underflows."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "usdc_decimals",
+            "type": "u8"
+          },
+          {
+            "name": "start_time",
+            "type": "i64"
+          },
+          {
+            "name": "end_time",
+            "type": "i64"
+          },
+          {
+            "name": "stablecoin_whitelist",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "total_raised",
+            "docs": [
+              "Running total of USDC-equivalent raised, in USDC base units."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": {
+                "name": "SaleState"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "usdc_vault_bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SaleState",
+      "docs": [
+        "Lifecycle state of the presale (OFS-4200 §3).",
+        "",
+        "`Active -> Finalized` (hard cap reached, or end_time passed with soft cap",
+        "met) or `Active -> SoftCapMissed` (end_time passed, soft cap unmet) are",
+        "the only two transitions out of `Active`; both are terminal."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Finalized"
+          },
+          {
+            "name": "SoftCapMissed"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "BPS_DENOMINATOR",
+      "docs": ["Basis-points denominator (10_000 = 100%)."],
+      "type": "u64",
+      "value": "10000"
+    },
+    {
+      "name": "CONTRIBUTION_SEED",
+      "docs": [
+        "PDA seed for a per-buyer `Contribution` record: [SEED, sale_config, buyer]."
+      ],
+      "type": "bytes",
+      "value": "[99, 111, 110, 116, 114, 105, 98, 117, 116, 105, 111, 110]"
+    },
+    {
+      "name": "PRESALE_VAULT_SEED",
+      "docs": [
+        "PDA seed for the OPEN token vault holding the Community Presale",
+        "allocation bucket (owner set at genesis — see ../scripts/genesis.ts)."
+      ],
+      "type": "bytes",
+      "value": "[112, 114, 101, 115, 97, 108, 101, 95, 118, 97, 117, 108, 116]"
+    },
+    {
+      "name": "SALE_CONFIG_SEED",
+      "docs": [
+        "PDA seed for the singleton `SaleConfig` account (OFS-4200 §3)."
+      ],
+      "type": "bytes",
+      "value": "[115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]"
+    },
+    {
+      "name": "SALE_USDC_VAULT_SEED",
+      "docs": [
+        "PDA seed for the USDC escrow vault that holds contributions until",
+        "`finalize_sale` sweeps them to the treasury (or `refund` returns them)."
+      ],
+      "type": "bytes",
+      "value": "[115, 97, 108, 101, 95, 117, 115, 100, 99, 95, 118, 97, 117, 108, 116]"
+    }
+  ]
+}

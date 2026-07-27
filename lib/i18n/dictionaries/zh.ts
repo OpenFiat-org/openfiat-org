@@ -295,6 +295,10 @@ export const zh: Dictionary = {
     confirming: "正在确认……",
     done: "购买已确认",
     txFailed: "交易未发送",
+    txSuccess: "已确认",
+    claim: "领取 OPEN",
+    swapNotice:
+      "将在确认价格下原子化兑换为 USDC，再计入你的 OPEN 份额。若未达到最低目标而退款，退款将以 USDC 支付，而非原始资产。",
     whatIsOpen: "OPEN 是什么",
     whatIsOpenBody:
       "OPEN 是协议的实用与治理代币。它不是被交易的标的——市场结算使用 USDC 等稳定币完成。商户、仲裁者、节点运营者与服务提供方以质押 OPEN 作为经济担保，同时 OPEN 附带治理权。",

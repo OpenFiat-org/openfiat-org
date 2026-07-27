@@ -291,6 +291,10 @@ export const en = {
     confirming: "Confirming…",
     done: "Purchase confirmed",
     txFailed: "The transaction was not sent",
+    txSuccess: "Confirmed",
+    claim: "Claim OPEN",
+    swapNotice:
+      "Converted to USDC atomically at the confirmed price before crediting your OPEN allocation. Refunds (if the soft cap is missed) are paid in USDC, not the original asset.",
     whatIsOpen: "What OPEN is",
     whatIsOpenBody:
       "OPEN is the protocol's utility and governance token. It is not the asset being traded — marketplace settlements happen in stablecoins such as USDC. OPEN is staked by merchants, arbitrators, node operators and service providers as economic accountability, and it carries governance rights.",
