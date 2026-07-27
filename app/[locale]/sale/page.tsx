@@ -1,3 +1,4 @@
+import { NetworkField } from "@/components/network-field";
 import { AllocationBars } from "@/components/sale/allocation-bars";
 import { RaiseProgress } from "@/components/sale/raise-progress";
 import { SalePanel } from "@/components/sale/sale-panel";
@@ -64,42 +65,49 @@ export default async function SalePage({ params }: Props) {
 
   return (
     <>
-      <Container className="pt-16 pb-12 md:pt-24 md:pb-16">
-        <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_22rem]">
-          <div className="max-w-2xl">
-            <h1
-              className="font-extrabold tracking-[-0.02em] text-ink"
-              style={{
-                fontSize: "clamp(2rem, 4vw, 3.25rem)",
-                lineHeight: 1.06,
-              }}
-            >
-              {t.sale.title}
-            </h1>
-            <p className="mt-6 text-lg leading-relaxed text-body">
-              {t.sale.whatIsOpenBody}
-            </p>
+      {/* The hero band every other page has, with the escrow field: nodes
+          circling a held centre, which is what a presale vault is. The canvas
+          is lazily loaded and never in the server payload, so the LCP element
+          stays the h1. */}
+      <section className="relative overflow-hidden border-b border-line">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-dotted opacity-30 lg:opacity-70"
+        />
+        <NetworkField variant="escrow" />
+        <Container className="relative z-10 pt-16 pb-12 md:pt-24 md:pb-16">
+          <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_23rem]">
+            <div className="max-w-2xl">
+              <h1
+                className="font-extrabold tracking-[-0.02em] text-ink"
+                style={{
+                  fontSize: "clamp(2rem, 4vw, 3.25rem)",
+                  lineHeight: 1.06,
+                }}
+              >
+                {t.sale.title}
+              </h1>
+              <p className="mt-6 text-lg leading-relaxed text-body">
+                {t.sale.whatIsOpenBody}
+              </p>
 
-            <div className="mt-12">
-              <RaiseProgress sale={t.sale} locale={locale} />
+              <div className="mt-12">
+                <RaiseProgress sale={t.sale} locale={locale} />
+              </div>
+            </div>
+
+            <div>
+              {/* Wallet context mounts only on this route, so no other page
+                pays for the web3 bundle. */}
+              <SolanaProvider>
+                <SalePanel sale={t.sale} />
+              </SolanaProvider>
             </div>
           </div>
+        </Container>
+      </section>
 
-          <div>
-            {/* Wallet context mounts only on this route, so no other page
-                pays for the web3 bundle. */}
-            <SolanaProvider>
-              <SalePanel sale={t.sale} />
-            </SolanaProvider>
-          </div>
-        </div>
-      </Container>
-
-      <Section
-        className="border-t border-line"
-        title={t.sale.supplyTitle}
-        subtitle={t.sale.supplyBody}
-      >
+      <Section title={t.sale.supplyTitle} subtitle={t.sale.supplyBody}>
         <div className="mb-10 flex flex-wrap items-baseline gap-x-4">
           <span className="stat-label text-faint">
             {t.tokenomics.supplyLabel}
