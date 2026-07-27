@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import { localePath, stripLocale } from "@/lib/i18n/config";
 import { LEGAL_NAV, PRIMARY_NAV } from "@/lib/nav";
@@ -69,70 +70,78 @@ export function MobileNav({ locale }: { locale: Locale }) {
         </span>
       </button>
 
-      {open && (
-        <div
-          id="mobile-menu"
-          className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto border-t border-line bg-bg px-6 py-6"
-        >
-          <ul className="space-y-1">
-            {PRIMARY_NAV.map((item) => {
-              const active =
-                current === item.href || current.startsWith(`${item.href}/`);
-              return (
+      {open &&
+        createPortal(
+          // Rendered into document.body rather than in place: the header
+          // above has `transform: translateZ(0)` (for stable blur
+          // compositing), and a `transform` on an ancestor makes it the
+          // containing block for `position: fixed` descendants per the CSS
+          // spec — this panel would otherwise be clipped to the header's
+          // own (64px) box instead of spanning the viewport.
+          <div
+            id="mobile-menu"
+            className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto border-t border-line bg-bg px-6 py-6"
+          >
+            <ul className="space-y-1">
+              {PRIMARY_NAV.map((item) => {
+                const active =
+                  current === item.href || current.startsWith(`${item.href}/`);
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={localePath(item.href, locale)}
+                      aria-current={active ? "page" : undefined}
+                      className={cn(
+                        "block rounded-sm px-3 py-3 text-base font-semibold transition-colors",
+                        active
+                          ? "bg-surface-alt text-ink"
+                          : "text-body hover:text-ink",
+                      )}
+                    >
+                      {t.nav[item.key]}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="mt-6 flex flex-col gap-3 border-t border-line pt-6">
+              <Link
+                href={localePath("/sale", locale)}
+                className="inline-flex h-12 items-center justify-center rounded-pill bg-accent px-6 text-base font-semibold text-white shadow-[var(--shadow-glow)]"
+              >
+                {t.nav.sale}
+              </Link>
+              <a
+                href={SITE.appUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-pill border border-line bg-surface px-6 text-base font-semibold text-ink"
+              >
+                {t.nav.launchApp} ↗
+                {SITE.appIsPreview && (
+                  <span className="rounded-pill bg-accent-soft px-2 py-0.5 font-mono text-[0.625rem] uppercase tracking-[0.08em] text-accent-mid">
+                    {t.nav.preview}
+                  </span>
+                )}
+              </a>
+            </div>
+
+            <ul className="mt-6 flex gap-4 border-t border-line pt-6">
+              {LEGAL_NAV.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={localePath(item.href, locale)}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "block rounded-sm px-3 py-3 text-base font-semibold transition-colors",
-                      active
-                        ? "bg-surface-alt text-ink"
-                        : "text-body hover:text-ink",
-                    )}
+                    className="text-sm text-muted hover:text-ink"
                   >
-                    {t.nav[item.key]}
+                    {t.footer.links[item.key]}
                   </Link>
                 </li>
-              );
-            })}
-          </ul>
-
-          <div className="mt-6 flex flex-col gap-3 border-t border-line pt-6">
-            <Link
-              href={localePath("/sale", locale)}
-              className="inline-flex h-12 items-center justify-center rounded-pill bg-accent px-6 text-base font-semibold text-white shadow-[var(--shadow-glow)]"
-            >
-              {t.nav.sale}
-            </Link>
-            <a
-              href={SITE.appUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-pill border border-line bg-surface px-6 text-base font-semibold text-ink"
-            >
-              {t.nav.launchApp} ↗
-              {SITE.appIsPreview && (
-                <span className="rounded-pill bg-accent-soft px-2 py-0.5 font-mono text-[0.625rem] uppercase tracking-[0.08em] text-accent-mid">
-                  {t.nav.preview}
-                </span>
-              )}
-            </a>
-          </div>
-
-          <ul className="mt-6 flex gap-4 border-t border-line pt-6">
-            {LEGAL_NAV.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={localePath(item.href, locale)}
-                  className="text-sm text-muted hover:text-ink"
-                >
-                  {t.footer.links[item.key]}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+              ))}
+            </ul>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
