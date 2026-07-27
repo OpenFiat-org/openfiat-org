@@ -1051,6 +1051,10 @@ export type Presale = {
             name: "maxSlippageBps";
             type: "u16";
           },
+          {
+            name: "endTime";
+            type: "i64";
+          },
         ];
       };
     },

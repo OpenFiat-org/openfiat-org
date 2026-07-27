@@ -273,12 +273,12 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
 
       if (assetIndex === 0) {
         // Direct USDC — no swap, no external API call.
-        const ix = await buildContributeUsdcIx(program, publicKey, amountNum);
+        const ixs = await buildContributeUsdcIx(program, publicKey, amountNum);
         const { blockhash } = await connection.getLatestBlockhash("confirmed");
         const message = new TransactionMessage({
           payerKey: publicKey,
           recentBlockhash: blockhash,
-          instructions: [ix],
+          instructions: ixs,
         }).compileToV0Message([]);
         signed = await anchorWallet.signTransaction(
           new VersionedTransaction(message),
@@ -334,12 +334,12 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
     setTx({ status: "pending" });
     try {
       const program = getProgram(connection, anchorWallet);
-      const ix = await buildClaimIx(program, publicKey);
+      const ixs = await buildClaimIx(program, publicKey);
       const { blockhash } = await connection.getLatestBlockhash("confirmed");
       const message = new TransactionMessage({
         payerKey: publicKey,
         recentBlockhash: blockhash,
-        instructions: [ix],
+        instructions: ixs,
       }).compileToV0Message([]);
       const signed = await anchorWallet.signTransaction(
         new VersionedTransaction(message),

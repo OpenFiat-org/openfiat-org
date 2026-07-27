@@ -965,6 +965,10 @@
           {
             "name": "max_slippage_bps",
             "type": "u16"
+          },
+          {
+            "name": "end_time",
+            "type": "i64"
           }
         ]
       }

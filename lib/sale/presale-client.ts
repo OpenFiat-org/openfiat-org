@@ -20,6 +20,7 @@
 import { AnchorProvider, BN, Program } from "@anchor-lang/core";
 import {
   TOKEN_2022_PROGRAM_ID,
+  createAssociatedTokenAccountIdempotentInstruction,
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
 import {
@@ -260,11 +261,19 @@ export async function estimateUsdcOut(
   }
 }
 
+/**
+ * Both functions below return an instruction *array*: the buyer's
+ * destination token account (USDC for a contribution, OPEN for a claim)
+ * may not exist yet — most wallets have never held either — so an
+ * idempotent create-ATA instruction is always prepended. Idempotent means
+ * it's a safe no-op if the account already exists, so callers never need
+ * to check first.
+ */
 export async function buildContributeUsdcIx(
   program: ReturnType<typeof getProgram>,
   buyer: PublicKey,
   amountUsdc: number,
-): Promise<TransactionInstruction> {
+): Promise<TransactionInstruction[]> {
   const { programId, saleNonce, usdcMint } = requireLive();
   const saleConfig = saleConfigPda(programId, saleNonce);
   const usdcVault = usdcVaultPda(programId, saleNonce);
@@ -276,7 +285,14 @@ export async function buildContributeUsdcIx(
     TOKEN_2022_PROGRAM_ID,
   );
 
-  return program.methods
+  const createAtaIx = createAssociatedTokenAccountIdempotentInstruction(
+    buyer,
+    buyerUsdc,
+    buyer,
+    usdcMint,
+    TOKEN_2022_PROGRAM_ID,
+  );
+  const contributeIx = await program.methods
     .contributeUsdc(new BN(saleNonce), usdcToBaseUnits(amountUsdc))
     .accountsPartial({
       buyer,
@@ -288,12 +304,13 @@ export async function buildContributeUsdcIx(
       tokenProgram: TOKEN_2022_PROGRAM_ID,
     })
     .instruction();
+  return [createAtaIx, contributeIx];
 }
 
 export async function buildClaimIx(
   program: ReturnType<typeof getProgram>,
   buyer: PublicKey,
-): Promise<TransactionInstruction> {
+): Promise<TransactionInstruction[]> {
   const { programId, saleNonce, openMint } = requireLive();
   const saleConfig = saleConfigPda(programId, saleNonce);
   const presaleVaultAuthority = presaleVaultAuthorityPda(programId);
@@ -310,7 +327,14 @@ export async function buildClaimIx(
   // this instruction derives itself.
   const saleConfigAccount = await fetchSaleConfig(program);
 
-  return program.methods
+  const createAtaIx = createAssociatedTokenAccountIdempotentInstruction(
+    buyer,
+    buyerOpen,
+    buyer,
+    openMint,
+    TOKEN_2022_PROGRAM_ID,
+  );
+  const claimIx = await program.methods
     .claim(new BN(saleNonce))
     .accountsPartial({
       buyer,
@@ -323,6 +347,7 @@ export async function buildClaimIx(
       tokenProgram: TOKEN_2022_PROGRAM_ID,
     })
     .instruction();
+  return [createAtaIx, claimIx];
 }
 
 type JupiterInstruction = {
