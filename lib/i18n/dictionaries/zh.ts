@@ -276,6 +276,22 @@ export const zh: Dictionary = {
     apiTitle: "节点 API 范围",
     apiNote:
       "所有合规节点暴露的 API 完全一致，因此针对某个节点开发的界面同样适用于其他节点。",
+
+    hostingTitle: "在哪里运行节点",
+    hostingIntro:
+      "AllenHark 主导协议的早期开发，同时提供运行节点所需的两样东西：服务器与 Solana RPC 接入。作为 OpenFiat 计划的一部分，节点运营者可享两者 {pct}% 的折扣。",
+    hostingVps: "服务器托管",
+    hostingVpsBody:
+      "NVMe 存储、10 Gbps 上行，位于法兰克福、阿姆斯特丹与芝加哥。请按上方硬件要求选型——存储是全节点增长最快的部分，说明你要运行的内容即可获得配置建议。",
+    hostingRpc: "Solana RPC 与 gRPC",
+    hostingRpcBody:
+      "提供质押连接，你的节点提交的交易不必与其他人排在同一队列中。接入通过 IP 白名单授权，而非 API 密钥。如需流式获取账户与区块槽更新，也提供 Yellowstone gRPC。",
+    hostingViewPricing: "查看价格",
+    hostingClaimTitle: "如何获得折扣",
+    hostingClaimBody:
+      "无需输入优惠码。在 Discord 或 allenhark.com 的在线聊天中说明你正在运行 OpenFiat 节点，折扣即会应用到你的订单。",
+    hostingDiscord: "在 Discord 询问",
+    hostingChat: "开始在线聊天",
   },
 
   sale: {

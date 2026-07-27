@@ -272,6 +272,24 @@ export const en = {
     apiTitle: "Node API surface",
     apiNote:
       "Every compliant node exposes the same API surface, so an interface written against one node works against all of them.",
+
+    /* AllenHark's hosting offer. Written without prices or plan names — see
+       lib/hosting.ts for why. `{pct}` is substituted from HOSTING. */
+    hostingTitle: "Where to run it",
+    hostingIntro:
+      "AllenHark leads initial development of the protocol and sells the two things a node needs: a server and Solana RPC access. Node operators get {pct}% off both, as part of the OpenFiat program.",
+    hostingVps: "Server hosting",
+    hostingVpsBody:
+      "NVMe storage on 10 Gbps uplinks, in Frankfurt, Amsterdam and Chicago. Size it against the hardware above — storage is what a full node grows into, so say what you are running and it can be specified for you.",
+    hostingRpc: "Solana RPC and gRPC",
+    hostingRpcBody:
+      "Staked connections, so transactions your node submits are not queued behind everyone else's. Access is granted by IP allowlist rather than an API key. Yellowstone gRPC is available for streaming account and slot updates.",
+    hostingViewPricing: "See pricing",
+    hostingClaimTitle: "Claiming the discount",
+    hostingClaimBody:
+      "There is no code to enter. Ask on Discord or in the chat on allenhark.com, say you are running an OpenFiat node, and the discount is applied to your order.",
+    hostingDiscord: "Ask on Discord",
+    hostingChat: "Open a chat",
   },
 
   sale: {
