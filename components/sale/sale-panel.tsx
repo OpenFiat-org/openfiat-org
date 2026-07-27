@@ -8,6 +8,7 @@ import {
   buildClaimIx,
   buildContributeUsdcIx,
   buildContributeWithSwapPlan,
+  fetchTokenBalance,
   getProgram,
   swapEligibleAssets,
 } from "@/lib/sale/presale-client";
@@ -19,7 +20,7 @@ import {
   useWallet,
 } from "@solana/wallet-adapter-react";
 import { TransactionMessage, VersionedTransaction } from "@solana/web3.js";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 function truncate(address: string) {
   return `${address.slice(0, 4)}…${address.slice(-4)}`;
@@ -27,6 +28,9 @@ function truncate(address: string) {
 
 const USDC_SYMBOL = "USDC";
 const DEFAULT_SLIPPAGE_BPS = 100; // 1% — matches OFS-4100 §3's proposed default
+const QUICK_FRACTIONS = [0.25, 0.5, 0.75, 1];
+
+type Asset = { symbol: string; mint: string | null; decimals: number };
 
 type TxState =
   | { status: "idle" }
@@ -35,13 +39,36 @@ type TxState =
   | { status: "error"; message: string };
 
 /**
- * Wallet connection and, once the sale is live, the purchase + claim flow.
+ * Small colored badge standing in for a token logo. Deliberately not a
+ * reproduction of any real issuer's trademarked logo (e.g. Circle's USDC
+ * mark) — on devnet this mint isn't real USDC anyway, so a generic,
+ * color-coded badge is both simpler and more honest than borrowing a brand
+ * asset for a test token.
+ */
+function TokenIcon({ symbol }: { symbol: string }) {
+  const styles: Record<string, string> = {
+    USDC: "bg-[#2775CA] text-white",
+    SOL: "bg-gradient-to-br from-[#9945FF] to-[#14F195] text-white",
+  };
+  return (
+    <span
+      className={cn(
+        "flex h-5 w-5 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold",
+        styles[symbol] ?? "bg-line text-faint",
+      )}
+      aria-hidden
+    >
+      {symbol[0]}
+    </span>
+  );
+}
+
+/**
+ * Wallet connection (with a sign-in verification step), asset selection with
+ * balance + quick amounts, and the purchase + claim flow.
  *
- * Today `SALE_LIVE` is false (the presale program is built and tested — see
- * OFS-4200 §3 / Phase 3 — but not yet deployed to devnet, pending a faucet
- * rate limit), so connecting works and the purchase control is disabled with
- * the reason stated. Every code path below is real and will start working
- * the moment `lib/sale/config.ts` is filled in — no further code change.
+ * The presale program is deployed and initialized on devnet (Phase 3) — see
+ * `lib/sale/config.ts` — so every code path below is live and real.
  */
 export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
   const {
@@ -52,14 +79,19 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
     connected,
     connecting,
     publicKey,
+    signMessage,
   } = useWallet();
   const { connection } = useConnection();
   const anchorWallet = useAnchorWallet();
   const [picking, setPicking] = useState(false);
+  const [assetPicking, setAssetPicking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [amount, setAmount] = useState("");
   const [assetIndex, setAssetIndex] = useState(0);
   const [tx, setTx] = useState<TxState>({ status: "idle" });
+  const [verified, setVerified] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [balance, setBalance] = useState<number | null>(null);
 
   const installed = wallets.filter(
     (wallet) => wallet.readyState === WalletReadyState.Installed,
@@ -67,7 +99,7 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
 
   // Index 0 is always direct USDC (no swap); the rest come from
   // swapEligibleAssets() (SOL + the stablecoin whitelist, via Jupiter CPI).
-  const assetOptions = useMemo(
+  const assetOptions: Asset[] = useMemo(
     () => [
       { symbol: USDC_SYMBOL, mint: SALE.usdcMint, decimals: 6 },
       ...swapEligibleAssets(),
@@ -75,6 +107,32 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
     [],
   );
   const selectedAsset = assetOptions[assetIndex];
+
+  // Reset per-wallet state on disconnect, and refetch balance whenever the
+  // connected wallet or selected asset changes.
+  useEffect(() => {
+    if (!connected) {
+      setVerified(false);
+      setBalance(null);
+      return;
+    }
+    if (!publicKey || !selectedAsset.mint) {
+      setBalance(null);
+      return;
+    }
+    let cancelled = false;
+    fetchTokenBalance(
+      connection,
+      selectedAsset.mint,
+      selectedAsset.decimals,
+      publicKey,
+    ).then((value) => {
+      if (!cancelled) setBalance(value);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [connected, publicKey, selectedAsset, connection]);
 
   async function choose(name: string) {
     setError(null);
@@ -86,6 +144,39 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : String(cause));
     }
+  }
+
+  async function verify() {
+    if (!publicKey) return;
+    if (!signMessage) {
+      // No signMessage support (e.g. some hardware-wallet adapters) — the
+      // purchase transaction's own signature proves ownership regardless.
+      setVerified(true);
+      return;
+    }
+    setVerifying(true);
+    setError(null);
+    try {
+      const message = `Sign in to the OpenFiat presale\n\nWallet: ${publicKey.toBase58()}\nIssued: ${new Date().toISOString()}\n\nThis request will not trigger a transaction or cost any fees.`;
+      await signMessage(new TextEncoder().encode(message));
+      setVerified(true);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : String(cause));
+    } finally {
+      setVerifying(false);
+    }
+  }
+
+  function applyQuickFraction(fraction: number) {
+    if (balance === null) return;
+    const cap =
+      selectedAsset.symbol === USDC_SYMBOL && SALE.maxContributionUsdc
+        ? Math.min(balance, SALE.maxContributionUsdc)
+        : balance;
+    const value = cap * fraction;
+    setAmount(
+      value > 0 ? value.toFixed(Math.min(selectedAsset.decimals, 6)) : "",
+    );
   }
 
   async function purchase() {
@@ -142,6 +233,14 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
       const signature = await connection.sendTransaction(signed);
       await connection.confirmTransaction(signature, "confirmed");
       setTx({ status: "success", signature });
+      if (selectedAsset.mint) {
+        fetchTokenBalance(
+          connection,
+          selectedAsset.mint,
+          selectedAsset.decimals,
+          publicKey,
+        ).then(setBalance);
+      }
     } catch (cause) {
       setTx({
         status: "error",
@@ -176,6 +275,8 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
     }
   }
 
+  const canPurchase = SALE_LIVE && connected && verified;
+
   return (
     <div className="rounded-card border border-line bg-surface p-6">
       {!SALE_LIVE && (
@@ -186,16 +287,36 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
       )}
 
       {connected && publicKey ? (
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="stat-label text-faint">{sale.connected}</p>
-            <p className="mt-1 font-mono text-sm text-ink">
-              {truncate(publicKey.toBase58())}
-            </p>
+        <div>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="stat-label text-faint">{sale.connected}</p>
+              <p className="mt-1 font-mono text-sm text-ink">
+                {truncate(publicKey.toBase58())}
+              </p>
+            </div>
+            <Button variant="secondary" onClick={() => void disconnect()}>
+              {sale.disconnect}
+            </Button>
           </div>
-          <Button variant="secondary" onClick={() => void disconnect()}>
-            {sale.disconnect}
-          </Button>
+
+          {!verified && (
+            <div className="mt-4 rounded-sm border border-line bg-surface-alt p-4">
+              <p className="text-body-sm text-body">
+                {signMessage ? sale.verifyNote : sale.verifyUnsupported}
+              </p>
+              <Button
+                className="mt-3 w-full"
+                disabled={verifying}
+                onClick={() => void verify()}
+              >
+                {verifying ? sale.verifying : sale.verifyWallet}
+              </Button>
+            </div>
+          )}
+          {verified && (
+            <p className="mt-3 text-body-sm text-body">✓ {sale.verified}</p>
+          )}
         </div>
       ) : (
         <div>
@@ -250,9 +371,18 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
           !SALE_LIVE && "opacity-60",
         )}
       >
-        <label htmlFor="sale-amount" className="stat-label block text-faint">
-          {sale.amount}
-        </label>
+        <div className="flex items-baseline justify-between">
+          <label htmlFor="sale-amount" className="stat-label text-faint">
+            {sale.amount}
+          </label>
+          {connected && balance !== null && (
+            <span className="font-mono text-body-sm text-muted">
+              {sale.balance}:{" "}
+              {balance.toLocaleString(undefined, { maximumFractionDigits: 4 })}{" "}
+              {selectedAsset.symbol}
+            </span>
+          )}
+        </div>
         <div className="mt-2 flex items-center gap-3">
           <input
             id="sale-amount"
@@ -264,19 +394,59 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
             onChange={(e) => setAmount(e.target.value)}
             className="h-11 w-full rounded-sm border border-line bg-bg px-3 font-mono text-sm text-ink placeholder:text-faint focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[color:var(--accent-ring)] disabled:cursor-not-allowed"
           />
-          <select
-            disabled={!SALE_LIVE}
-            value={assetIndex}
-            onChange={(e) => setAssetIndex(Number(e.target.value))}
-            className="h-11 rounded-sm border border-line bg-bg px-2 font-mono text-sm text-ink disabled:cursor-not-allowed"
-          >
-            {assetOptions.map((asset, i) => (
-              <option key={asset.symbol} value={i}>
-                {asset.symbol}
-              </option>
-            ))}
-          </select>
+
+          <div className="relative">
+            <button
+              type="button"
+              disabled={!SALE_LIVE}
+              onClick={() => setAssetPicking((v) => !v)}
+              className="flex h-11 items-center gap-2 rounded-sm border border-line bg-bg px-3 font-mono text-sm text-ink disabled:cursor-not-allowed"
+            >
+              <TokenIcon symbol={selectedAsset.symbol} />
+              {selectedAsset.symbol}
+              <span aria-hidden className="text-faint">
+                ▾
+              </span>
+            </button>
+            {assetPicking && (
+              <ul className="absolute right-0 z-10 mt-1 w-40 space-y-1 rounded-sm border border-line bg-surface p-1 shadow-lg">
+                {assetOptions.map((asset, i) => (
+                  <li key={asset.symbol}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAssetIndex(i);
+                        setAssetPicking(false);
+                        setAmount("");
+                      }}
+                      className="flex w-full items-center gap-2 rounded-sm px-2 py-2 text-start text-sm text-ink hover:bg-surface-alt"
+                    >
+                      <TokenIcon symbol={asset.symbol} />
+                      {asset.symbol}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
+
+        {connected && balance !== null && balance > 0 && (
+          <div className="mt-2 flex gap-2">
+            {QUICK_FRACTIONS.map((fraction) => (
+              <button
+                key={fraction}
+                type="button"
+                disabled={!SALE_LIVE}
+                onClick={() => applyQuickFraction(fraction)}
+                className="rounded-sm border border-line px-2 py-1 font-mono text-xs text-muted transition-colors hover:border-line-strong hover:text-ink disabled:cursor-not-allowed"
+              >
+                {fraction === 1 ? sale.max : `${fraction * 100}%`}
+              </button>
+            ))}
+          </div>
+        )}
+
         {assetIndex !== 0 && (
           <p className="mt-2 text-body-sm text-muted">{sale.swapNotice}</p>
         )}
@@ -288,7 +458,7 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
 
         <Button
           className="mt-5 w-full"
-          disabled={!SALE_LIVE || !connected || tx.status === "pending"}
+          disabled={!canPurchase || tx.status === "pending"}
           onClick={() => void purchase()}
         >
           {tx.status === "pending"
@@ -298,7 +468,7 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
               : sale.purchaseDisabled}
         </Button>
 
-        {SALE_LIVE && connected && (
+        {SALE_LIVE && connected && verified && (
           <Button
             variant="secondary"
             className="mt-3 w-full"

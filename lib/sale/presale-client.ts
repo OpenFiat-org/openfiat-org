@@ -353,3 +353,32 @@ export function swapEligibleAssets(): {
     ...SALE.acceptedStablecoins,
   ];
 }
+
+/**
+ * Human-readable SPL token balance for `owner`, or 0 if the mint is native
+ * SOL, the token account doesn't exist yet, or any other read failure —
+ * a missing balance should show as 0, not break the page.
+ */
+export async function fetchTokenBalance(
+  connection: Connection,
+  mint: string,
+  decimals: number,
+  owner: PublicKey,
+): Promise<number> {
+  if (mint === WSOL_MINT) {
+    const lamports = await connection.getBalance(owner, "confirmed");
+    return lamports / 10 ** decimals;
+  }
+  try {
+    const ata = getAssociatedTokenAddressSync(
+      new PublicKey(mint),
+      owner,
+      false,
+      TOKEN_2022_PROGRAM_ID,
+    );
+    const { value } = await connection.getTokenAccountBalance(ata, "confirmed");
+    return value.uiAmount ?? 0;
+  } catch {
+    return 0;
+  }
+}

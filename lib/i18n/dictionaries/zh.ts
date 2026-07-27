@@ -286,6 +286,15 @@ export const zh: Dictionary = {
     connectWallet: "连接钱包",
     disconnect: "断开连接",
     connected: "已连接",
+    verifyWallet: "验证钱包",
+    verifying: "等待签名……",
+    verified: "已验证",
+    verifyNote:
+      "签署一条消息（无需交易、无手续费）以确认你拥有该钱包，然后再购买。",
+    verifyUnsupported:
+      "该钱包不支持消息签名——你仍然可以购买；交易本身的签名即可证明钱包所有权。",
+    balance: "余额",
+    max: "最大",
     purchase: "购买 OPEN",
     purchaseDisabled: "销售开放后即可购买",
     amount: "数量",

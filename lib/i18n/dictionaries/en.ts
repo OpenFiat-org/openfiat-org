@@ -282,6 +282,15 @@ export const en = {
     connectWallet: "Connect wallet",
     disconnect: "Disconnect",
     connected: "Connected",
+    verifyWallet: "Verify wallet",
+    verifying: "Waiting for signature…",
+    verified: "Verified",
+    verifyNote:
+      "Sign a message (no transaction, no fee) to confirm you control this wallet before purchasing.",
+    verifyUnsupported:
+      "This wallet doesn't support message signing — you can still purchase; wallet ownership is proven by the transaction signature itself.",
+    balance: "Balance",
+    max: "Max",
     purchase: "Purchase OPEN",
     purchaseDisabled: "Purchase opens when the sale goes live",
     amount: "Amount",
