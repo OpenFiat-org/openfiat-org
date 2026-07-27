@@ -117,6 +117,19 @@ export const RPC_ENDPOINT: string | null =
 
 export const TOKEN_SYMBOL = "OPEN";
 
+/**
+ * Solscan link for a confirmed signature.
+ *
+ * The cluster comes from `SALE.cluster`, never from the page — a receipt that
+ * silently pointed at mainnet while the transaction landed on devnet would
+ * show "not found" and read as a failed purchase.
+ */
+export function solscanTxUrl(signature: string): string {
+  const query =
+    SALE.cluster === "mainnet-beta" ? "" : `?cluster=${SALE.cluster}`;
+  return `https://solscan.io/tx/${signature}${query}`;
+}
+
 /** Jupiter's free, no-API-key "lite" tier — see lib/sale/presale-client.ts. */
 export const JUPITER_API_BASE = "https://lite-api.jup.ag/swap/v1";
 

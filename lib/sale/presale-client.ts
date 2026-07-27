@@ -196,6 +196,70 @@ export async function fetchSaleSnapshot(
   }
 }
 
+/**
+ * OPEN per USDC contributed.
+ *
+ * The price is fixed at 1:1 and lives in the program, not in config: see
+ * `SaleConfig::open_entitlement_for` in `openfiat-core`, which scales the USDC
+ * base-unit amount by the two mints' decimal difference and does nothing else.
+ * There is no presale vesting, so the entitlement is claimable in full.
+ */
+export const OPEN_PER_USDC = 1;
+
+/** OPEN a contribution of `usdc` whole USDC entitles the buyer to. */
+export function openFor(usdc: number): number {
+  return usdc * OPEN_PER_USDC;
+}
+
+/** A Jupiter route, used both to quote and to build the swap instructions. */
+async function fetchJupiterQuote(
+  inputMint: string,
+  outputMint: string,
+  amountInBaseUnits: bigint,
+  slippageBps: number,
+): Promise<{ outAmount: string }> {
+  const quoteUrl = new URL(`${JUPITER_API_BASE}/quote`);
+  quoteUrl.searchParams.set("inputMint", inputMint);
+  quoteUrl.searchParams.set("outputMint", outputMint);
+  quoteUrl.searchParams.set("amount", amountInBaseUnits.toString());
+  quoteUrl.searchParams.set("slippageBps", String(slippageBps));
+  const response = await fetch(quoteUrl.toString());
+  if (!response.ok) {
+    throw new Error(
+      `Jupiter quote failed: ${response.status} ${await response.text()}`,
+    );
+  }
+  return response.json();
+}
+
+/**
+ * USDC a non-USDC contribution would realize, for the "you receive" estimate —
+ * or null if no route exists (devnet has no liquidity for a test mint) or the
+ * quote fails. An estimate that can't be had should read as unknown, never as
+ * zero.
+ *
+ * Deliberately quote-only: no instructions are built and nothing is signed, so
+ * this is safe to call on every keystroke.
+ */
+export async function estimateUsdcOut(
+  inputMint: string,
+  amountInBaseUnits: bigint,
+  slippageBps: number,
+): Promise<number | null> {
+  if (!SALE.usdcMint || amountInBaseUnits <= 0n) return null;
+  try {
+    const quote = await fetchJupiterQuote(
+      inputMint,
+      SALE.usdcMint,
+      amountInBaseUnits,
+      slippageBps,
+    );
+    return Number(quote.outAmount) / 10 ** USDC_DECIMALS;
+  } catch {
+    return null;
+  }
+}
+
 export async function buildContributeUsdcIx(
   program: ReturnType<typeof getProgram>,
   buyer: PublicKey,
@@ -303,18 +367,12 @@ export async function buildContributeWithSwapPlan(
   const usdcVault = usdcVaultPda(programId, saleNonce);
   const contribution = contributionPda(programId, saleConfig, buyer);
 
-  const quoteUrl = new URL(`${JUPITER_API_BASE}/quote`);
-  quoteUrl.searchParams.set("inputMint", inputMint);
-  quoteUrl.searchParams.set("outputMint", usdcMint.toBase58());
-  quoteUrl.searchParams.set("amount", amountInBaseUnits.toString());
-  quoteUrl.searchParams.set("slippageBps", String(slippageBps));
-  const quoteRes = await fetch(quoteUrl.toString());
-  if (!quoteRes.ok) {
-    throw new Error(
-      `Jupiter quote failed: ${quoteRes.status} ${await quoteRes.text()}`,
-    );
-  }
-  const quoteResponse = await quoteRes.json();
+  const quoteResponse = await fetchJupiterQuote(
+    inputMint,
+    usdcMint.toBase58(),
+    amountInBaseUnits,
+    slippageBps,
+  );
 
   const swapRes = await fetch(`${JUPITER_API_BASE}/swap-instructions`, {
     method: "POST",

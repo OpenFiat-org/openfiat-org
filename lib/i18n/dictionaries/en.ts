@@ -306,8 +306,11 @@ export const en = {
       "The target is a goal, not a cap. The presale offers the entire Community Presale allocation, so it can keep selling past the target if demand goes further.",
     purchase: "Purchase OPEN",
     purchaseDisabled: "Purchase opens when the sale goes live",
-    amount: "Amount",
+    amount: "You pay",
     youReceive: "You receive",
+    /** The presale price is fixed in the program, not quoted per trade. */
+    rateNote: "1 OPEN = 1 USDC",
+    estimated: "estimated",
     reviewing: "Simulating transaction…",
     submitting: "Awaiting wallet signature…",
     confirming: "Confirming…",

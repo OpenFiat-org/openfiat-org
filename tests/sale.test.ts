@@ -1,7 +1,8 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { PAYMENT_ASSETS, paymentAsset } from "@/lib/sale/assets";
-import { RAISE_GOAL_USDC, SALE } from "@/lib/sale/config";
+import { RAISE_GOAL_USDC, SALE, solscanTxUrl } from "@/lib/sale/config";
+import { OPEN_PER_USDC, openFor } from "@/lib/sale/presale-client";
 import {
   ALLOCATIONS,
   allocationTotal,
@@ -40,6 +41,30 @@ describe("payment assets", () => {
     for (const asset of PAYMENT_ASSETS) {
       expect(Object.keys(asset).sort()).toEqual(["logo", "name", "symbol"]);
     }
+  });
+});
+
+describe("OPEN entitlement", () => {
+  it("is 1:1 with USDC, matching the program", () => {
+    // `SaleConfig::open_entitlement_for` in openfiat-core scales by the mints'
+    // decimal difference and applies no other rate. If that ever changes, the
+    // "you receive" figure on the page silently becomes a lie.
+    expect(OPEN_PER_USDC).toBe(1);
+    expect(openFor(1000)).toBe(1000);
+    expect(openFor(0.5)).toBe(0.5);
+  });
+});
+
+describe("solscan links", () => {
+  const SIGNATURE = "5Nq".padEnd(88, "x");
+
+  it("carries the cluster for a non-mainnet sale", () => {
+    // Without it Solscan defaults to mainnet, finds nothing, and a confirmed
+    // purchase reads as a failed one.
+    expect(solscanTxUrl(SIGNATURE)).toBe(
+      `https://solscan.io/tx/${SIGNATURE}?cluster=${SALE.cluster}`,
+    );
+    expect(SALE.cluster).not.toBe("mainnet-beta");
   });
 });
 
