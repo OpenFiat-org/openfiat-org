@@ -364,7 +364,7 @@ export const zh: Dictionary = {
       eyebrow: "文档",
       title: "文档",
       intro:
-        "开发者文档位于 docs.openfiat.org。规范本身是权威参考，并已在本站全文发布。",
+        "开发者文档位于 docs.openfiat.network。规范本身是权威参考，并已在本站全文发布。",
     },
     foundation: {
       eyebrow: "治理",

@@ -375,7 +375,7 @@ export const en = {
       eyebrow: "documentation",
       title: "Documentation",
       intro:
-        "Developer documentation lives at docs.openfiat.org. The specifications themselves are the authoritative reference and are published in full here.",
+        "Developer documentation lives at docs.openfiat.network. The specifications themselves are the authoritative reference and are published in full here.",
     },
     foundation: {
       eyebrow: "governance",

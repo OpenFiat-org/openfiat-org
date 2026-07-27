@@ -3,7 +3,7 @@ import { SITE } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 /**
- * Link to app.openfiat.org.
+ * Link to app.openfiat.network.
  *
  * Every route in the app is still a placeholder waiting on a node connection,
  * so the link is prominent as intended but labelled, and a visitor is not

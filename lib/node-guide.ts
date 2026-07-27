@@ -20,9 +20,9 @@ export const SERVICE = "openfiat-node";
 
 /** Bootstrap hosts named in Chapter 22 and OFS-1100. */
 export const BOOTSTRAP_HOSTS = [
-  "entry01.openfiat.org",
-  "entry02.openfiat.org",
-  "entry03.openfiat.org",
+  "entry01.openfiat.network",
+  "entry02.openfiat.network",
+  "entry03.openfiat.network",
   "openfiat.allenhark.com",
 ];
 
@@ -105,9 +105,9 @@ region = "eu-west"
 listen    = ["/ip4/0.0.0.0/udp/7400/quic-v1", "/ip4/0.0.0.0/tcp/7400"]
 announce  = ["/dns4/node.example.org/udp/7400/quic-v1"]
 bootstrap = [
-  "/dns4/entry01.openfiat.org/udp/7400/quic-v1",
-  "/dns4/entry02.openfiat.org/udp/7400/quic-v1",
-  "/dns4/entry03.openfiat.org/udp/7400/quic-v1",
+  "/dns4/entry01.openfiat.network/udp/7400/quic-v1",
+  "/dns4/entry02.openfiat.network/udp/7400/quic-v1",
+  "/dns4/entry03.openfiat.network/udp/7400/quic-v1",
 ]
 max_peers = 128
 
