@@ -157,20 +157,40 @@ const READ_ONLY_WALLET: AnchorWallet = {
   },
 };
 
+/** The live terms and totals, in whole USDC rather than base units. */
+export type SaleSnapshot = {
+  totalRaisedUsdc: number;
+  minContributionUsdc: number;
+  maxContributionUsdc: number;
+  hardCapUsdc: number;
+  softCapUsdc: number;
+};
+
 /**
- * Total raised so far, in whole USDC, read straight from the chain — or null
- * if the sale isn't configured, the account doesn't exist yet, or the RPC read
- * fails. Callers render the goal without a progress figure in that case: a
- * flaky RPC should not be able to claim that nothing has been raised.
+ * The sale as the program itself sees it — or null if the sale isn't
+ * configured, the account doesn't exist yet, or the RPC read fails.
+ *
+ * Worth reading rather than trusting the mirror in `config.ts`: the limits
+ * here are the ones actually enforced, so a UI driven by them can never invite
+ * a contribution the program will reject. Callers fall back to the configured
+ * figures when this returns null — a flaky RPC must not be able to claim that
+ * nothing has been raised, or that the limits are something they aren't.
  */
-export async function fetchTotalRaisedUsdc(
+export async function fetchSaleSnapshot(
   connection: Connection,
-): Promise<number | null> {
+): Promise<SaleSnapshot | null> {
   if (!SALE.programId || SALE.saleNonce === null) return null;
   try {
     const program = getProgram(connection, READ_ONLY_WALLET);
     const saleConfig = await fetchSaleConfig(program);
-    return saleConfig.totalRaised.toNumber() / 10 ** saleConfig.usdcDecimals;
+    const unit = 10 ** saleConfig.usdcDecimals;
+    return {
+      totalRaisedUsdc: saleConfig.totalRaised.toNumber() / unit,
+      minContributionUsdc: saleConfig.minContribution.toNumber() / unit,
+      maxContributionUsdc: saleConfig.maxContribution.toNumber() / unit,
+      hardCapUsdc: saleConfig.hardCap.toNumber() / unit,
+      softCapUsdc: saleConfig.softCap.toNumber() / unit,
+    };
   } catch {
     return null;
   }

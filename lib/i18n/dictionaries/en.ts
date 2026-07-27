@@ -291,6 +291,14 @@ export const en = {
       "This wallet doesn't support message signing — you can still purchase; wallet ownership is proven by the transaction signature itself.",
     balance: "Balance",
     max: "Max",
+    /*
+     * `{min}` / `{max}` placeholders rather than a function, because this
+     * string is handed to a client component and functions cannot cross that
+     * boundary. Fragments composed in JSX were the other option, but word
+     * order differs by language and this keeps each locale one sentence.
+     */
+    limitNote:
+      "{min}–{max} USDC per wallet. Max fills the lower of your balance and that limit.",
     raisedLabel: "Raised",
     goalLabel: "Target",
     offeredLabel: "Offered",

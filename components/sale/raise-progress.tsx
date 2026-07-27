@@ -2,7 +2,7 @@
 
 import type { Dictionary } from "@/lib/i18n";
 import { RAISE_GOAL_USDC, RPC_ENDPOINT, SALE } from "@/lib/sale/config";
-import { fetchTotalRaisedUsdc } from "@/lib/sale/presale-client";
+import { fetchSaleSnapshot } from "@/lib/sale/presale-client";
 import {
   TOKENOMICS_CONFIRMED,
   formatTokens,
@@ -56,8 +56,8 @@ export function RaiseProgress({
 
   useEffect(() => {
     let cancelled = false;
-    fetchTotalRaisedUsdc(connection).then((value) => {
-      if (!cancelled) setRaised(value);
+    fetchSaleSnapshot(connection).then((value) => {
+      if (!cancelled) setRaised(value?.totalRaisedUsdc ?? null);
     });
     return () => {
       cancelled = true;

@@ -5,26 +5,38 @@ import { Button } from "@/components/ui/button";
 import type { Dictionary } from "@/lib/i18n";
 import { SALE, SALE_LIVE, TOKEN_SYMBOL } from "@/lib/sale/config";
 import {
+  type SaleSnapshot,
   buildAndSignVersionedTx,
   buildClaimIx,
   buildContributeUsdcIx,
   buildContributeWithSwapPlan,
+  fetchSaleSnapshot,
   fetchTokenBalance,
   getProgram,
   swapEligibleAssets,
 } from "@/lib/sale/presale-client";
 import { cn } from "@/lib/utils";
-import { WalletReadyState } from "@solana/wallet-adapter-base";
 import {
   useAnchorWallet,
   useConnection,
   useWallet,
 } from "@solana/wallet-adapter-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { TransactionMessage, VersionedTransaction } from "@solana/web3.js";
 import { useEffect, useMemo, useState } from "react";
 
 function truncate(address: string) {
   return `${address.slice(0, 4)}…${address.slice(-4)}`;
+}
+
+/**
+ * Fixed to the asset's precision, then stripped of trailing zeros — a whole
+ * amount should read "500", not "500.000000". Never scientific notation, since
+ * the string goes straight into the amount field.
+ */
+function trimZeros(value: number, decimals: number): string {
+  const fixed = value.toFixed(Math.min(decimals, 6));
+  return fixed.includes(".") ? fixed.replace(/\.?0+$/, "") : fixed;
 }
 
 const USDC_SYMBOL = "USDC";
@@ -48,8 +60,7 @@ type TxState =
  */
 export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
   const {
-    wallets,
-    select,
+    wallet,
     connect,
     disconnect,
     connected,
@@ -57,9 +68,10 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
     publicKey,
     signMessage,
   } = useWallet();
+  const { setVisible } = useWalletModal();
   const { connection } = useConnection();
   const anchorWallet = useAnchorWallet();
-  const [picking, setPicking] = useState(false);
+  const [pendingConnect, setPendingConnect] = useState(false);
   const [assetPicking, setAssetPicking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [amount, setAmount] = useState("");
@@ -68,10 +80,24 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
   const [verified, setVerified] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [balance, setBalance] = useState<number | null>(null);
+  const [snapshot, setSnapshot] = useState<SaleSnapshot | null>(null);
 
-  const installed = wallets.filter(
-    (wallet) => wallet.readyState === WalletReadyState.Installed,
-  );
+  // The enforced terms, read once. Until this lands (or if it fails) the
+  // configured figures stand in — see `fetchSaleSnapshot`.
+  useEffect(() => {
+    let cancelled = false;
+    fetchSaleSnapshot(connection).then((value) => {
+      if (!cancelled) setSnapshot(value);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [connection]);
+
+  const minContribution =
+    snapshot?.minContributionUsdc ?? SALE.minContributionUsdc;
+  const maxContribution =
+    snapshot?.maxContributionUsdc ?? SALE.maxContributionUsdc;
 
   // Index 0 is always direct USDC (no swap); the rest come from
   // swapEligibleAssets() (SOL + the stablecoin whitelist, via Jupiter CPI).
@@ -110,17 +136,30 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
     };
   }, [connected, publicKey, selectedAsset, connection]);
 
-  async function choose(name: string) {
+  /*
+   * The standard modal only *selects* a wallet — it deliberately leaves
+   * connecting to the app — and `autoConnect` is off so a remembered wallet
+   * never reconnects on page load. So connect here, once a wallet is selected.
+   *
+   * `pendingConnect` scopes that to a click on Connect. Without it, the effect
+   * would fire on the still-selected wallet the moment someone disconnects,
+   * making Disconnect impossible.
+   */
+  function openWalletModal() {
     setError(null);
-    try {
-      // select() only sets the adapter; connect() opens the wallet.
-      select(name as Parameters<typeof select>[0]);
-      setPicking(false);
-      await connect();
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : String(cause));
-    }
+    setPendingConnect(true);
+    // A wallet chosen on an earlier visit is still selected; asking again would
+    // be a pointless second click.
+    if (!wallet) setVisible(true);
   }
+
+  useEffect(() => {
+    if (!pendingConnect || !wallet || connected || connecting) return;
+    setPendingConnect(false);
+    connect().catch((cause) => {
+      setError(cause instanceof Error ? cause.message : String(cause));
+    });
+  }, [pendingConnect, wallet, connected, connecting, connect]);
 
   async function verify() {
     if (!publicKey) return;
@@ -143,16 +182,20 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
     }
   }
 
+  /*
+   * The fractions are of the most that can actually be contributed, which is
+   * the balance or the per-wallet cap, whichever is lower — so "Max" on a
+   * 1,000 USDC balance under a 500 cap fills 500, not 1,000. The cap is stated
+   * next to the field (see `limitNote` below) so that isn't a surprise.
+   */
   function applyQuickFraction(fraction: number) {
     if (balance === null) return;
     const cap =
-      selectedAsset.symbol === USDC_SYMBOL && SALE.maxContributionUsdc
-        ? Math.min(balance, SALE.maxContributionUsdc)
+      selectedAsset.symbol === USDC_SYMBOL && maxContribution
+        ? Math.min(balance, maxContribution)
         : balance;
     const value = cap * fraction;
-    setAmount(
-      value > 0 ? value.toFixed(Math.min(selectedAsset.decimals, 6)) : "",
-    );
+    setAmount(value > 0 ? trimZeros(value, selectedAsset.decimals) : "");
   }
 
   async function purchase() {
@@ -253,6 +296,15 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
 
   const canPurchase = SALE_LIVE && connected && verified;
 
+  // Both bounds are set together at `initialize_sale`, so either one being
+  // absent means the terms aren't configured and there is nothing to state.
+  const contributionLimit =
+    minContribution !== null && maxContribution !== null
+      ? sale.limitNote
+          .replace("{min}", minContribution.toLocaleString())
+          .replace("{max}", maxContribution.toLocaleString())
+      : null;
+
   return (
     <div className="rounded-card border border-line bg-surface p-6">
       {!SALE_LIVE && (
@@ -271,7 +323,13 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
                 {truncate(publicKey.toBase58())}
               </p>
             </div>
-            <Button variant="secondary" onClick={() => void disconnect()}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setPendingConnect(false);
+                void disconnect();
+              }}
+            >
               {sale.disconnect}
             </Button>
           </div>
@@ -295,48 +353,9 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
           )}
         </div>
       ) : (
-        <div>
-          <Button
-            onClick={() => setPicking((value) => !value)}
-            disabled={connecting}
-          >
-            {connecting ? sale.confirming : sale.connectWallet}
-          </Button>
-
-          {picking && (
-            <ul className="mt-4 space-y-2">
-              {installed.length === 0 && (
-                <li className="text-body-sm text-muted">
-                  No Solana wallet was detected in this browser.
-                </li>
-              )}
-              {installed.map((wallet) => (
-                <li key={wallet.adapter.name}>
-                  <button
-                    type="button"
-                    onClick={() => void choose(wallet.adapter.name)}
-                    className="flex w-full items-center gap-3 rounded-sm border border-line bg-surface-alt px-4 py-3 text-start transition-colors hover:border-line-strong"
-                  >
-                    {wallet.adapter.icon && (
-                      // Wallet icons are data URIs supplied by the extension.
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={wallet.adapter.icon}
-                        alt=""
-                        width={20}
-                        height={20}
-                        className="h-5 w-5"
-                      />
-                    )}
-                    <span className="text-sm font-medium text-ink">
-                      {wallet.adapter.name}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <Button onClick={openWalletModal} disabled={connecting}>
+          {connecting ? sale.confirming : sale.connectWallet}
+        </Button>
       )}
 
       {/* Purchase controls. Present so the flow is reviewable, disabled until
@@ -421,6 +440,13 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
               </button>
             ))}
           </div>
+        )}
+
+        {/* Why "Max" can be less than the balance. The cap is denominated in
+            USDC and enforced on chain, so it applies to a SOL contribution
+            just as much — hence no per-asset condition here. */}
+        {contributionLimit && (
+          <p className="mt-3 text-body-sm text-muted">{contributionLimit}</p>
         )}
 
         {assetIndex !== 0 && (

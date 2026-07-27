@@ -1,0 +1,121 @@
+/*
+ * The standard wallet-adapter modal, keyed to the OpenFiat design system.
+ *
+ * Structure and behaviour are the library's — the detected/installed split,
+ * the "more options" collapse, focus trapping, the no-wallet path. Only the
+ * skin changes: the shipped stylesheet hardcodes a DM Sans stack, #10141f
+ * surfaces and a purple accent, none of which are ours.
+ *
+ * Imported after `@solana/wallet-adapter-react-ui/styles.css` (see
+ * wallet-provider.tsx), so equal-specificity selectors win on order.
+ */
+
+.wallet-adapter-modal-overlay {
+  background: rgba(4, 7, 11, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.wallet-adapter-modal-wrapper {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  max-width: 26rem;
+}
+
+.wallet-adapter-modal-title {
+  color: var(--color-ink);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  /* The library pads 64px/48px, which is a lot of empty surface above a short
+     list of wallets. */
+  padding: 2rem 1.5rem 1.25rem;
+}
+
+.wallet-adapter-modal-button-close {
+  background: transparent;
+  border-radius: var(--radius-pill);
+  top: 1rem;
+  right: 1rem;
+}
+
+.wallet-adapter-modal-button-close:hover {
+  background: var(--color-surface-alt);
+}
+
+.wallet-adapter-modal-button-close svg {
+  fill: var(--color-muted);
+}
+
+.wallet-adapter-modal-button-close:hover svg {
+  fill: var(--color-ink);
+}
+
+.wallet-adapter-modal-list {
+  margin: 0 0 0.75rem;
+  padding: 0 0.75rem;
+}
+
+.wallet-adapter-modal-list .wallet-adapter-button {
+  border-radius: var(--radius-sm);
+  color: var(--color-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  height: 3.25rem;
+  line-height: 1;
+  padding: 0 1rem;
+}
+
+.wallet-adapter-modal-list .wallet-adapter-button:not([disabled]):hover {
+  background: var(--color-surface-alt);
+}
+
+/* "Detected" / "Installed" trailing label. */
+.wallet-adapter-modal-list .wallet-adapter-button span {
+  color: var(--color-muted);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  opacity: 1;
+  text-transform: uppercase;
+}
+
+.wallet-adapter-modal-list-more {
+  color: var(--color-muted);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.8125rem;
+  padding: 0.25rem 1.5rem 1.25rem;
+}
+
+.wallet-adapter-modal-list-more:hover {
+  color: var(--color-ink);
+}
+
+.wallet-adapter-modal-list-more svg {
+  fill: currentColor;
+}
+
+/* Shown when no wallet is installed, alongside the "get a wallet" copy. */
+.wallet-adapter-modal-middle {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.wallet-adapter-modal-middle-button {
+  background: var(--color-accent);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-weight: 600;
+}
+
+.wallet-adapter-modal-middle-button:hover {
+  background: var(--color-accent-hover);
+}
+
+.wallet-adapter-button:not([disabled]):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}

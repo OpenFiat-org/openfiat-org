@@ -295,6 +295,8 @@ export const zh: Dictionary = {
       "该钱包不支持消息签名——你仍然可以购买；交易本身的签名即可证明钱包所有权。",
     balance: "余额",
     max: "最大",
+    limitNote:
+      "每个钱包 {min}–{max} USDC。「最大」将填入余额与该上限中较小的一方。",
     raisedLabel: "已募集",
     goalLabel: "目标",
     offeredLabel: "发售数量",

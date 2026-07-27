@@ -74,7 +74,11 @@ export const SALE: SaleConfig = {
   hardCapUsdc: 1_000,
   softCapUsdc: 10,
   minContributionUsdc: 1,
-  maxContributionUsdc: 500,
+  /* Published per-wallet limit. The UI prefers the value the program actually
+     enforces (see `fetchSaleSnapshot`) and only falls back to this one when
+     that read fails, so a figure here that hasn't reached the chain yet cannot
+     invite a contribution the program will reject. */
+  maxContributionUsdc: 1_000_000,
   opensAt: "2026-07-27T10:32:17.000Z",
   closesAt: "2026-08-26T10:33:17.000Z",
   acceptedStablecoins: [],
