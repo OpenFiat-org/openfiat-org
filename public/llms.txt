@@ -1,0 +1,64 @@
+# OpenFiat
+
+> An open protocol for exchanging stablecoins for local fiat currency, peer to peer, with no centralized exchange operator. Solana secures settlement through audited programs; an open network coordinates the marketplace — advertisements, reputation, disputes, messaging and service discovery. This site is the protocol's public face: the whitepaper and specifications in full, plus guides for everyone who takes part.
+
+Site: https://openfiat.network · Application: https://app.openfiat.network · Documentation: https://docs.openfiat.network
+
+## The thing to understand first
+
+OpenFiat is not an exchange and not a company holding anyone's money. A trade moves stablecoins between two people's own wallets and fiat between their own bank or mobile-money accounts. A Solana program holds the crypto in escrow and releases it on the trade's outcome — neither the protocol's authors nor any node operator can release it early, and no operator can freeze a market or decide who may trade.
+
+Two layers, deliberately separated: Solana settles, because settlement needs finality. Everything a marketplace needs and a blockchain should not carry — order books, reputation, chat, discovery — runs on an open peer-to-peer network.
+
+## Available in
+
+English and Simplified Chinese. Prefix any path with `/en` or `/zh`. The whitepaper and specification text is currently English only; navigation is translated.
+
+## Start here
+
+- [How it works](https://openfiat.network/en/how-it-works): a single trade, start to finish.
+- [Trust and safety](https://openfiat.network/en/trust): why trading with a stranger is safe without a company guaranteeing it — escrow, reputation, identity claims and dispute resolution.
+- [The protocol](https://openfiat.network/en/protocol): the two-layer design and the numbered specification suite.
+- [Participate](https://openfiat.network/en/participate): the ten roles — buyers, merchants, arbitrators, node operators, and the service providers around them. Nobody grants permission for any of them.
+- [Run a node](https://openfiat.network/en/run-a-node): a full runbook — install options, ports, configuration, systemd, snapshot sync, monitoring, upgrades.
+- [Token sale](https://openfiat.network/en/sale): the OPEN community presale. 1 OPEN = 1 USDC, confirmed in OFS-4100 and enforced by the program.
+- [Glossary](https://openfiat.network/en/glossary): the protocol's vocabulary.
+
+## The whitepaper
+
+28 chapters, published as web pages rather than a PDF download, assuming no prior blockchain knowledge and building up from what money is.
+
+- [Index](https://openfiat.network/en/whitepaper)
+- Chapter paths follow `/en/whitepaper/<nn>-<slug>`, e.g. [/en/whitepaper/11-the-openfiat-dispute-resolution-protocol](https://openfiat.network/en/whitepaper/11-the-openfiat-dispute-resolution-protocol)
+
+## The specifications
+
+26 numbered specifications. The number encodes the layer: the 1000s are networking, the 2000s the marketplace, the 3000s reputation, the 4000s token and on-chain programs, the 5000s identity, and upward through oracles and risk intelligence.
+
+- [Registry](https://openfiat.network/en/specs)
+- Spec paths follow `/en/specs/ofs-<number>`, e.g. [/en/specs/ofs-2400](https://openfiat.network/en/specs/ofs-2400)
+
+Ones most often asked about:
+
+- OFS-1000 — Network Protocol
+- OFS-1500 — Service Registry Protocol
+- OFS-2100 — Advertisement Protocol
+- OFS-2300 — Settlement Protocol
+- OFS-2400 — Dispute Protocol
+- OFS-3000 — Reputation Engine
+- OFS-4100 — Tokenomics
+- OFS-4200 — On-Chain Program Architecture
+- OFS-5000 — Identity Claims Protocol
+
+## Things commonly assumed and untrue
+
+- **There is no KYC.** OFS-5000 defines no document verification at any level, and participation never requires advancing beyond a wallet. Identity claims are optional, self-published and signed; the merchant level publishes a business name and support contacts and explicitly does not imply regulatory approval.
+- **There is no support desk that can settle a trade.** Disputes are decided by independent arbitrators who stake OPEN, receive evidence only after committing, and vote by commit-and-reveal under deterministic consensus rules.
+- **There is no appeal in version 1.** Deliberately — extra arbitration rounds would extend settlement times and leave finality uncertain.
+- **Reputation is not a single score.** Eight independent dimensions (OFS-3000), with no protocol-defined formula for combining them, so an application can weigh whichever matters for a given trade.
+- **OPEN is not the asset being traded.** Marketplace settlement happens in stablecoins. OPEN is staked as accountability by merchants, arbitrators, node operators and service providers, and carries governance rights.
+
+## Source
+
+- Specifications and whitepaper: https://github.com/OpenFiat-org/openfiat-specs
+- All repositories: https://github.com/OpenFiat-org
