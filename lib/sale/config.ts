@@ -67,9 +67,13 @@ export type SaleConfig = {
 
 export const SALE: SaleConfig = {
   programId: "75rJ9MRAaSnAc8tg4AfeTFVDCVrN6jdD5CqeyE4UoUw7",
-  saleNonce: 0,
-  openMint: "Gni52mcwmR5EH4c7UmUjmwKsNRCouDxsGe18hiRsbmL",
-  usdcMint: "6xCTSCscWcChv1FkRyHzXHmGbQFUwkBUuWFSS1RVXtQa",
+  /* Nonce 0 was initialized against the old (incorrect, 3%-presale-bucket)
+     mint and left in place on devnet — PDAs are namespaced by nonce, so this
+     points at nonce 1's fresh SaleConfig against the corrected 20% mint
+     rather than the stale nonce-0 sale. */
+  saleNonce: 1,
+  openMint: "29w8TroBTYoaqrXBDcpv5L54VZRA8Kf7kU5U1cakvFdj",
+  usdcMint: "SK1JEbfsjjTG2WELNirmM7iJVcdnwerqfF32kCnoWsM",
   swapProgram: "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
   hardCapUsdc: 1_000,
   softCapUsdc: 10,
@@ -79,8 +83,8 @@ export const SALE: SaleConfig = {
      that read fails, so a figure here that hasn't reached the chain yet cannot
      invite a contribution the program will reject. */
   maxContributionUsdc: 1_000_000,
-  opensAt: "2026-07-27T10:32:17.000Z",
-  closesAt: "2026-08-26T10:33:17.000Z",
+  opensAt: "2026-07-27T18:16:07.000Z",
+  closesAt: "2026-08-26T18:17:07.000Z",
   acceptedStablecoins: [],
   cluster: "devnet",
 };
