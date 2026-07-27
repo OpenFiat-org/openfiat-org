@@ -2,13 +2,23 @@
  * The single seam for sale mechanics.
  *
  * The on-chain presale program (OFS-4200 §3, `openfiat-core/programs/presale`)
- * exists and is fully tested against a local validator (Phase 3) — see
- * `presale-idl.json` in this directory. What's still pending is the actual
- * devnet deployment + `initialize_sale` call (blocked on devnet SOL faucet
- * rate-limiting in the build environment; documented in
- * `openfiat-core/programs/README.md`). So the UI and transaction-building
- * code are complete and real, and the addresses/numbers below are what get
- * filled in once that deployment happens — no code change needed then.
+ * is deployed and initialized on devnet (program id below) — see
+ * `openfiat-core/programs/devnet-addresses.json`'s `devnet_sale` entry and
+ * `openfiat-core/programs/scripts/init-devnet-sale.ts` for how it was set up.
+ *
+ * The terms below (hard/soft cap, min/max) are small, practical numbers for
+ * browser click-through testing — NOT OFS-4100 §3's proposed production
+ * figures (a real $30M hard cap has nothing to test against on devnet).
+ * `usdcMint` is a devnet-only test mint (Token-2022, 6 decimals) with its
+ * mint authority deliberately left live, since there is no canonical devnet
+ * USDC — OFS-4100 §3 anticipates exactly this ("devnet equivalents/test
+ * mints during the devnet phase of this build").
+ *
+ * Only the direct-USDC contribution path is wired for real testing right
+ * now — the SOL/stablecoin-via-Jupiter path's on-chain logic is proven via
+ * the deterministic mock-jupiter test suite, but Jupiter has no live
+ * liquidity/routing on devnet for a custom test mint, so it isn't
+ * practically exercisable end-to-end here yet.
  *
  * Values are read only from this module — never from a URL parameter, form
  * field or anything else a visitor controls — so a link cannot redirect a
@@ -56,17 +66,17 @@ export type SaleConfig = {
 };
 
 export const SALE: SaleConfig = {
-  programId: null,
-  saleNonce: null,
-  openMint: null,
-  usdcMint: null,
-  swapProgram: null,
-  hardCapUsdc: null,
-  softCapUsdc: null,
-  minContributionUsdc: null,
-  maxContributionUsdc: null,
-  opensAt: null,
-  closesAt: null,
+  programId: "75rJ9MRAaSnAc8tg4AfeTFVDCVrN6jdD5CqeyE4UoUw7",
+  saleNonce: 0,
+  openMint: "Gni52mcwmR5EH4c7UmUjmwKsNRCouDxsGe18hiRsbmL",
+  usdcMint: "6xCTSCscWcChv1FkRyHzXHmGbQFUwkBUuWFSS1RVXtQa",
+  swapProgram: "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+  hardCapUsdc: 1_000,
+  softCapUsdc: 10,
+  minContributionUsdc: 1,
+  maxContributionUsdc: 500,
+  opensAt: "2026-07-27T10:32:17.000Z",
+  closesAt: "2026-08-26T10:33:17.000Z",
   acceptedStablecoins: [],
   cluster: "devnet",
 };
