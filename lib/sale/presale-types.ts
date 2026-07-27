@@ -585,6 +585,47 @@ export type Presale = {
         },
       ];
     },
+    {
+      name: "updateSaleParams";
+      discriminator: [86, 207, 77, 222, 26, 93, 187, 111];
+      accounts: [
+        {
+          name: "admin";
+          signer: true;
+          relations: ["saleConfig"];
+        },
+        {
+          name: "saleConfig";
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103];
+              },
+              {
+                kind: "arg";
+                path: "saleNonce";
+              },
+            ];
+          };
+        },
+      ];
+      args: [
+        {
+          name: "saleNonce";
+          type: "u64";
+        },
+        {
+          name: "params";
+          type: {
+            defined: {
+              name: "updateSaleParamsArgs";
+            };
+          };
+        },
+      ];
+    },
   ];
   accounts: [
     {
@@ -981,6 +1022,34 @@ export type Presale = {
           },
           {
             name: "softCapMissed";
+          },
+        ];
+      };
+    },
+    {
+      name: "updateSaleParamsArgs";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "hardCap";
+            type: "u64";
+          },
+          {
+            name: "softCap";
+            type: "u64";
+          },
+          {
+            name: "minContribution";
+            type: "u64";
+          },
+          {
+            name: "maxContribution";
+            type: "u64";
+          },
+          {
+            name: "maxSlippageBps";
+            type: "u16";
           },
         ];
       };

@@ -497,6 +497,47 @@
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "update_sale_params",
+      "discriminator": [86, 207, 77, 222, 26, 93, 187, 111],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": ["sale_config"]
+        },
+        {
+          "name": "sale_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+              },
+              {
+                "kind": "arg",
+                "path": "sale_nonce"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "sale_nonce",
+          "type": "u64"
+        },
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UpdateSaleParamsArgs"
+            }
+          }
+        }
+      ]
     }
   ],
   "accounts": [
@@ -896,6 +937,34 @@
           },
           {
             "name": "SoftCapMissed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateSaleParamsArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "hard_cap",
+            "type": "u64"
+          },
+          {
+            "name": "soft_cap",
+            "type": "u64"
+          },
+          {
+            "name": "min_contribution",
+            "type": "u64"
+          },
+          {
+            "name": "max_contribution",
+            "type": "u64"
+          },
+          {
+            "name": "max_slippage_bps",
+            "type": "u16"
           }
         ]
       }
