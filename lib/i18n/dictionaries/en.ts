@@ -322,6 +322,8 @@ export const en = {
     offeredLabel: "Offered",
     goalNote:
       "The target is a goal, not a cap. The presale offers the entire Community Presale allocation, so it can keep selling past the target if demand goes further.",
+    publicSaleNote:
+      "Whatever remains unsold from the Community Presale allocation when the presale closes will be offered afterward in a public sale at 1 OPEN = 1.25 USDC.",
     purchase: "Purchase OPEN",
     purchaseDisabled: "Purchase opens when the sale goes live",
     amount: "You pay",

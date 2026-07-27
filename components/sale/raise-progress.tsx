@@ -108,6 +108,9 @@ export function RaiseProgress({
       </div>
 
       <p className="mt-6 max-w-2xl text-body-sm text-muted">{sale.goalNote}</p>
+      <p className="mt-2 max-w-2xl text-body-sm text-muted">
+        {sale.publicSaleNote}
+      </p>
     </div>
   );
 }

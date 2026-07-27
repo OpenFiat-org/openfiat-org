@@ -318,6 +318,8 @@ export const zh: Dictionary = {
     offeredLabel: "发售数量",
     goalNote:
       "该目标是募集目标，而非上限。预售发售的是全部社区预售份额，因此在需求持续的情况下，募集额可以超过目标继续销售。",
+    publicSaleNote:
+      "预售结束时，社区预售份额中尚未售出的部分，将在其后的公开发售中以 1 OPEN = 1.25 USDC 的价格发售。",
     purchase: "购买 OPEN",
     purchaseDisabled: "销售开放后即可购买",
     amount: "你支付",

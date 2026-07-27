@@ -8,11 +8,20 @@
  * TOKENOMICS_CONFIRMED stays false and the page keeps its provisional note;
  * total supply is `[CONFIRMED]`.
  *
- * Note the deliberate relationship between the presale bucket and the raise
- * ceiling, spelled out in OFS-4100 §2: at the confirmed 1 OPEN = 1 USDC
- * price, bucket size *is* the maximum possible raise, so 3% (30,000,000 OPEN)
- * implies a $30,000,000 ceiling. That spec is explicit that the bucket size
- * and the hard cap must move together, never independently.
+ * The Community Presale bucket is deliberately the entire 20% (200,000,000
+ * OPEN) — this is not a raise-ceiling sizing choice, because the presale
+ * itself has no hard cap on demand. Per OFS-4100 §3:
+ *
+ *  - Presale: 1 OPEN = 1 USDC, target $2,000,000 (a goal, not a cap — see
+ *    `RAISE_GOAL_USDC` in ./config). If demand exceeds the target, the sale
+ *    keeps selling out of the same 200M bucket rather than stopping.
+ *  - Public Sale: whatever of the 200M bucket remains unsold when the
+ *    presale closes is offered afterward at 1 OPEN = 1.25 USDC.
+ *
+ * The other six buckets absorb the resulting reduction proportionally to
+ * their prior share (each roughly ×0.825, individually rounded to the
+ * nearest whole percent via largest-remainder so the split sums to exactly
+ * 100 — see OFS-4100 §2 for the full derivation).
  */
 
 export type AllocationId =
@@ -56,16 +65,17 @@ const SEGMENT = {
 } as const;
 
 /* Ordered largest to smallest rather than in OFS-4100 §2's table order, so the
-   stacked bar reads as a descending scale. The presale keeps the brand blue
-   despite being the smallest bucket: it is the one people are here to buy. */
+   stacked bar reads as a descending scale. The presale also happens to be the
+   largest bucket now, and keeps the brand blue regardless: it is the one
+   people are here to buy. */
 export const ALLOCATIONS: Allocation[] = [
-  { id: "ecosystem", sharePct: 20, color: SEGMENT.teal },
-  { id: "incentives", sharePct: 20, color: SEGMENT.tealLight },
-  { id: "allenhark", sharePct: 17, color: SEGMENT.indigo },
-  { id: "infrastructure", sharePct: 15, color: SEGMENT.paleBlue },
-  { id: "liquidity", sharePct: 15, color: SEGMENT.copper },
-  { id: "reserve", sharePct: 10, color: SEGMENT.grey },
-  { id: "presale", sharePct: 3, color: SEGMENT.blue },
+  { id: "presale", sharePct: 20, color: SEGMENT.blue },
+  { id: "ecosystem", sharePct: 17, color: SEGMENT.teal },
+  { id: "incentives", sharePct: 17, color: SEGMENT.tealLight },
+  { id: "allenhark", sharePct: 14, color: SEGMENT.indigo },
+  { id: "infrastructure", sharePct: 12, color: SEGMENT.paleBlue },
+  { id: "liquidity", sharePct: 12, color: SEGMENT.copper },
+  { id: "reserve", sharePct: 8, color: SEGMENT.grey },
 ];
 
 /** Guards against a split that no longer adds up after an edit. */
