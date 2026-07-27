@@ -30,7 +30,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const REPO = process.env.OPENFIAT_SPECS_REPO ?? "OpenFiat-org/openfiat-specs";
 /** Pinned commit. Bump deliberately when the whitepaper changes. */
 const REF =
-  process.env.OPENFIAT_SPECS_REF ?? "17cfc51e1e2a5b045c4c17ec344634a4a5ff411d";
+  process.env.OPENFIAT_SPECS_REF ?? "501fa1f7e23664792f357dfc01b7fa8b0755c235";
 
 /**
  * Read from a local checkout instead of GitHub. Useful offline, and for
@@ -45,7 +45,7 @@ const OUT_FILE = join(ROOT, "content/.generated/content.json");
 const CACHE_FILE = join(ROOT, `.content-cache/${REF}.json`);
 
 const EXPECTED_CHAPTERS = 28;
-const EXPECTED_SPECS = 24;
+const EXPECTED_SPECS = 26;
 
 function ghHeaders() {
   const headers = {

@@ -9,7 +9,10 @@ import {
 import { describe, expect, it } from "vitest";
 
 const EXPECTED_CHAPTERS = 28;
-const EXPECTED_SPECS = 24;
+/* 26 since OFS-4100 (Tokenomics) and OFS-4200 (On-Chain Program Architecture)
+   landed. Kept as a hard number, not derived: a spec silently failing to fetch
+   should break the build, which is the whole point of asserting a count. */
+const EXPECTED_SPECS = 26;
 
 /** The authoring artifact that must never reach a published page. */
 const ARTIFACT = "I would make one structural improvement";
