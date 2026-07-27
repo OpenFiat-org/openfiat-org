@@ -1,0 +1,311 @@
+import { JsonLd } from "@/components/json-ld";
+import { Button } from "@/components/ui/button";
+import { CodeBlock } from "@/components/ui/code-block";
+import { CtaBand } from "@/components/ui/cta-band";
+import { PageHero } from "@/components/ui/page-hero";
+import { Row, Rows } from "@/components/ui/rows";
+import { Section } from "@/components/ui/section";
+import {
+  type Locale,
+  getContent,
+  getDictionary,
+  isLocale,
+  localePath,
+} from "@/lib/i18n";
+import { CODE, PORTS, TROUBLESHOOTING } from "@/lib/node-guide";
+import { SITE } from "@/lib/site";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale: raw } = await params;
+  if (!isLocale(raw)) return {};
+  const t = getDictionary(raw);
+  return {
+    title: t.runNode.title,
+    description: t.runNode.intro,
+    alternates: { canonical: `/${raw}/run-a-node` },
+    openGraph: {
+      title: `${t.runNode.title} · ${SITE.name}`,
+      description: t.runNode.intro,
+      url: `/${raw}/run-a-node`,
+    },
+  };
+}
+
+/** Which command belongs to which step of the runbook. */
+const STEP_CODE: Record<string, { code: string; filename?: string }[]> = {
+  prepare: [{ code: CODE.prereqs }],
+  install: [],
+  identity: [{ code: CODE.identity }],
+  configure: [{ code: CODE.config, filename: "/etc/openfiat/node.toml" }],
+  firewall: [{ code: CODE.firewall }],
+  service: [
+    { code: CODE.systemd, filename: "openfiat-node.service" },
+    { code: CODE.serviceUp },
+  ],
+  sync: [{ code: CODE.snapshotManual }],
+  verify: [{ code: CODE.verify }],
+  register: [{ code: CODE.register }],
+  monitor: [{ code: CODE.prometheus, filename: "prometheus.yml" }],
+  upgrade: [{ code: CODE.upgrade }],
+  backup: [{ code: CODE.backup }],
+};
+
+export default async function RunANodePage({ params }: Props) {
+  const { locale: raw } = await params;
+  if (!isLocale(raw)) notFound();
+  const locale: Locale = raw;
+  const t = getDictionary(locale);
+  const c = getContent(locale);
+  const l = (path: string) => localePath(path, locale);
+
+  const installCode: Record<string, { code: string; filename?: string }[]> = {
+    docker: [
+      { code: CODE.dockerCompose, filename: "compose.yaml" },
+      { code: CODE.dockerUp },
+    ],
+    binary: [{ code: CODE.serviceUp }],
+    source: [{ code: CODE.fromSource }],
+  };
+
+  return (
+    <>
+      <PageHero
+        variant="layers"
+        title={t.runNode.title}
+        lede={t.runNode.intro}
+        actions={
+          <Button
+            href={l("/participate/node-operators")}
+            variant="secondary"
+            size="lg"
+          >
+            {t.actors.readMore}
+          </Button>
+        }
+        meta={t.runNode.referenceNote}
+      />
+
+      {/* Hardware ------------------------------------------------------ */}
+      <Section title={t.runNode.requirementsTitle}>
+        <div className="grid max-w-3xl gap-10 sm:grid-cols-2">
+          <div>
+            <h3 className="stat-label text-faint">{t.runNode.minimum}</h3>
+            <p className="mt-3 text-body">
+              {c.runNode.minimumSpecs.join(" · ")}
+            </p>
+          </div>
+          <div>
+            <h3 className="stat-label text-faint">{t.runNode.recommended}</h3>
+            <p className="mt-3 text-body">
+              {c.runNode.recommendedSpecs.join(" · ")}
+            </p>
+          </div>
+        </div>
+        <p className="mt-8 max-w-2xl text-body-sm text-muted">
+          {c.runNode.internals}
+        </p>
+      </Section>
+
+      {/* Install options ----------------------------------------------- */}
+      <Section className="border-t border-line" title={t.runNode.installTitle}>
+        <div className="space-y-12">
+          {c.runNode.install.map((option) => (
+            <div
+              key={option.id}
+              className="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-10"
+            >
+              <div>
+                <h3 className="text-h3 text-ink">{option.title}</h3>
+                <p className="mt-3 text-body-sm text-body">{option.note}</p>
+              </div>
+              <div className="space-y-4">
+                {installCode[option.id]?.map((block) => (
+                  <CodeBlock
+                    key={block.code.slice(0, 40)}
+                    code={block.code}
+                    filename={block.filename}
+                    copyLabel={t.runNode.copy}
+                    copiedLabel={t.runNode.copied}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Ports ---------------------------------------------------------- */}
+      <Section className="border-t border-line" title={t.runNode.portsTitle}>
+        <div className="max-w-3xl">
+          <Rows>
+            {PORTS.map((port) => (
+              <Row
+                key={`${port.port}-${port.protocol}`}
+                lead={`${port.port}/${port.protocol}`}
+                title={c.runNode.ports[port.key]}
+                trailing={
+                  port.public ? t.runNode.portPublic : t.runNode.portPrivate
+                }
+              />
+            ))}
+          </Rows>
+        </div>
+      </Section>
+
+      {/* The runbook ---------------------------------------------------- */}
+      <Section
+        className="border-t border-line"
+        title={t.runNode.lifecycleTitle}
+        subtitle={t.runNode.lifecycleNote}
+      >
+        <ol className="space-y-14">
+          {c.runNode.walkthrough.map((step, index) => (
+            <li key={step.id} className="scroll-mt-24" id={step.id}>
+              <div className="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-10">
+                <div>
+                  <span className="font-mono text-xs tabular-nums text-accent-mid">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="mt-2 text-h3 text-ink">{step.title}</h3>
+                  <p className="mt-3 text-body-sm text-body">{step.body}</p>
+                  {step.id === "register" && (
+                    <div className="mt-5">
+                      <p className="text-body-sm text-muted">
+                        {t.runNode.stakingBody}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <div className="space-y-4">
+                  {STEP_CODE[step.id]?.map((block) => (
+                    <CodeBlock
+                      key={block.code.slice(0, 40)}
+                      code={block.code}
+                      filename={block.filename}
+                      copyLabel={t.runNode.copy}
+                      copiedLabel={t.runNode.copied}
+                    />
+                  ))}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      {/* Troubleshooting ------------------------------------------------ */}
+      <Section
+        className="border-t border-line"
+        title={t.runNode.troubleshootingTitle}
+      >
+        <div className="space-y-8">
+          {TROUBLESHOOTING.map((entry) => {
+            const copy = c.runNode.troubleshooting[entry.key];
+            return (
+              <div
+                key={entry.key}
+                className="grid gap-4 border-b border-line pb-8 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-10"
+              >
+                <div>
+                  <h3 className="font-semibold text-ink">{copy.symptom}</h3>
+                  <p className="mt-2 text-body-sm text-muted">{copy.cause}</p>
+                </div>
+                <CodeBlock
+                  code={entry.command}
+                  copyLabel={t.runNode.copy}
+                  copiedLabel={t.runNode.copied}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </Section>
+
+      {/* Monitoring + hosting the UI ------------------------------------ */}
+      <Section
+        className="border-t border-line"
+        title={t.runNode.monitoringTitle}
+      >
+        <div className="grid max-w-4xl gap-10 md:grid-cols-3">
+          {c.runNode.monitoring.map((group) => (
+            <div key={group.group}>
+              <h3 className="stat-label text-faint">{group.group}</h3>
+              <p className="mt-3 text-body-sm text-body">
+                {group.items.join(" · ")}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        className="border-t border-line"
+        title={t.runNode.hostUiTitle}
+        subtitle={t.runNode.hostUiIntro}
+      >
+        <div className="max-w-2xl">
+          <p className="text-lg leading-relaxed text-ink">
+            {t.runNode.hostUiQuote}
+          </p>
+          <p className="mt-6 text-body-sm text-muted">
+            {c.runNode.interfaces.join(" · ")}
+          </p>
+
+          <h3 className="mt-12 text-h3 text-ink">{t.runNode.hostUiConnect}</h3>
+          <p className="mt-4 text-body">{t.runNode.hostUiConnectBody}</p>
+
+          <h3 className="mt-12 text-h3 text-ink">{t.runNode.apiTitle}</h3>
+        </div>
+        <div className="mt-6 max-w-3xl">
+          <Rows>
+            {c.runNode.apis.map((group) => (
+              <Row
+                key={group.group}
+                title={group.group}
+                subtitle={group.items.join(" · ")}
+              />
+            ))}
+          </Rows>
+        </div>
+        <p className="mt-6 max-w-2xl text-body-sm text-faint">
+          {t.runNode.apiNote}
+        </p>
+      </Section>
+
+      <CtaBand
+        title={t.runNode.neverCustody}
+        actions={
+          <>
+            <Button href={l("/whitepaper/18-node-operators")} size="lg">
+              {t.common.readWhitepaper}
+            </Button>
+            <Button href={l("/participate")} variant="secondary" size="lg">
+              {t.home.roles.seeAll}
+            </Button>
+          </>
+        }
+      />
+
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "HowTo",
+          name: t.runNode.title,
+          description: t.runNode.intro,
+          url: `${SITE.url}/${locale}/run-a-node`,
+          step: c.runNode.walkthrough.map((step, index) => ({
+            "@type": "HowToStep",
+            position: index + 1,
+            name: step.title,
+            text: step.body,
+            url: `${SITE.url}/${locale}/run-a-node#${step.id}`,
+          })),
+        }}
+      />
+    </>
+  );
+}

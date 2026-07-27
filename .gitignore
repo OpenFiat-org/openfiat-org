@@ -33,3 +33,7 @@ coverage/
 
 # Next.js
 next-env.d.ts
+
+# Whitepaper content, fetched from openfiat-specs at build time
+content/.generated/
+.content-cache/

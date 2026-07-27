@@ -20,5 +20,12 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm typecheck
+      # The whitepaper is fetched from openfiat-specs. GITHUB_TOKEN is passed
+      # to stay clear of the anonymous api.github.com rate limit; the repo is
+      # public, so the fetch also works without it.
       - run: pnpm test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: pnpm build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

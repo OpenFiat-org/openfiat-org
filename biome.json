@@ -11,6 +11,11 @@
     "indentWidth": 2
   },
   "files": {
-    "ignore": [".next/**", "node_modules/**"]
+    "ignore": [
+      ".next/**",
+      "node_modules/**",
+      "content/.generated/**",
+      ".content-cache/**"
+    ]
   }
 }
