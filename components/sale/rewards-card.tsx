@@ -1,8 +1,9 @@
 "use client";
 
+import { TokenLogo } from "@/components/sale/token-logo";
 import { Button } from "@/components/ui/button";
 import type { Dictionary } from "@/lib/i18n";
-import { SALE_LIVE, TOKEN_SYMBOL } from "@/lib/sale/config";
+import { SALE_LIVE, TOKEN_SYMBOL, solscanTxUrl } from "@/lib/sale/config";
 import {
   type MyPresaleStatus,
   buildClaimIx,
@@ -37,7 +38,15 @@ type ClaimState =
  * step, since the only action here (claim) is itself a signed transaction —
  * that signature is the proof of ownership. This widget is read-mostly.
  */
-export function RewardsCard({ sale }: { sale: Dictionary["sale"] }) {
+export function RewardsCard({
+  sale,
+  saleHref,
+}: {
+  sale: Dictionary["sale"];
+  /** Locale-prefixed, since a client component can't derive it. A bare
+   *  "/sale" would bounce a zh reader through the locale negotiator. */
+  saleHref: string;
+}) {
   const { wallet, connect, disconnect, connected, connecting, publicKey } =
     useWallet();
   const { setVisible } = useWalletModal();
@@ -107,178 +116,168 @@ export function RewardsCard({ sale }: { sale: Dictionary["sale"] }) {
   }
 
   return (
-    <div className="relative">
-      {/* Soft brand-gradient glow behind the card — the one place on the
-          homepage besides the network canvas that isn't flat surface,
-          reserved for the thing worth a second look. */}
-      <div
-        aria-hidden
-        className="-inset-4 absolute rounded-[calc(var(--radius-card)+16px)] opacity-60 blur-2xl"
-        style={{
-          background:
-            "radial-gradient(closest-side, color-mix(in srgb, var(--color-accent) 35%, transparent), transparent)",
-        }}
-      />
-      <div className="relative overflow-hidden rounded-card border border-line bg-surface shadow-[var(--shadow-glow)]">
-        <div
-          aria-hidden
-          className="absolute inset-x-0 top-0 h-px"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, var(--color-accent), var(--color-teal), transparent)",
-          }}
-        />
-        <div className="p-6 sm:p-7">
-          <div className="flex items-center gap-3">
-            <span
-              aria-hidden
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-mono text-xs font-bold text-white"
-              style={{
-                background:
-                  "linear-gradient(135deg, var(--color-accent), var(--color-teal))",
-              }}
-            >
-              {TOKEN_SYMBOL[0]}
-            </span>
-            <div>
-              <h2 className="text-h3 text-ink">{sale.rewardsTitle}</h2>
-              <p className="text-body-sm text-faint">{sale.rewardsSubtitle}</p>
-            </div>
-          </div>
+    /*
+     * Same treatment as `SalePanel`: one card, hairline border, translucent
+     * over the hero canvas. Deliberately not a glow-plus-gradient-rule stack —
+     * two panels doing the same job on two pages should look like the same
+     * component, and the page has exactly one decorative layer already.
+     */
+    <div className="rounded-card border border-line bg-surface/80 p-6 shadow-[0_30px_70px_-30px_rgba(0,0,0,0.85)] ring-1 ring-inset ring-white/[0.04] backdrop-blur-xl sm:p-7">
+      <div className="flex items-start gap-3">
+        <TokenLogo symbol={TOKEN_SYMBOL} size={36} className="mt-0.5" />
+        <div>
+          <h2 className="text-h3 text-ink">{sale.rewardsTitle}</h2>
+          <p className="mt-1 text-body-sm text-muted">{sale.rewardsSubtitle}</p>
+        </div>
+      </div>
 
-          <div className="mt-6">
-            {!connected ? (
-              <>
+      <div className="mt-6 border-t border-line pt-6">
+        {!connected ? (
+          <>
+            <p className="text-body-sm text-body">
+              {sale.rewardsConnectPrompt}
+            </p>
+            <Button
+              size="lg"
+              className="mt-5 w-full"
+              onClick={openWalletModal}
+              disabled={connecting}
+            >
+              {connecting ? sale.confirming : sale.connectWallet}
+            </Button>
+          </>
+        ) : (
+          <div>
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-mono text-sm text-ink">
+                {truncate(publicKey?.toBase58() ?? "")}
+              </p>
+              <button
+                type="button"
+                onClick={() => void disconnect()}
+                className="cursor-pointer font-medium text-body-sm text-muted underline decoration-line-strong underline-offset-4 transition-colors hover:text-ink"
+              >
+                {sale.disconnect}
+              </button>
+            </div>
+
+            {loading && (
+              <div className="mt-6 space-y-3" aria-hidden>
+                <div className="h-3 w-1/3 animate-pulse rounded-sm bg-line" />
+                <div className="h-9 w-2/3 animate-pulse rounded-sm bg-line" />
+              </div>
+            )}
+
+            {!loading && (!status || !status.hasContributed) && (
+              <div className="mt-6">
                 <p className="text-body-sm text-body">
-                  {sale.rewardsConnectPrompt}
+                  {sale.rewardsNoContribution}
                 </p>
                 <Button
-                  className="mt-4 w-full"
-                  onClick={openWalletModal}
-                  disabled={connecting}
+                  href={saleHref}
+                  variant="secondary"
+                  size="lg"
+                  className="mt-5 w-full"
                 >
-                  {connecting ? sale.confirming : sale.connectWallet}
+                  {sale.rewardsNoContributionCta}
                 </Button>
-              </>
-            ) : (
-              <div>
-                <div className="flex items-center justify-between">
-                  <p className="font-mono text-sm text-ink">
-                    {truncate(publicKey?.toBase58() ?? "")}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => void disconnect()}
-                    className="text-body-sm text-faint underline-offset-4 hover:text-muted hover:underline"
-                  >
-                    {sale.disconnect}
-                  </button>
+              </div>
+            )}
+
+            {!loading && status?.hasContributed && (
+              <div className="mt-6">
+                {/* Secondary datum, so a label/value row is fine. */}
+                <div className="flex items-baseline justify-between gap-4">
+                  <span className="stat-label text-faint">
+                    {sale.rewardsContributed}
+                  </span>
+                  <span className="tnum font-mono text-sm text-ink">
+                    {status.amountUsdc.toLocaleString()} USDC
+                  </span>
                 </div>
 
-                {loading && (
-                  <div className="mt-5 space-y-3" aria-hidden>
-                    <div className="h-4 w-2/3 animate-pulse rounded-sm bg-line" />
-                    <div className="h-8 w-1/2 animate-pulse rounded-sm bg-line" />
-                  </div>
+                {/* The answer to the question the card asks, so it is stacked
+                    and left-aligned rather than squeezed opposite its own
+                    label — at display size that row wraps both the label and
+                    the figure. Solid ink, matching every other headline number
+                    on the site; clipped-gradient text reads as decoration on a
+                    number people came to check. */}
+                <div className="mt-5">
+                  <p className="stat-label text-faint">
+                    {sale.rewardsEntitlement}
+                  </p>
+                  <p className="mt-2 flex items-baseline gap-2">
+                    <span className="tnum text-3xl font-extrabold tracking-[-0.01em] text-ink">
+                      {status.openEntitlement.toLocaleString()}
+                    </span>
+                    <span className="font-mono text-sm text-muted">
+                      {TOKEN_SYMBOL}
+                    </span>
+                  </p>
+                </div>
+
+                {status.canClaim && (
+                  <Button
+                    size="lg"
+                    className="mt-6 w-full"
+                    disabled={claim.status === "pending"}
+                    onClick={() => void handleClaim()}
+                  >
+                    {claim.status === "pending" ? sale.confirming : sale.claim}
+                  </Button>
                 )}
 
-                {!loading && (!status || !status.hasContributed) && (
-                  <div className="mt-5">
+                {status.claimed && (
+                  <p className="mt-5 text-body-sm text-teal-mid">
+                    ✓ {sale.rewardsClaimedNote}
+                  </p>
+                )}
+
+                {!status.claimed &&
+                  !status.canClaim &&
+                  status.saleState === "active" && (
+                    <p className="mt-5 text-body-sm text-muted">
+                      {sale.rewardsPendingNote}
+                    </p>
+                  )}
+
+                {status.canRefund && (
+                  <div className="mt-5 border-s-2 border-copper ps-4">
                     <p className="text-body-sm text-body">
-                      {sale.rewardsNoContribution}
+                      {sale.rewardsRefundableNote}
                     </p>
                     <Button
-                      href="/sale"
+                      href={saleHref}
                       variant="secondary"
-                      className="mt-4 w-full"
+                      className="mt-4"
                     >
-                      {sale.rewardsNoContributionCta}
+                      {sale.rewardsGoToSale}
                     </Button>
                   </div>
                 )}
 
-                {!loading && status?.hasContributed && (
-                  <div className="mt-5">
-                    <div className="flex items-baseline justify-between">
-                      <span className="stat-label text-faint">
-                        {sale.rewardsContributed}
-                      </span>
-                      <span className="font-mono text-sm text-ink">
-                        {status.amountUsdc.toLocaleString()} USDC
-                      </span>
-                    </div>
-                    <div className="mt-3 flex items-baseline justify-between">
-                      <span className="stat-label text-faint">
-                        {sale.rewardsEntitlement}
-                      </span>
-                      <span
-                        className="stat-num tnum bg-clip-text font-bold text-transparent"
-                        style={{
-                          backgroundImage:
-                            "linear-gradient(90deg, var(--color-accent-mid), var(--color-teal-mid))",
-                        }}
-                      >
-                        {status.openEntitlement.toLocaleString()} {TOKEN_SYMBOL}
-                      </span>
-                    </div>
-
-                    {status.canClaim && (
-                      <Button
-                        className="mt-5 w-full"
-                        disabled={claim.status === "pending"}
-                        onClick={() => void handleClaim()}
-                      >
-                        {claim.status === "pending"
-                          ? sale.confirming
-                          : sale.claim}
-                      </Button>
-                    )}
-
-                    {status.claimed && (
-                      <p className="mt-5 text-body-sm text-teal-mid">
-                        ✓ {sale.rewardsClaimedNote}
-                      </p>
-                    )}
-
-                    {!status.claimed &&
-                      !status.canClaim &&
-                      status.saleState === "active" && (
-                        <p className="mt-5 text-body-sm text-muted">
-                          {sale.rewardsPendingNote}
-                        </p>
-                      )}
-
-                    {status.canRefund && (
-                      <div className="mt-5">
-                        <p className="text-body-sm text-copper">
-                          {sale.rewardsRefundableNote}
-                        </p>
-                        <Button
-                          href="/sale"
-                          variant="secondary"
-                          className="mt-3 w-full"
-                        >
-                          {sale.rewardsGoToSale}
-                        </Button>
-                      </div>
-                    )}
-
-                    {claim.status === "success" && (
-                      <p className="mt-3 text-body-sm text-body">
-                        {sale.txSuccess}: {truncate(claim.signature)}
-                      </p>
-                    )}
-                    {claim.status === "error" && (
-                      <p className="mt-3 text-body-sm text-copper">
-                        {sale.txFailed}: {claim.message}
-                      </p>
-                    )}
-                  </div>
+                {claim.status === "success" && (
+                  <p className="mt-5 text-body-sm text-body">
+                    {sale.txSuccess}{" "}
+                    <a
+                      href={solscanTxUrl(claim.signature)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono text-accent-mid underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent-hover hover:decoration-accent"
+                    >
+                      {truncate(claim.signature)} ↗
+                    </a>
+                  </p>
+                )}
+                {claim.status === "error" && (
+                  <p className="mt-5 text-body-sm text-copper">
+                    {sale.txFailed}: {claim.message}
+                  </p>
                 )}
               </div>
             )}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

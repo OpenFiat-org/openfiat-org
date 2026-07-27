@@ -1,9 +1,9 @@
 /** Canonical site constants. Imported by metadata, sitemap and JSON-LD. */
 export const SITE = {
   name: "OpenFiat",
-  url: "https://openfiat.org",
-  appUrl: "https://app.openfiat.org",
-  docsUrl: "https://docs.openfiat.org",
+  url: "https://openfiat.network",
+  appUrl: "https://app.openfiat.network",
+  docsUrl: "https://docs.openfiat.network",
   githubOrg: "https://github.com/OpenFiat-org",
   specsRepo: "https://github.com/OpenFiat-org/openfiat-specs",
   tagline: "Decentralized peer-to-peer fiat exchange",

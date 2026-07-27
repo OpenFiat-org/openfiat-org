@@ -12,7 +12,7 @@
  * wallet makes of them.
  */
 
-export type PaymentAssetSymbol = "USDC" | "USDT" | "USD1" | "SOL";
+export type PaymentAssetSymbol = "OPEN" | "USDC" | "USDT" | "USD1" | "SOL";
 
 export type PaymentAsset = {
   symbol: PaymentAssetSymbol;
@@ -28,6 +28,9 @@ export type PaymentAsset = {
  * here makes a logo available without implying the asset is selectable.
  */
 const ASSETS: PaymentAsset[] = [
+  // Our own token. Listed here so OPEN gets its real mark wherever it appears
+  // as a currency, rather than a letter badge standing in for one.
+  { symbol: "OPEN", name: "OpenFiat", logo: "/logo-mark.png" },
   { symbol: "USDC", name: "USD Coin", logo: "/currencies/usdc.png" },
   { symbol: "USDT", name: "Tether USD", logo: "/currencies/usdt.png" },
   { symbol: "USD1", name: "World Liberty USD", logo: "/currencies/usd1.png" },

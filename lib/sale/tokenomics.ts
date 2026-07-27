@@ -1,16 +1,18 @@
 /**
- * OPEN supply and allocation.
+ * OPEN supply and allocation, from OFS-4100 (OpenFiat Tokenomics
+ * Specification) §1–2.
  *
- * ────────────────────────────────────────────────────────────────────────
- *  THE PERCENTAGES BELOW ARE PLACEHOLDERS AND MUST BE REPLACED.
+ * The shares below are the specification's own proposal, no longer the
+ * placeholders that stood here while Chapter 14 deferred the split. Every
+ * bucket is marked `[PROPOSED — NEEDS SIGN-OFF]` in OFS-4100 §2, so
+ * TOKENOMICS_CONFIRMED stays false and the page keeps its provisional note;
+ * total supply is `[CONFIRMED]`.
  *
- *  The whitepaper names the seven allocation categories but publishes no
- *  split — Chapter 14 defers it to the Tokenomics Paper. The shares here
- *  exist so the allocation chart can be designed and reviewed; they are not
- *  a proposal. Replace them with the real figures, set TOTAL_SUPPLY, then
- *  flip TOKENOMICS_CONFIRMED to true to drop the provisional note from the
- *  page.
- * ────────────────────────────────────────────────────────────────────────
+ * Note the deliberate relationship between the presale bucket and the raise
+ * ceiling, spelled out in OFS-4100 §2: at the confirmed 1 OPEN = 1 USDC
+ * price, bucket size *is* the maximum possible raise, so 3% (30,000,000 OPEN)
+ * implies a $30,000,000 ceiling. That spec is explicit that the bucket size
+ * and the hard cap must move together, never independently.
  */
 
 export type AllocationId =
@@ -53,14 +55,17 @@ const SEGMENT = {
   grey: "#6b7787",
 } as const;
 
+/* Ordered largest to smallest rather than in OFS-4100 §2's table order, so the
+   stacked bar reads as a descending scale. The presale keeps the brand blue
+   despite being the smallest bucket: it is the one people are here to buy. */
 export const ALLOCATIONS: Allocation[] = [
-  { id: "presale", sharePct: 20, color: SEGMENT.blue },
-  { id: "allenhark", sharePct: 20, color: SEGMENT.indigo },
-  { id: "ecosystem", sharePct: 18, color: SEGMENT.teal },
-  { id: "incentives", sharePct: 15, color: SEGMENT.tealLight },
-  { id: "infrastructure", sharePct: 12, color: SEGMENT.paleBlue },
-  { id: "liquidity", sharePct: 10, color: SEGMENT.copper },
-  { id: "reserve", sharePct: 5, color: SEGMENT.grey },
+  { id: "ecosystem", sharePct: 20, color: SEGMENT.teal },
+  { id: "incentives", sharePct: 20, color: SEGMENT.tealLight },
+  { id: "allenhark", sharePct: 17, color: SEGMENT.indigo },
+  { id: "infrastructure", sharePct: 15, color: SEGMENT.paleBlue },
+  { id: "liquidity", sharePct: 15, color: SEGMENT.copper },
+  { id: "reserve", sharePct: 10, color: SEGMENT.grey },
+  { id: "presale", sharePct: 3, color: SEGMENT.blue },
 ];
 
 /** Guards against a split that no longer adds up after an edit. */

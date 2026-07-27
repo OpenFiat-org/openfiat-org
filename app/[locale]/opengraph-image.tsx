@@ -93,7 +93,7 @@ export default async function OpenGraphImage({
           textTransform: "uppercase",
         }}
       >
-        <span>openfiat.org</span>
+        <span>openfiat.network</span>
         <span style={{ color: "#1c2532" }}>/</span>
         <span style={{ color: "#778494" }}>Solana</span>
       </div>

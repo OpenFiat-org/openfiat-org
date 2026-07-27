@@ -628,14 +628,16 @@ export const enContent = {
       liquidity: "Liquidity programs",
       reserve: "Strategic reserve",
     },
+    /* Schedules from OFS-4100 §2. Kept as plain descriptions of that table
+       rather than reworded, so the site and the specification cannot drift. */
     allocationVesting: {
-      presale: "Partial unlock at genesis, remainder vested",
-      allenhark: "Cliff, then long linear vesting",
-      ecosystem: "Released against grants and partnerships",
-      infrastructure: "Released as node operators come online",
-      incentives: "Released against protocol participation",
-      liquidity: "Unlocked at genesis to seed markets",
-      reserve: "Held; release requires governance",
+      presale: "No lockup — unlocked at claim",
+      allenhark: "12-month cliff, then 36 months linear",
+      ecosystem: "12-month cliff, then 36 months linear",
+      infrastructure: "Emitted per node-reward rules, not a linear release",
+      incentives: "Emitted as incentives are earned",
+      liquidity: "3-month cliff, then 24 months linear",
+      reserve: "12-month cliff, then 48 months linear",
     },
     useOfFunds: [
       "Core protocol engineering",

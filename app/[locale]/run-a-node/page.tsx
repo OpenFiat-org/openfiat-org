@@ -5,6 +5,7 @@ import { CtaBand } from "@/components/ui/cta-band";
 import { PageHero } from "@/components/ui/page-hero";
 import { Row, Rows } from "@/components/ui/rows";
 import { Section } from "@/components/ui/section";
+import { HOSTING, HOSTING_OFFERS } from "@/lib/hosting";
 import {
   type Locale,
   getContent,
@@ -108,6 +109,59 @@ export default async function RunANodePage({ params }: Props) {
         <p className="mt-8 max-w-2xl text-body-sm text-muted">
           {c.runNode.internals}
         </p>
+      </Section>
+
+      {/* Hosting ------------------------------------------------------- */}
+      {/* Placed straight after the hardware it has to satisfy: the question
+          "where do I run this" arrives the moment someone reads the specs. */}
+      <Section
+        className="border-t border-line"
+        title={t.runNode.hostingTitle}
+        subtitle={t.runNode.hostingIntro.replace(
+          "{pct}",
+          String(HOSTING.discountPct),
+        )}
+      >
+        <div className="grid max-w-4xl gap-x-12 gap-y-10 sm:grid-cols-2">
+          {HOSTING_OFFERS.map((offer) => (
+            <div key={offer.id} className="border-t border-line pt-5">
+              <h3 className="font-semibold text-ink">
+                {offer.id === "vps"
+                  ? t.runNode.hostingVps
+                  : t.runNode.hostingRpc}
+              </h3>
+              <p className="mt-3 text-body">
+                {offer.id === "vps"
+                  ? t.runNode.hostingVpsBody
+                  : t.runNode.hostingRpcBody}
+              </p>
+              <a
+                href={offer.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-1.5 font-medium text-accent-mid transition-colors hover:text-accent-hover"
+              >
+                {t.runNode.hostingViewPricing}
+                <span aria-hidden>↗</span>
+              </a>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-14 max-w-2xl border-t border-line pt-8">
+          <h3 className="stat-label text-faint">
+            {t.runNode.hostingClaimTitle}
+          </h3>
+          <p className="mt-3 text-body">{t.runNode.hostingClaimBody}</p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button href={HOSTING.discordUrl} external>
+              {t.runNode.hostingDiscord}
+            </Button>
+            <Button href={HOSTING.chatUrl} external variant="secondary">
+              {t.runNode.hostingChat}
+            </Button>
+          </div>
+        </div>
       </Section>
 
       {/* Install options ----------------------------------------------- */}
