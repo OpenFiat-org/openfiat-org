@@ -30,7 +30,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const REPO = process.env.OPENFIAT_SPECS_REPO ?? "OpenFiat-org/openfiat-specs";
 /** Pinned commit. Bump deliberately when the whitepaper changes. */
 const REF =
-  process.env.OPENFIAT_SPECS_REF ?? "844b85d3a4d2b2755bd26d6f4422275da123a01f";
+  process.env.OPENFIAT_SPECS_REF ?? "92363c17def6a37e8b47df1839fb2635353a6951";
 
 /**
  * Read from a local checkout instead of GitHub. Useful offline, and for
