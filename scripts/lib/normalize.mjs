@@ -11,9 +11,16 @@
 
 /**
  * Trailing first-person authoring commentary that was never meant to ship.
- * Confirmed in OFS-0000 (from "I would make one structural improvement"
- * through EOF, after the "13. Summary" section). These artifacts are always
- * trailing, so we truncate from the marker to the end of the document.
+ *
+ * The one confirmed instance — nine lines after OFS-0000's "13. Summary" —
+ * was removed at source in openfiat-specs#3, so none of these fire today and
+ * the build no longer logs a strip. They stay as a regression guard: this
+ * corpus is written in prose and the same paste can happen in the next file
+ * as easily as it happened in that one, and it is cheaper to catch here than
+ * to notice it on a published page.
+ *
+ * Artifacts of this kind are always trailing, so a match truncates from the
+ * marker to the end of the document.
  */
 const ARTIFACT_MARKERS = [
   /^I would make one structural improvement/i,
