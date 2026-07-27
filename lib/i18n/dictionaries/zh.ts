@@ -334,6 +334,17 @@ export const zh: Dictionary = {
     riskTitle: "风险提示",
     riskBody:
       "本页任何内容均不构成证券销售要约或投资建议。条款可能变更。参与代币销售可能导致全部本金损失。",
+    rewardsTitle: "你的 OPEN 奖励",
+    rewardsSubtitle: "连接你用于参与预售的钱包。",
+    rewardsConnectPrompt: "连接钱包以查看你在预售中获得的份额。",
+    rewardsContributed: "已认购",
+    rewardsEntitlement: "OPEN 奖励",
+    rewardsNoContribution: "未在该钱包下找到任何认购记录。",
+    rewardsNoContributionCta: "参与预售",
+    rewardsPendingNote: "销售结束后统计——请在结束后回来查看。",
+    rewardsClaimedNote: "已领取至该钱包。",
+    rewardsRefundableNote: "未达到最低目标——该笔认购可在销售页面以 USDC 退款。",
+    rewardsGoToSale: "前往销售页面",
   },
 
   pages: {

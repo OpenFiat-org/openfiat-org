@@ -198,6 +198,82 @@ export async function fetchSaleSnapshot(
 }
 
 /**
+ * One wallet's presale standing: what it contributed, what it's owed, and
+ * whether that's actually claimable yet. `saleState` mirrors the program's
+ * own `SaleState` so a caller never has to duplicate the Active/Finalized/
+ * SoftCapMissed logic — `canClaim` and `canRefund` are already resolved here.
+ */
+export type MyPresaleStatus = {
+  saleState: "active" | "finalized" | "softCapMissed";
+  hasContributed: boolean;
+  amountUsdc: number;
+  openEntitlement: number;
+  claimed: boolean;
+  refunded: boolean;
+  canClaim: boolean;
+  canRefund: boolean;
+};
+
+/**
+ * Null covers three cases the caller doesn't need to tell apart: the sale
+ * isn't configured, the RPC read failed, or (most commonly) this wallet
+ * just hasn't contributed — `hasContributed: false` on a *resolved* result
+ * is what signals "connected fine, nothing here," so null itself always
+ * means "couldn't determine," never "definitely none."
+ */
+export async function fetchMyPresaleStatus(
+  connection: Connection,
+  buyer: PublicKey,
+): Promise<MyPresaleStatus | null> {
+  const { programId, saleNonce } = requireLive();
+  try {
+    const program = getProgram(connection, READ_ONLY_WALLET);
+    const saleConfig = await fetchSaleConfig(program);
+    const saleState = Object.keys(saleConfig.state)[0] as
+      | "active"
+      | "finalized"
+      | "softCapMissed";
+
+    const saleConfigPubkey = saleConfigPda(programId, saleNonce);
+    const contributionPubkey = contributionPda(
+      programId,
+      saleConfigPubkey,
+      buyer,
+    );
+
+    let amountUsdc = 0;
+    let openEntitlement = 0;
+    let claimed = false;
+    let refunded = false;
+    let hasContributed = false;
+    try {
+      const acc = await program.account.contribution.fetch(contributionPubkey);
+      hasContributed = true;
+      amountUsdc = acc.amountUsdc.toNumber() / 10 ** saleConfig.usdcDecimals;
+      openEntitlement =
+        acc.openEntitlement.toNumber() / 10 ** saleConfig.openDecimals;
+      claimed = acc.claimed;
+      refunded = acc.refunded;
+    } catch {
+      // No contribution account for this wallet — not an error, just none yet.
+    }
+
+    return {
+      saleState,
+      hasContributed,
+      amountUsdc,
+      openEntitlement,
+      claimed,
+      refunded,
+      canClaim: saleState === "finalized" && hasContributed && !claimed,
+      canRefund: saleState === "softCapMissed" && hasContributed && !refunded,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
  * OPEN per USDC contributed.
  *
  * The price is fixed at 1:1 and lives in the program, not in config: see

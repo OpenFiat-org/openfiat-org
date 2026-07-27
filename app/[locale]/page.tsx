@@ -1,4 +1,6 @@
 import { NetworkField } from "@/components/network-field";
+import { RewardsCard } from "@/components/sale/rewards-card";
+import { SolanaProvider } from "@/components/sale/wallet-provider";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { CtaBand } from "@/components/ui/cta-band";
@@ -51,29 +53,37 @@ export default async function Home({ params }: Props) {
         />
         <NetworkField />
         <Container className="relative z-10">
-          <div className="max-w-[680px]">
-            <h1
-              className="font-extrabold tracking-[-0.02em] text-ink"
-              style={{
-                fontSize: "clamp(2.25rem, 5vw, 3.75rem)",
-                lineHeight: 1.04,
-              }}
-            >
-              {t.home.headlineLead}{" "}
-              <span className="text-accent-mid">{t.home.headlineAccent}</span>
-              {t.home.headlineTail}
-            </h1>
-            <p className="mt-7 max-w-xl text-lg leading-relaxed text-body">
-              {t.home.lede}
-            </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Button href={l("/trust")} size="lg">
-                {t.home.ctaHowItWorks}
-              </Button>
-              <Button href={l("/participate")} variant="secondary" size="lg">
-                {t.home.roles.seeAll}
-              </Button>
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-center lg:gap-14">
+            <div className="max-w-[680px]">
+              <h1
+                className="font-extrabold tracking-[-0.02em] text-ink"
+                style={{
+                  fontSize: "clamp(2.25rem, 5vw, 3.75rem)",
+                  lineHeight: 1.04,
+                }}
+              >
+                {t.home.headlineLead}{" "}
+                <span className="text-accent-mid">{t.home.headlineAccent}</span>
+                {t.home.headlineTail}
+              </h1>
+              <p className="mt-7 max-w-xl text-lg leading-relaxed text-body">
+                {t.home.lede}
+              </p>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <Button href={l("/trust")} size="lg">
+                  {t.home.ctaHowItWorks}
+                </Button>
+                <Button href={l("/participate")} variant="secondary" size="lg">
+                  {t.home.roles.seeAll}
+                </Button>
+              </div>
             </div>
+
+            {/* Wallet context mounts only here, same reasoning as /sale:
+                no other page pays for the web3 bundle. */}
+            <SolanaProvider>
+              <RewardsCard sale={t.sale} />
+            </SolanaProvider>
           </div>
         </Container>
       </section>

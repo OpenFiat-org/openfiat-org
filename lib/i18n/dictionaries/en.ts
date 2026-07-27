@@ -338,6 +338,20 @@ export const en = {
     riskTitle: "Risk",
     riskBody:
       "Nothing here is an offer to sell securities or financial advice. Terms may change. Participating in a token sale can result in total loss.",
+    rewardsTitle: "Your OPEN rewards",
+    rewardsSubtitle: "Connect the wallet you contributed with.",
+    rewardsConnectPrompt:
+      "Connect your wallet to check what you've earned in the presale.",
+    rewardsContributed: "You contributed",
+    rewardsEntitlement: "OPEN reward",
+    rewardsNoContribution: "No contribution found for this wallet.",
+    rewardsNoContributionCta: "Join the presale",
+    rewardsPendingNote:
+      "Counted once the sale finalizes — check back after it closes.",
+    rewardsClaimedNote: "Already claimed to this wallet.",
+    rewardsRefundableNote:
+      "The soft cap wasn't met — this contribution is refundable in USDC on the sale page.",
+    rewardsGoToSale: "Go to the sale page",
   },
 
   /**
