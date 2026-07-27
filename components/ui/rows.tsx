@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 /**
  * A list of things, separated by hairlines rather than wrapped in cards.

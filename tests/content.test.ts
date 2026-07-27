@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import {
   getChapters,
   getSpec,
@@ -6,7 +7,6 @@ import {
   renderSpec,
   twinFor,
 } from "@/lib/content";
-import { describe, expect, it } from "vitest";
 
 const EXPECTED_CHAPTERS = 28;
 /* 26 since OFS-4100 (Tokenomics) and OFS-4200 (On-Chain Program Architecture)

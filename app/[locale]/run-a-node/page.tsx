@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
 import { CodeBlock } from "@/components/ui/code-block";
@@ -7,16 +9,14 @@ import { Row, Rows } from "@/components/ui/rows";
 import { Section } from "@/components/ui/section";
 import { HOSTING, HOSTING_OFFERS } from "@/lib/hosting";
 import {
-  type Locale,
   getContent,
   getDictionary,
   isLocale,
+  type Locale,
   localePath,
 } from "@/lib/i18n";
 import { CODE, PORTS, TROUBLESHOOTING } from "@/lib/node-guide";
 import { SITE } from "@/lib/site";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 type Props = { params: Promise<{ locale: string }> };
 

@@ -1,6 +1,6 @@
+import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { DEFAULT_LOCALE, getDictionary, localePath } from "@/lib/i18n";
-import Link from "next/link";
 
 /**
  * Rendered for unmatched paths inside a locale. It cannot read params (Next

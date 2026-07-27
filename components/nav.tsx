@@ -1,12 +1,12 @@
+import Image from "next/image";
+import Link from "next/link";
 import { AppLink } from "@/components/app-link";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { MobileNav } from "@/components/mobile-nav";
 import { NavLinks } from "@/components/nav-links";
 import { Container } from "@/components/ui/container";
-import { type Locale, getDictionary, localePath } from "@/lib/i18n";
+import { getDictionary, type Locale, localePath } from "@/lib/i18n";
 import { SITE } from "@/lib/site";
-import Image from "next/image";
-import Link from "next/link";
 
 function Wordmark({ locale }: { locale: Locale }) {
   return (

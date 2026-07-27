@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { NetworkField } from "@/components/network-field";
 import { AllocationBars } from "@/components/sale/allocation-bars";
 import { RaiseProgress } from "@/components/sale/raise-progress";
@@ -7,20 +9,18 @@ import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import {
-  type Locale,
   getContent,
   getDictionary,
   isLocale,
+  type Locale,
   localePath,
 } from "@/lib/i18n";
 import {
+  formatSupply,
   TOKENOMICS_CONFIRMED,
   TOTAL_SUPPLY,
-  formatSupply,
 } from "@/lib/sale/tokenomics";
 import { SITE } from "@/lib/site";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 type Props = { params: Promise<{ locale: string }> };
 

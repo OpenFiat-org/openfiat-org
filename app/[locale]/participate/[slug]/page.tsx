@@ -1,3 +1,6 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
@@ -6,17 +9,14 @@ import { Row, Rows } from "@/components/ui/rows";
 import { ACTORS, getActor } from "@/lib/actors";
 import { getSpec } from "@/lib/content";
 import {
-  type Locale,
   getContent,
   getDictionary,
   isLocale,
+  type Locale,
   localePath,
 } from "@/lib/i18n";
 import { REPOS, repoUrl } from "@/lib/repos";
 import { SITE } from "@/lib/site";
-import type { Metadata } from "next";
-import Link from "next/link";
-import { notFound } from "next/navigation";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 

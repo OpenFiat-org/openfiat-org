@@ -1,8 +1,8 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { cn } from "@/lib/utils";
 
 /**
  * A WebGL field whose motion represents what the page is about.

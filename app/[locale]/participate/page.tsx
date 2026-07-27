@@ -1,18 +1,18 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { PageHero } from "@/components/ui/page-hero";
 import { Row, Rows } from "@/components/ui/rows";
-import { ACTORS, ACTOR_GROUPS } from "@/lib/actors";
+import { ACTOR_GROUPS, ACTORS } from "@/lib/actors";
 import {
-  type Locale,
   getContent,
   getDictionary,
   isLocale,
+  type Locale,
   localePath,
 } from "@/lib/i18n";
 import { SITE } from "@/lib/site";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 type Props = { params: Promise<{ locale: string }> };
 

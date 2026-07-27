@@ -6,12 +6,12 @@ import { Footer } from "@/components/footer";
 import { Nav } from "@/components/nav";
 import {
   DEFAULT_LOCALE,
-  LOCALES,
-  LOCALE_META,
-  type Locale,
   directionFor,
   getDictionary,
   isLocale,
+  LOCALE_META,
+  LOCALES,
+  type Locale,
 } from "@/lib/i18n";
 import { SITE } from "@/lib/site";
 
@@ -45,7 +45,9 @@ export function generateStaticParams() {
 
 export async function generateMetadata({
   params,
-}: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const { locale: raw } = await params;
   const locale: Locale = isLocale(raw) ? raw : DEFAULT_LOCALE;
   const t = getDictionary(locale);

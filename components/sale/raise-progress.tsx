@@ -1,11 +1,11 @@
 "use client";
 
+import { Connection, clusterApiUrl } from "@solana/web3.js";
+import { useEffect, useMemo, useState } from "react";
 import type { Dictionary } from "@/lib/i18n";
 import { RAISE_GOAL_USDC, RPC_ENDPOINT, SALE } from "@/lib/sale/config";
 import { fetchSaleSnapshot } from "@/lib/sale/presale-client";
 import { formatTokens, presaleTokens } from "@/lib/sale/tokenomics";
-import { Connection, clusterApiUrl } from "@solana/web3.js";
-import { useEffect, useMemo, useState } from "react";
 
 function money(amount: number, locale: string): string {
   return new Intl.NumberFormat(locale === "zh" ? "zh-CN" : "en-US", {

@@ -1,8 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import type { TocEntry } from "@/lib/content/types";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
 
 /**
  * Sticky table of contents with scroll-spy.

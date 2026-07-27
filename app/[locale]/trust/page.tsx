@@ -1,18 +1,18 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
 import { CtaBand } from "@/components/ui/cta-band";
 import { PageHero } from "@/components/ui/page-hero";
 import { Section } from "@/components/ui/section";
 import {
-  type Locale,
   getContent,
   getDictionary,
   isLocale,
+  type Locale,
   localePath,
 } from "@/lib/i18n";
 import { SITE } from "@/lib/site";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -33,11 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /** A numbered sequence where each step needs room to explain itself. */
-function Numbered({
-  items,
-}: {
-  items: { title: string; body: string }[];
-}) {
+function Numbered({ items }: { items: { title: string; body: string }[] }) {
   return (
     <ol className="grid gap-x-12 gap-y-10 md:grid-cols-2">
       {items.map((item, index) => (

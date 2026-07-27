@@ -1,16 +1,16 @@
+import { describe, expect, it } from "vitest";
 import { ACTORS } from "@/lib/actors";
 import {
   DEFAULT_LOCALE,
-  LOCALES,
-  LOCALE_META,
   getContent,
   getDictionary,
   isLocale,
+  LOCALE_META,
+  LOCALES,
   localePath,
   stripLocale,
 } from "@/lib/i18n";
 import { allRoutes } from "@/lib/routes";
-import { describe, expect, it } from "vitest";
 
 /** Walks two objects in parallel, collecting mismatched key paths. */
 function compareShape(

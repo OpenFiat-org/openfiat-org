@@ -1,8 +1,8 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { PageHero } from "@/components/ui/page-hero";
 import { type Dictionary, getDictionary, isLocale } from "@/lib/i18n";
 import { SITE } from "@/lib/site";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 type PageKey = keyof Dictionary["pages"];
 

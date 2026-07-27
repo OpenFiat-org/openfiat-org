@@ -1,6 +1,6 @@
+import Image from "next/image";
 import { paymentAsset } from "@/lib/sale/assets";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 
 /**
  * Issuer mark for a payment asset.

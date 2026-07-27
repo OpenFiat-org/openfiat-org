@@ -1,7 +1,7 @@
-import { DEFAULT_LOCALE, LOCALES, LOCALE_META } from "@/lib/i18n/config";
+import type { MetadataRoute } from "next";
+import { DEFAULT_LOCALE, LOCALE_META, LOCALES } from "@/lib/i18n/config";
 import { allRoutes } from "@/lib/routes";
 import { SITE } from "@/lib/site";
-import type { MetadataRoute } from "next";
 
 /**
  * One entry per locale per route, each declaring its alternates so crawlers

@@ -1,13 +1,13 @@
 "use client";
 
-import { type Locale, getDictionary } from "@/lib/i18n";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import { localePath, stripLocale } from "@/lib/i18n/config";
 import { LEGAL_NAV, PRIMARY_NAV } from "@/lib/nav";
 import { SITE } from "@/lib/site";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export function MobileNav({ locale }: { locale: Locale }) {
   const [open, setOpen] = useState(false);

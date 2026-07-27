@@ -4,19 +4,19 @@ import { type ContentDictionary, enContent } from "./dictionaries/en-content";
 import { zh } from "./dictionaries/zh";
 import { zhContent } from "./dictionaries/zh-content";
 
-export type { Dictionary } from "./dictionaries/en";
-export type { ActorCopy, ContentDictionary } from "./dictionaries/en-content";
 export {
   DEFAULT_LOCALE,
-  LOCALES,
-  LOCALE_META,
   type Direction,
-  type Locale,
   directionFor,
   isLocale,
+  LOCALE_META,
+  LOCALES,
+  type Locale,
   localePath,
   stripLocale,
 } from "./config";
+export type { Dictionary } from "./dictionaries/en";
+export type { ActorCopy, ContentDictionary } from "./dictionaries/en-content";
 
 const DICTIONARIES: Record<Locale, Dictionary> = { en, zh };
 const CONTENT: Record<Locale, ContentDictionary> = {

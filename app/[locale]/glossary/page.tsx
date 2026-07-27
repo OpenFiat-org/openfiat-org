@@ -1,12 +1,12 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { Container } from "@/components/ui/container";
 import { PageHero } from "@/components/ui/page-hero";
 import { getSpec } from "@/lib/content";
-import { type Locale, getContent, isLocale, localePath } from "@/lib/i18n";
+import { getContent, isLocale, type Locale, localePath } from "@/lib/i18n";
 import { SITE } from "@/lib/site";
-import type { Metadata } from "next";
-import Link from "next/link";
-import { notFound } from "next/navigation";
 
 type Props = { params: Promise<{ locale: string }> };
 

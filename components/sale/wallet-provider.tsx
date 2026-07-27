@@ -1,6 +1,5 @@
 "use client";
 
-import { RPC_ENDPOINT, SALE } from "@/lib/sale/config";
 import {
   ConnectionProvider,
   WalletProvider,
@@ -8,6 +7,7 @@ import {
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
 import { useMemo } from "react";
+import { RPC_ENDPOINT, SALE } from "@/lib/sale/config";
 
 /*
  * The adapter's own modal stylesheet, then ours on top of it. Order matters:

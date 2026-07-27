@@ -1,5 +1,5 @@
-import { DEFAULT_LOCALE, LOCALES, isLocale } from "@/lib/i18n/config";
 import { type NextRequest, NextResponse } from "next/server";
+import { DEFAULT_LOCALE, isLocale, LOCALES } from "@/lib/i18n/config";
 
 /**
  * Sends locale-less URLs to a locale.

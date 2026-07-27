@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import {
   ALLOCATIONS,
   type AllocationId,
@@ -7,7 +8,6 @@ import {
   tokensFor,
 } from "@/lib/sale/tokenomics";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
 
 /**
  * Allocation as one full-width stacked bar over open hairline rows.

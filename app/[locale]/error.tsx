@@ -1,8 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import { Container } from "@/components/ui/container";
 import { DEFAULT_LOCALE, getDictionary } from "@/lib/i18n";
-import { useEffect } from "react";
 
 export default function RouteError({
   error,

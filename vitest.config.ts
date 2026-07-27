@@ -1,10 +1,13 @@
 import react from "@vitejs/plugin-react";
-import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-  // tsconfigPaths resolves the "@/*" alias; react enables component tests.
-  plugins: [tsconfigPaths(), react()],
+  // react enables component tests. tsconfig paths ("@/*") are resolved
+  // natively by Vite as of v8 — no plugin needed.
+  plugins: [react()],
+  resolve: {
+    tsconfigPaths: true,
+  },
   test: {
     environment: "jsdom",
     globals: true,

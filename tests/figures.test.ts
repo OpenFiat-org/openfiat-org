@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { describe, expect, it } from "vitest";
 import { parseFigure } from "@/lib/content/figures";
 import type { ContentBundle } from "@/lib/content/types";
-import { describe, expect, it } from "vitest";
 
 const bundle = JSON.parse(
   readFileSync(join(process.cwd(), "content/.generated/content.json"), "utf8"),

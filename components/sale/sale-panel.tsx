@@ -1,11 +1,18 @@
 "use client";
 
+import {
+  useAnchorWallet,
+  useConnection,
+  useWallet,
+} from "@solana/wallet-adapter-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
+import { TransactionMessage, VersionedTransaction } from "@solana/web3.js";
+import { useEffect, useMemo, useState } from "react";
 import { TokenLogo } from "@/components/sale/token-logo";
 import { Button } from "@/components/ui/button";
 import type { Dictionary } from "@/lib/i18n";
-import { SALE, SALE_LIVE, TOKEN_SYMBOL, solscanTxUrl } from "@/lib/sale/config";
+import { SALE, SALE_LIVE, solscanTxUrl, TOKEN_SYMBOL } from "@/lib/sale/config";
 import {
-  type SaleSnapshot,
   buildAndSignVersionedTx,
   buildClaimIx,
   buildContributeUsdcIx,
@@ -15,17 +22,10 @@ import {
   fetchTokenBalance,
   getProgram,
   openFor,
+  type SaleSnapshot,
   swapEligibleAssets,
 } from "@/lib/sale/presale-client";
 import { cn } from "@/lib/utils";
-import {
-  useAnchorWallet,
-  useConnection,
-  useWallet,
-} from "@solana/wallet-adapter-react";
-import { useWalletModal } from "@solana/wallet-adapter-react-ui";
-import { TransactionMessage, VersionedTransaction } from "@solana/web3.js";
-import { useEffect, useMemo, useState } from "react";
 
 function truncate(address: string) {
   return `${address.slice(0, 4)}…${address.slice(-4)}`;

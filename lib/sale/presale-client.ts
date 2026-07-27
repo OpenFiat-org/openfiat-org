@@ -19,9 +19,9 @@
  */
 import { AnchorProvider, BN, Program } from "@anchor-lang/core";
 import {
-  TOKEN_2022_PROGRAM_ID,
   createAssociatedTokenAccountIdempotentInstruction,
   getAssociatedTokenAddressSync,
+  TOKEN_2022_PROGRAM_ID,
 } from "@solana/spl-token";
 import {
   type AddressLookupTableAccount,

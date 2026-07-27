@@ -1,15 +1,15 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import {
-  LOCALES,
   LOCALE_META,
+  LOCALES,
   type Locale,
   localePath,
   stripLocale,
 } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
 
 /**
  * Switches locale while staying on the same page, and remembers the choice in

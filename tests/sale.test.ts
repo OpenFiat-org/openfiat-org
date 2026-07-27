@@ -1,5 +1,6 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { describe, expect, it } from "vitest";
 import { PAYMENT_ASSETS, paymentAsset } from "@/lib/sale/assets";
 import { RAISE_GOAL_USDC, SALE, solscanTxUrl } from "@/lib/sale/config";
 import { OPEN_PER_USDC, openFor } from "@/lib/sale/presale-client";
@@ -8,7 +9,6 @@ import {
   allocationTotal,
   presaleTokens,
 } from "@/lib/sale/tokenomics";
-import { describe, expect, it } from "vitest";
 
 const PUBLIC_DIR = join(process.cwd(), "public");
 

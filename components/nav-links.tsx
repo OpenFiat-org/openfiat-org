@@ -1,11 +1,11 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import { localePath, stripLocale } from "@/lib/i18n/config";
 import { PRIMARY_NAV } from "@/lib/nav";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export function NavLinks({
   locale,

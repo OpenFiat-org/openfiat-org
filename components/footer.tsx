@@ -1,9 +1,9 @@
-import { Container } from "@/components/ui/container";
-import { type Locale, getDictionary, localePath } from "@/lib/i18n";
-import { FOOTER_COLUMNS, LEGAL_NAV } from "@/lib/nav";
-import { SITE } from "@/lib/site";
 import Image from "next/image";
 import Link from "next/link";
+import { Container } from "@/components/ui/container";
+import { getDictionary, type Locale, localePath } from "@/lib/i18n";
+import { FOOTER_COLUMNS, LEGAL_NAV } from "@/lib/nav";
+import { SITE } from "@/lib/site";
 
 const linkClass =
   "rounded-sm text-sm text-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[color:var(--accent-ring)]";

@@ -1,14 +1,14 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { ReaderLayout } from "@/components/reader/layout";
 import { PrevNext } from "@/components/reader/prev-next";
 import { ReadingProgress } from "@/components/reader/progress";
 import { Badge } from "@/components/ui/badge";
 import { getSpec, getSpecs, neighbours, renderSpec } from "@/lib/content";
-import { type Locale, getDictionary, isLocale, localePath } from "@/lib/i18n";
+import { getDictionary, isLocale, type Locale, localePath } from "@/lib/i18n";
 import { SITE } from "@/lib/site";
-import type { Metadata } from "next";
-import Link from "next/link";
-import { notFound } from "next/navigation";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 

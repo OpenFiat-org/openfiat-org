@@ -1,11 +1,11 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/container";
 import { PageHero } from "@/components/ui/page-hero";
 import { Row, Rows } from "@/components/ui/rows";
 import { getSpecs, specsByFamily } from "@/lib/content";
-import { type Locale, getDictionary, isLocale, localePath } from "@/lib/i18n";
+import { getDictionary, isLocale, type Locale, localePath } from "@/lib/i18n";
 import { SITE } from "@/lib/site";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 type Props = { params: Promise<{ locale: string }> };
 
