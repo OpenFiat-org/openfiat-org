@@ -76,7 +76,7 @@ export default async function SalePage({ params }: Props) {
         />
         <NetworkField variant="escrow" />
         <Container className="relative z-10 pt-16 pb-12 md:pt-24 md:pb-16">
-          <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_23rem]">
+          <div className="grid grid-cols-1 gap-14 lg:grid-cols-[minmax(0,1fr)_23rem]">
             <div className="max-w-2xl">
               <h1
                 className="font-extrabold tracking-[-0.02em] text-ink"

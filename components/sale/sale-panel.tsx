@@ -373,9 +373,20 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
      * instead of a hole cut into it. The inset ring is a light top edge — one
      * hairline of lift, no drop-shadow stack.
      */
-    <div className="rounded-card border border-line bg-surface/80 p-6 shadow-[0_30px_70px_-30px_rgba(0,0,0,0.85)] ring-1 ring-inset ring-white/[0.04] backdrop-blur-xl sm:p-7">
+    <div className="rounded-card border border-line bg-surface/80 p-5 shadow-[0_30px_70px_-30px_rgba(0,0,0,0.85)] ring-1 ring-inset ring-white/[0.04] backdrop-blur-xl sm:p-7">
+      {/*
+       * One line: network, wallet, Disconnect. It carried four separate labels
+       * before and ran out of room in this column, wrapping *inside* them — the
+       * check mark on one line and "Verified" on the next, the address broken
+       * across its own ellipsis. Wrapping the group as a whole fixed the break
+       * but left the network badge stranded on a line of its own.
+       *
+       * So the verified state is a mark on the address rather than a fourth
+       * label. It is what the tick means anyway — this address signed — and it
+       * keeps its meaning for a screen reader through the visually hidden text.
+       */}
       <div className="flex items-center justify-between gap-3">
-        <span className="inline-flex items-center gap-2 font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-faint">
+        <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-faint">
           <span
             aria-hidden
             className={cn(
@@ -388,10 +399,13 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
 
         {connected && publicKey && (
           <span className="inline-flex items-center gap-3">
-            {verified && (
-              <span className="text-body-sm text-teal">✓ {sale.verified}</span>
-            )}
-            <span className="font-mono text-sm text-ink">
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap font-mono text-body-sm text-ink">
+              {verified && (
+                <span className="text-teal" title={sale.verified}>
+                  <span aria-hidden>✓</span>
+                  <span className="sr-only">{sale.verified}</span>
+                </span>
+              )}
               {truncate(publicKey.toBase58())}
             </span>
             <button
@@ -400,7 +414,7 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
                 setPendingConnect(false);
                 void disconnect();
               }}
-              className="cursor-pointer font-medium text-body-sm text-muted underline decoration-line-strong underline-offset-4 transition-colors hover:text-ink"
+              className="cursor-pointer whitespace-nowrap font-medium text-body-sm text-muted underline decoration-line-strong underline-offset-4 transition-colors hover:text-ink"
             >
               {sale.disconnect}
             </button>
@@ -431,7 +445,15 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
           )}
         </div>
 
-        <div className="mt-2 flex items-center gap-2 rounded-sm border border-line bg-bg ps-4 pe-2 transition-colors focus-within:border-accent/60 focus-within:ring-[3px] focus-within:ring-[color:var(--accent-ring)]">
+        {/*
+         * A hairline row rather than an inset box. The box had its own 1rem of
+         * inner padding, so the amount sat indented from the label above it and
+         * from the OPEN figure below — the one number you are asked to read
+         * against the one number you type was the only thing out of line. This
+         * also matches the rest of the site, which separates with rules instead
+         * of nesting surfaces.
+         */}
+        <div className="mt-1 flex items-center gap-3 border-b border-line pb-3 transition-colors focus-within:border-accent">
           <input
             id="sale-amount"
             type="text"
@@ -440,7 +462,7 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
             placeholder="0.00"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="tnum h-14 min-w-0 flex-1 bg-transparent font-mono text-2xl text-ink placeholder:text-faint focus-visible:outline-none disabled:cursor-not-allowed"
+            className="tnum h-11 min-w-0 flex-1 bg-transparent font-mono text-2xl text-ink placeholder:text-faint focus-visible:outline-none disabled:cursor-not-allowed"
           />
 
           <div className="relative shrink-0">
@@ -500,7 +522,7 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
         )}
 
         {/* Receive. The point of the whole panel, so it carries the weight. */}
-        <div className="mt-6 border-t border-line pt-5">
+        <div className="mt-6">
           <div className="flex items-baseline justify-between gap-4">
             <span className="stat-label text-faint">{sale.youReceive}</span>
             <span className="tnum font-mono text-body-sm text-muted">
