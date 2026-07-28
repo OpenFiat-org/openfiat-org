@@ -176,7 +176,15 @@ export default async function RunANodePage({ params }: Props) {
                 <h3 className="text-h3 text-ink">{option.title}</h3>
                 <p className="mt-3 text-body-sm text-body">{option.note}</p>
               </div>
-              <div className="space-y-4">
+              {/*
+               * `min-w-0` overrides a grid item's default `min-width: auto`,
+               * whose content-based minimum here is the longest command line
+               * inside the block. Without it the cell inflates to ~510px in a
+               * 342px track and drags the whole section past the viewport —
+               * the block already scrolls sideways on its own, so nothing
+               * needs that width.
+               */}
+              <div className="min-w-0 space-y-4">
                 {installCode[option.id]?.map((block) => (
                   <CodeBlock
                     key={block.code.slice(0, 40)}
@@ -234,7 +242,15 @@ export default async function RunANodePage({ params }: Props) {
                     </div>
                   )}
                 </div>
-                <div className="space-y-4">
+                {/*
+                 * `min-w-0` overrides a grid item's default `min-width: auto`,
+                 * whose content-based minimum here is the longest command line
+                 * inside the block. Without it the cell inflates to ~510px in a
+                 * 342px track and drags the whole section past the viewport —
+                 * the block already scrolls sideways on its own, so nothing
+                 * needs that width.
+                 */}
+                <div className="min-w-0 space-y-4">
                   {STEP_CODE[step.id]?.map((block) => (
                     <CodeBlock
                       key={block.code.slice(0, 40)}
@@ -269,6 +285,7 @@ export default async function RunANodePage({ params }: Props) {
                   <p className="mt-2 text-body-sm text-muted">{copy.cause}</p>
                 </div>
                 <CodeBlock
+                  className="min-w-0"
                   code={entry.command}
                   copyLabel={t.runNode.copy}
                   copiedLabel={t.runNode.copied}
