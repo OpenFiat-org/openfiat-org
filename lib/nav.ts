@@ -39,6 +39,7 @@ export const FOOTER_COLUMNS: {
       { key: "merchants", href: "/participate/merchants" },
       { key: "nodeOperators", href: "/participate/node-operators" },
       { key: "runNode", href: "/run-a-node" },
+      { key: "becomeArbitrator", href: "/become-an-arbitrator" },
       { key: "sale", href: "/sale" },
     ],
   },

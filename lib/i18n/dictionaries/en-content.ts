@@ -597,6 +597,53 @@ export const enContent = {
     ],
   },
 
+  becomeArbitrator: {
+    requirements: [
+      "A Solana wallet holding at least 50,000 OPEN (OFIP-0019) — bond it via openfiat-app's Stake page, or the instructions below if you're building your own client",
+      "A script or bot using the OpenFiat SDKs — working a case has no browser-only flow yet; only bonding does",
+      "Network access to at least one OpenFiat node's JSON-RPC endpoint, your own or a public one",
+    ],
+
+    /**
+     * The runbook for one case, mirroring /run-a-node's walkthrough pattern.
+     * Two independent commit-reveal votes exist (see lib/arbitrator-guide.ts's
+     * own top comment for why) — the copy below says so rather than
+     * pretending there's only one.
+     */
+    walkthrough: [
+      {
+        id: "bond",
+        title: "Bond OPEN to unlock the arbitration pool",
+        body: "Arbitrators must stake before they can see a single case's evidence — that's what makes bribing one pointless (you don't know which case to target) and gives the network something to slash if you vote against the revealed consensus. The current minimum is 50,000 OPEN (OFIP-0019).",
+      },
+      {
+        id: "discover",
+        title: "Find an open case",
+        body: "Arbitrators choose which disputes to work — nobody assigns you one. Poll any node for cases still short of their required arbitrator count.",
+      },
+      {
+        id: "join",
+        title: "Join before you can see the evidence",
+        body: "Joining is what unlocks a case for you: the buyer's and seller's own submissions, payment confirmations, and their trade's message log. Once a case has its full complement of arbitrators, it locks and the commit phase begins.",
+      },
+      {
+        id: "commit",
+        title: "Commit your vote — twice",
+        body: "Two commit-reveal votes run side by side: an off-chain one that records into the case's own audit trail and reputation, and an on-chain one against openfiat-escrow's DisputeCase account that actually decides the stake-weighted outcome. Commit the same outcome and salt to both — nobody, including you a few minutes from now, can recover a vote from its commitment alone.",
+      },
+      {
+        id: "reveal",
+        title: "Reveal once the window opens",
+        body: "Reveal your outcome and salt in both places once the commit window closes. On-chain, this is also where your vote gets its real weight: the reveal instruction reads your Arbitrator-role stake account directly, so a wallet with no arbitrator stake simply cannot supply a valid one.",
+      },
+      {
+        id: "resolve",
+        title: "The outcome executes itself",
+        body: "Once every arbitrator has revealed, or the reveal window closes, anyone — you, the buyer, the seller, or an unrelated bot — can call execute_dispute_outcome. It only tallies votes already recorded on-chain: the majority earns a share of the case's fees, and whoever revealed against it loses part of their stake.",
+      },
+    ],
+  },
+
   sale: {
     allocationLabels: {
       presale: "Community presale",

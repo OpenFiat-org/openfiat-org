@@ -56,6 +56,7 @@ export const zh: Dictionary = {
       merchants: "商户",
       nodeOperators: "节点运营者",
       runNode: "运行节点",
+      becomeArbitrator: "成为仲裁者",
       developers: "开发者",
       downloads: "下载",
       foundation: "基金会",
@@ -292,6 +293,21 @@ export const zh: Dictionary = {
       "无需输入优惠码。在 Discord 或 allenhark.com 的在线聊天中说明你正在运行 OpenFiat 节点，折扣即会应用到你的订单。",
     hostingDiscord: "在 Discord 询问",
     hostingChat: "开始在线聊天",
+  },
+
+  becomeArbitrator: {
+    title: "成为 OpenFiat 仲裁者",
+    intro:
+      "仲裁者用自己质押的 OPEN 承担风险来裁决争议，而不是靠信誉。本指南将带你完成质押、寻找案件，以及投出真正决定结果的「先承诺后揭示」投票。",
+    neverCustody:
+      "仲裁者从不托管交易资金。裁决只会调动履约托管程序在争议发生前就已经锁定的资金。",
+    requirementsTitle: "你需要准备什么",
+    bondCta: "在 openfiat-app 质押 {amount} OPEN",
+    lifecycleTitle: "处理一个案件",
+    lifecycleNote:
+      "按顺序处理单个案件的这些步骤。每一步都附有所需的命令或代码。",
+    copy: "复制",
+    copied: "已复制",
   },
 
   sale: {

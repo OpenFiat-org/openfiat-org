@@ -81,6 +81,10 @@ export default async function ActorPage({ params }: Props) {
             <Button href={l("/run-a-node")} size="lg">
               {t.nav.runNode}
             </Button>
+          ) : actor.slug === "arbitrators" ? (
+            <Button href={l("/become-an-arbitrator")} size="lg">
+              {t.footer.links.becomeArbitrator}
+            </Button>
           ) : undefined
         }
       />

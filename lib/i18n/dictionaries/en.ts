@@ -49,6 +49,7 @@ export const en = {
       merchants: "Merchants",
       nodeOperators: "Node operators",
       runNode: "Run a node",
+      becomeArbitrator: "Become an arbitrator",
       developers: "Developers",
       downloads: "Downloads",
       foundation: "Foundation",
@@ -290,6 +291,21 @@ export const en = {
       "There is no code to enter. Ask on Discord or in the chat on allenhark.com, say you are running an OpenFiat node, and the discount is applied to your order.",
     hostingDiscord: "Ask on Discord",
     hostingChat: "Open a chat",
+  },
+
+  becomeArbitrator: {
+    title: "Become an OpenFiat arbitrator",
+    intro:
+      "Arbitrators decide disputes with their own OPEN at risk, not their reputation. This walks through bonding, finding a case, and casting the commit-then-reveal vote that actually pays out.",
+    neverCustody:
+      "Arbitrators never hold trade funds. A ruling only ever moves money the escrow program itself already locked before the dispute opened.",
+    requirementsTitle: "What you need",
+    bondCta: "Bond {amount} OPEN on openfiat-app",
+    lifecycleTitle: "Working a case",
+    lifecycleNote:
+      "Work through these in order, for one case at a time. Each step carries the command or code it needs.",
+    copy: "Copy",
+    copied: "Copied",
   },
 
   sale: {
