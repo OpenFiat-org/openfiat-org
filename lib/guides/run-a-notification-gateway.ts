@@ -246,12 +246,12 @@ console.log(\`delivery receipts for this wallet: \${receipts.length}\`);`,
     {
       id: "stake-and-earnings",
       title: {
-        en: "What is not wired up yet",
-        zh: "目前尚未打通的部分",
+        en: "What the stake does, and what it does not",
+        zh: "质押能带来什么，又不能带来什么",
       },
       body: {
-        en: "The design has gateways stake OPEN to be eligible for traffic and earn a share of a per-trade notification fee. None of that is enforced by code today: a NotificationProvider role exists in the staking program and you can stake against it, but StakingConfig's minimum is stored and never checked, nothing in the registry or notification crates reads stake at all, and no notification fee is implemented anywhere. Registering and delivering work regardless. Contact-handle verification is the same story — the identity crate defines the claim and its Verified status, but there is no protocol OTP flow, so the wallet application runs that externally and publishes the result.",
-        zh: "按照设计，网关需要质押 OPEN 才有资格接收通知流量，并从每笔交易的通知费中分成。但目前这些都尚未由代码强制实施：质押程序中确实存在 NotificationProvider 角色，你也可以为其质押，但 StakingConfig 中的最低质押额只是被存储、从未被校验，注册表与通知相关的 crate 完全没有读取质押数据，通知费也未在任何地方实现。因此注册与投递不受影响，照常可用。联系方式验证同理——身份 crate 定义了声明及其 Verified 状态，但协议层并没有 OTP 流程，实际验证由钱包应用在协议之外完成，再发布结果。",
+        en: "The stake minimum is real: the staking program enforces 5,000 OPEN for the NotificationProvider role, on the deployed devnet config, and rejects a stake or an unstake that would leave you below it. What it does not do is gate anything else — nothing in the registry or the notification crates reads your stake, so registering and delivering work whether or not you have posted it. The earnings half is not built at all: no notification fee exists anywhere in the protocol, so there is nothing to take a share of. Contact-handle verification is the same story — the identity crate defines the claim and its Verified status, but there is no protocol OTP flow, so the wallet application runs that externally and publishes the result.",
+        zh: "最低质押额是真实生效的：在已部署的 devnet 配置中，质押程序对 NotificationProvider 角色强制要求 5,000 OPEN，并会拒绝任何会使你低于该门槛的质押或解押操作。但它并不会据此限制其他环节——注册表与通知相关的 crate 都不会读取你的质押数据，因此无论是否质押，注册与投递都照常可用。收益部分则完全没有实现：协议中不存在任何通知费，也就无从分成。联系方式验证同理——身份 crate 定义了声明及其 Verified 状态，但协议层并没有 OTP 流程，实际验证由钱包应用在协议之外完成，再发布结果。",
       },
     },
   ],
