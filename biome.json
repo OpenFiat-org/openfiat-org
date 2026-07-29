@@ -19,7 +19,8 @@
       "!**/.next",
       "!**/node_modules",
       "!**/content/.generated",
-      "!**/.content-cache"
+      "!**/.content-cache",
+      "!redesign"
     ]
   }
 }

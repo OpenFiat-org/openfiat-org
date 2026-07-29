@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { PathStrip } from "@/components/guides/path-strip";
 import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
 import { CodeBlock } from "@/components/ui/code-block";
@@ -7,6 +8,7 @@ import { CtaBand } from "@/components/ui/cta-band";
 import { PageHero } from "@/components/ui/page-hero";
 import { Row, Rows } from "@/components/ui/rows";
 import { Section } from "@/components/ui/section";
+import { pathForMilestone } from "@/lib/guides";
 import { HOSTING, HOSTING_OFFERS } from "@/lib/hosting";
 import {
   getContent,
@@ -72,8 +74,20 @@ export default async function RunANodePage({ params }: Props) {
     source: [{ code: CODE.fromSource }],
   };
 
+  /* This page is milestone 02 on the operator path — keep the strip so the
+     journey survives the hop away from the shared guide renderer. */
+  const pathInfo = pathForMilestone("runNode");
+
   return (
     <>
+      {pathInfo && (
+        <PathStrip
+          path={pathInfo.path}
+          currentIndex={pathInfo.index}
+          t={t}
+          locale={locale}
+        />
+      )}
       <PageHero
         variant="layers"
         title={t.runNode.title}

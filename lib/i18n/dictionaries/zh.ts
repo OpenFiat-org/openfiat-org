@@ -81,46 +81,113 @@ export const zh: Dictionary = {
   },
 
   home: {
-    headlineLead: "把稳定币换成",
-    headlineAccent: "你所在国家的现金",
-    headlineTail: "。",
-    lede: "直接与本国的人交易——银行转账、移动支付或现金。在你付出第一分钱之前，对方的加密资产已被锁入履约托管；中间没有任何公司抽成，也没有任何公司决定谁可以交易。",
+    headlineLead: "一个",
+    headlineAccent: "任何国家或公司都无法关停",
+    headlineTail: "的市场。",
+    lede: "OpenFiat 是一个开放的协议，用于以点对点方式将稳定币兑换为当地货币。托管结算在 Solana 上完成；发现、信誉与通信运行在任何人都可以加入的网络之上。没有任何政府能审查它，也没有任何公司能封禁你——因为没有可以被施压的运营方，只有参与者。",
+    ctaJoinSale: "加入社区预售",
     ctaHowItWorks: "看交易如何进行",
     readWhitepaper: "阅读白皮书",
     tokenSale: "代币销售",
-    corpusNote: (chapters: number, specs: number) =>
-      `文档完备：${chapters} 章白皮书与 ${specs} 份开放规范`,
 
-    steps: {
-      title: "一笔交易如何完成",
-      subtitle: "共四步，从第二步开始资金就已受到保护。",
+    telemetry: {
+      layers: "层架构",
+      stakedRoles: "个质押角色",
+      specifications: "份协议规范",
+      repositories: "个代码仓库",
+      centralOperators: "中心化运营方",
+    },
+
+    problem: {
+      title: "今天每一个 P2P 交易所都有着相同的架构。",
+      subtitle:
+        "加密货币是去中心化的，市场却不是。几乎每一个点对点交易所的背后：",
+      company: "一家公司",
+      actions: [
+        "拥有服务器",
+        "控制数据库",
+        "决定哪些广告得以展示",
+        "裁决争议",
+        "保存信誉评分",
+        "可以暂停或封禁用户",
+        "决定支持哪些国家与支付方式",
+        "可能被关停、攻击或施压",
+      ],
+      verdict:
+        "一旦运营方出问题——无论是技术上、资金上还是法律上——市场就会随之消失，尽管底层的区块链从未停止运转。OpenFiat 要消除的正是这种依赖。",
+    },
+
+    layers: {
+      title: "两层架构，各司其职。",
+      subtitle:
+        "这一架构在保持去中心化所有权与透明度的同时，把链上成本降到最低。",
+      coordination: {
+        label: "协调层 · OpenFiat 网络",
+        title: "人与人之间的高速通信",
+        body: "运行在任何人都可以加入的开放点对点网络上——中间没有公司，也没有可被查封的服务器。",
+        items: [
+          "广告发现",
+          "交易协调",
+          "信誉",
+          "加密通信",
+          "通知与搜索",
+          "市场索引",
+        ],
+      },
+      settlement: {
+        label: "结算层 · Solana",
+        title: "区块链最擅长的事",
+        body: "资产由经过审计的智能合约锁定与释放——而不是靠运营方的善意。",
+        items: [
+          "安全的资产托管",
+          "履约托管管理",
+          "质押",
+          "国库管理",
+          "治理执行",
+        ],
+      },
+    },
+
+    flow: {
+      title: "一笔交易，四个动作",
+      subtitle:
+        "从第二个动作开始资金就受到保护——中间没有人能拿走这笔钱，任何一方也无需信任对方的善意。",
+      stages: ["网络", "链上", "法币渠道", "链上"],
+      pathsNote: "然后继续深入：交易者、运营者与开发者指南路径",
+    },
+
+    read: {
+      title: "阅读协议",
+      subtitle:
+        "每一章都以网页形式发布——无需下载，也没有任何表单门槛。它不要求任何区块链基础，从「钱是什么」讲起。编号规范则并列提供给实现者。",
+      startHere: "从这里开始",
+      moreChapters: (n: number) => `还有 ${n} 章`,
+      specsCta: (n: number) => `${n} 份协议规范`,
+    },
+
+    contribute: {
+      title: "与我们一起构建",
+      subtitle:
+        "每一层都以 Apache-2.0 开源，规范仓库也接受文档与翻译贡献——贡献不一定意味着写代码。",
+    },
+
+    saleBand: {
+      body: "OPEN 是维系市场诚信的每一种角色——商户、仲裁者、节点、预言机——背后的质押品。预售在任何公开销售之前，以固定价格提供社区分配额度。目前尚未部署任何销售合约；今天连接钱包只能用于检查准备状态。",
+      presaleRate: "预售价格",
+      publicRate: "后续公开销售",
+      publicRateValue: "1 OPEN = 1.25 USDC",
+      supply: "供应量",
+      supplyValue: "1,000,000,000 · 铸造权限已移除",
+      status: "状态",
+      termsCta: "销售条款与分配",
     },
 
     safety: {
-      title: "为什么你可以放心与陌生人交易",
-      subtitle: "这里没有任何公司为谁作担保，取而代之的是以下机制。",
       more: "信任机制如何运作",
     },
 
-    scenarios: {
-      title: "人们用它来做什么",
-      subtitle:
-        "房租、工资、货款、汇给家人。稳定币便于持有，但日常开销是以当地货币计价的。",
-      railsLabel: "支持的收付方式",
-    },
-
     roles: {
-      title: "买方、商户、仲裁者、节点运营者",
-      subtitle: "担任其中任何一种都无需任何人批准。",
       seeAll: "查看所有角色",
-    },
-
-    builders: {
-      title: "以开放协议构建",
-      subtitle:
-        "结算运行在 Solana 上，其余部分运行在任何人都可加入的开放网络中——因此没有任何单一公司能够关闭市场、施加审查，或把你锁定在它的应用里。",
-      runNode: "运行节点",
-      specs: "阅读协议规范",
     },
 
     finalCta: {
@@ -341,6 +408,18 @@ export const zh: Dictionary = {
     relatedTitle: "相关内容",
     copy: "复制",
     copied: "已复制",
+    standalonePage: "独立页面",
+    azTitle: "全部指南",
+    progressNote: "进度仅保存在此浏览器中——无需账户，也不会上传到任何地方。",
+    completedLabel: "已完成",
+    milestonesMeta: (count: number) => `${count} 个里程碑`,
+    stepsMeta: (count: number) => `${count} 个步骤`,
+    milestoneOf: (position: number, total: number) =>
+      `里程碑 ${position} / ${total}`,
+    markStepDone: "标记本步为已完成",
+    stepDoneLabel: "已完成",
+    prevOnPath: "路径上的上一篇",
+    nextOnPath: "路径上的下一篇",
     groups: {
       trade: {
         title: "交易",

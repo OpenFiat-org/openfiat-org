@@ -23,24 +23,6 @@ export type ActorCopy = {
 
 export const enContent = {
   home: {
-    scenarios: [
-      {
-        code: "KES",
-        text: "A freelancer receives payment in USDC and converts it to Kenyan Shillings to pay rent.",
-      },
-      {
-        code: "USDC",
-        text: "A business converts local currency into stablecoins to pay an overseas supplier.",
-      },
-      {
-        code: "PHP",
-        text: "A traveler exchanges stablecoins for local currency while visiting another country.",
-      },
-      {
-        code: "NGN",
-        text: "Someone sends stablecoins internationally, and the recipient converts them into local cash.",
-      },
-    ],
     rails: [
       "Bank transfer",
       "Mobile money",

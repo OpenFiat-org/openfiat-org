@@ -74,47 +74,113 @@ export const en = {
   },
 
   home: {
-    headlineLead: "Turn stablecoins into",
-    headlineAccent: "cash in your own currency",
+    headlineLead: "A marketplace that",
+    headlineAccent: "no country or company can switch off",
     headlineTail: ".",
-    lede: "Trade directly with people in your country — bank transfer, mobile money or cash. Your crypto is locked in escrow before you send a single shilling, peso or naira, and no company sits in the middle taking a cut or deciding who is allowed to trade.",
+    lede: "OpenFiat is an open protocol for exchanging stablecoins for local currency, peer to peer. Escrow settles on Solana; discovery, reputation and communication run on a network anyone can join. No government can censor it and no company can suspend you — there is no operator to pressure, only participants.",
+    ctaJoinSale: "Join the community presale",
     ctaHowItWorks: "See how a trade works",
     readWhitepaper: "Read the whitepaper",
     tokenSale: "Token sale",
-    corpusNote: (chapters: number, specs: number) =>
-      `Fully documented: ${chapters} whitepaper chapters and ${specs} open specifications`,
 
-    steps: {
-      title: "How a trade works",
+    telemetry: {
+      layers: "layers",
+      stakedRoles: "staked roles",
+      specifications: "specifications",
+      repositories: "repositories",
+      centralOperators: "central operators",
+    },
+
+    problem: {
+      title: "Every P2P exchange today has the same architecture.",
       subtitle:
-        "Four steps, and the money is protected from the second step onward.",
+        "The cryptocurrency is decentralized. The marketplace is not. Behind almost every peer-to-peer exchange:",
+      company: "A single company",
+      actions: [
+        "owns the servers",
+        "controls the database",
+        "decides which advertisements appear",
+        "resolves disputes",
+        "stores reputation scores",
+        "may suspend or remove users",
+        "decides which countries are supported",
+        "can be shut down, hacked, or pressured",
+      ],
+      verdict:
+        "If the operator fails — technically, financially, legally — the marketplace disappears, even though the blockchain underneath never stopped. OpenFiat eliminates the dependency.",
+    },
+
+    layers: {
+      title: "Two layers, each doing what it does best.",
+      subtitle:
+        "The architecture minimizes on-chain cost while preserving decentralized ownership and transparency.",
+      coordination: {
+        label: "Coordination layer · OpenFiat network",
+        title: "Fast communication between people",
+        body: "Runs on an open peer-to-peer network anyone can join — no company in the middle, no server to seize.",
+        items: [
+          "Advertisement discovery",
+          "Trade coordination",
+          "Reputation",
+          "Encrypted communication",
+          "Notifications & search",
+          "Marketplace indexing",
+        ],
+      },
+      settlement: {
+        label: "Settlement layer · Solana",
+        title: "What blockchains do exceptionally well",
+        body: "Assets are locked and released by audited smart contracts — never by an operator's goodwill.",
+        items: [
+          "Secure asset custody",
+          "Escrow management",
+          "Staking",
+          "Treasury management",
+          "Governance execution",
+        ],
+      },
+    },
+
+    flow: {
+      title: "One trade, four moves",
+      subtitle:
+        "Protected from the second move onward — nobody in the middle can take the funds, and nobody has to trust the other side's goodwill.",
+      stages: ["Network", "On-chain", "Fiat rail", "On-chain"],
+      pathsNote: "then keep going: trader, operator and builder guide paths",
+    },
+
+    read: {
+      title: "Read the protocol",
+      subtitle:
+        "Every chapter published as a web page — no download, nothing behind a form. It assumes no prior blockchain experience and builds up from what money is. The numbered specifications sit alongside for implementers.",
+      startHere: "start here",
+      moreChapters: (n: number) => `${n} more chapters`,
+      specsCta: (n: number) => `${n} specifications`,
+    },
+
+    contribute: {
+      title: "Build it with us",
+      subtitle:
+        "Every layer is open source under Apache-2.0, and the specs repo accepts prose and translations — contributing does not have to mean code.",
+    },
+
+    saleBand: {
+      body: "OPEN is the stake behind every role that keeps the marketplace honest — merchants, arbitrators, nodes, oracles. The presale offers the community allocation at a fixed rate before any public sale. No sale contract is deployed yet; connecting a wallet today only checks readiness.",
+      presaleRate: "Presale rate",
+      publicRate: "Public sale after",
+      publicRateValue: "1 OPEN = 1.25 USDC",
+      supply: "Supply",
+      supplyValue: "1,000,000,000 · mint authority unset",
+      status: "Status",
+      termsCta: "Sale terms & allocation",
     },
 
     safety: {
-      title: "Why you can trade with a stranger",
-      subtitle: "No company vouches for anyone here. These do instead.",
       more: "How trust works",
     },
 
-    scenarios: {
-      title: "What people use it for",
-      subtitle:
-        "Rent, salaries, suppliers, family abroad. Stablecoins are easy to hold; local currency is what daily life actually costs.",
-      railsLabel: "Pay and get paid with",
-    },
-
     roles: {
-      title: "Buyers, merchants, arbitrators, node operators",
-      subtitle: "Nobody grants permission to take any of them.",
       seeAll: "See every role",
-    },
-
-    builders: {
-      title: "Built as an open protocol",
-      subtitle:
-        "Settlement runs on Solana. Everything else runs on an open network anyone can join — so no single company can shut the marketplace down, censor it, or lock you into their app.",
-      runNode: "Run a node",
-      specs: "Read the specifications",
     },
 
     finalCta: {
@@ -342,6 +408,20 @@ export const en = {
     relatedTitle: "Related",
     copy: "Copy",
     copied: "Copied",
+    standalonePage: "Standalone page",
+    azTitle: "All guides, A–Z",
+    progressNote:
+      "Progress lives in this browser only — no account, nothing sent anywhere.",
+    completedLabel: "completed",
+    milestonesMeta: (count: number) =>
+      `${count} milestone${count === 1 ? "" : "s"}`,
+    stepsMeta: (count: number) => `${count} step${count === 1 ? "" : "s"}`,
+    milestoneOf: (position: number, total: number) =>
+      `Milestone ${position} of ${total}`,
+    markStepDone: "Mark step done",
+    stepDoneLabel: "Done",
+    prevOnPath: "Previous on path",
+    nextOnPath: "Next on path",
     groups: {
       trade: {
         title: "Trading",

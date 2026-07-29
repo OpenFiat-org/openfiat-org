@@ -31,7 +31,7 @@ export type GuideStep = {
   code?: GuideCode[];
 };
 
-/** Which shelf a guide sits on in the index. */
+/** Topic bucket, shown as metadata next to the guide on the A–Z list. */
 export type GuideGroup = "trade" | "operate" | "build";
 
 export type GuideLink = {

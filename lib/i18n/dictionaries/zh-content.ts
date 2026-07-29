@@ -10,24 +10,6 @@ import type { ActorCopy, ContentDictionary } from "./en-content";
  */
 export const zhContent: ContentDictionary = {
   home: {
-    scenarios: [
-      {
-        code: "KES",
-        text: "自由职业者收到 USDC 报酬，需要兑换成肯尼亚先令来付房租。",
-      },
-      {
-        code: "USDC",
-        text: "企业把当地货币换成稳定币，用于支付海外供应商。",
-      },
-      {
-        code: "PHP",
-        text: "旅行者在境外把稳定币兑换成当地货币。",
-      },
-      {
-        code: "NGN",
-        text: "有人跨境转出稳定币，收款方再把它兑换成当地现金。",
-      },
-    ],
     rails: [
       "银行转账",
       "移动支付钱包",
