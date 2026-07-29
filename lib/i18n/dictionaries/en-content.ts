@@ -600,7 +600,7 @@ export const enContent = {
   becomeArbitrator: {
     requirements: [
       "A Solana wallet holding at least 10,000 OPEN — the deployed staking config's min_stake_arbitrator, which governance can change — bond it via openfiat-app's Stake page, or the instructions below if you're building your own client",
-      "A script or bot using the OpenFiat SDKs — working a case has no browser-only flow yet; only bonding does",
+      "A wallet that can sign messages, which every major Solana wallet does — openfiat-app's Arbitrate page runs the whole case in the browser, and the SDKs are there if you would rather script it",
       "Network access to at least one OpenFiat node's JSON-RPC endpoint, your own or a public one",
     ],
 

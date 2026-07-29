@@ -546,7 +546,7 @@ export const zhContent: ContentDictionary = {
   becomeArbitrator: {
     requirements: [
       "一个持有至少 10,000 OPEN 的 Solana 钱包——这是已部署质押配置中的 min_stake_arbitrator，可由治理调整——可通过 openfiat-app 的质押页面完成，若你在开发自己的客户端，也可参照下方说明",
-      "一个使用 OpenFiat SDK 的脚本或机器人——目前只有质押支持纯浏览器操作，处理案件尚无对应的浏览器流程",
+      "一个支持消息签名的钱包（主流 Solana 钱包均已支持）——openfiat-app 的「Arbitrate」页面可在浏览器中完成整个案件流程；若你更倾向于脚本化处理，也可以使用 SDK",
       "至少一个 OpenFiat 节点 JSON-RPC 端点的网络访问权限，可以是你自己的节点，也可以是公共节点",
     ],
 
