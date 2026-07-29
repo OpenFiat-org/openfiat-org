@@ -544,26 +544,12 @@ export const enContent = {
         items: ["CPU", "Memory", "Disk", "Network throughput"],
       },
       {
-        group: "Protocol",
-        items: [
-          "Connected peers",
-          "Gossip propagation rate",
-          "Active advertisements",
-          "Active trade sessions",
-          "Snapshot age",
-          "Synchronization state",
-        ],
-      },
-      {
-        group: "Service",
-        items: [
-          "API request volume",
-          "Notification processing",
-          "Risk intelligence updates",
-          "Oracle updates",
-        ],
+        group: "Protocol (GET /metrics)",
+        items: ["rpc_requests_total", "rpc_errors_total"],
       },
     ],
+    monitoringNote:
+      "That's everything the node exports today — peer count, chain mode, and sync progress aren't Prometheus metrics yet, only values you can poll over JSON-RPC (getChainStatus, getLatestSnapshot, getCheckpointHeight).",
 
     apis: [
       {

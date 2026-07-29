@@ -300,6 +300,7 @@ export default async function RunANodePage({ params }: Props) {
       <Section
         className="border-t border-line"
         title={t.runNode.monitoringTitle}
+        subtitle={c.runNode.monitoringNote}
       >
         <div className="grid max-w-4xl gap-10 md:grid-cols-3">
           {c.runNode.monitoring.map((group) => (

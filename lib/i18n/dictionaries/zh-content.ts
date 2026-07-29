@@ -508,21 +508,12 @@ export const zhContent: ContentDictionary = {
         items: ["CPU", "内存", "磁盘", "网络吞吐"],
       },
       {
-        group: "协议",
-        items: [
-          "已连接对等节点数",
-          "gossip 传播速率",
-          "生效挂单数",
-          "活跃交易会话数",
-          "快照新鲜度",
-          "同步状态",
-        ],
-      },
-      {
-        group: "服务",
-        items: ["API 请求量", "通知处理量", "风险情报更新", "预言机更新"],
+        group: "协议（GET /metrics）",
+        items: ["rpc_requests_total", "rpc_errors_total"],
       },
     ],
+    monitoringNote:
+      "这就是节点目前导出的全部指标——已连接对等节点数、链路模式与同步进度尚未成为 Prometheus 指标，只能通过 JSON-RPC 轮询获得（getChainStatus、getLatestSnapshot、getCheckpointHeight）。",
 
     apis: [
       {
