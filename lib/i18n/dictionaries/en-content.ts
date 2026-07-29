@@ -87,8 +87,8 @@ export const enContent = {
         body: "There is no KYC. Instead of asking who you are, the protocol lets you prove what you control — an email, a phone, a Telegram account — and it never establishes your nationality or legal status.",
       },
       {
-        title: "Known-bad wallets get flagged",
-        body: "Independent providers publish signed risk information about wallets tied to fraud or sanctions. It is advisory: your app can warn you, ask for confirmation, or ignore it entirely. Nobody is banned by a central list.",
+        title: "Known-bad wallets get flagged, and some get blocked",
+        body: "Independent providers publish signed risk information about wallets tied to fraud or sanctions. Most of it is advisory — your app can warn you, ask for confirmation, or ignore it. Above that sits a governance-maintained ban list, and a wallet on it cannot deposit into any vault anywhere on the protocol. Providers publish the evidence; only a governance vote adds or removes an entry, and both directions are recorded on chain. This is not yet built.",
       },
     ],
 
