@@ -278,9 +278,9 @@ export const enContent = {
         "Register supported channels, regions and pricing in the service registry",
       ],
       stake:
-        "Required before becoming eligible to receive notification traffic, for economic accountability, Sybil resistance and service quality. Persistent service failures can reduce reward eligibility or trigger governance-defined penalties.",
+        "5,000 OPEN, enforced by the staking program when you stake against the notification-gateway role. It buys economic accountability and Sybil resistance rather than preferential treatment: nothing routes notification traffic by stake today, so meeting the minimum makes a gateway eligible, not favoured.",
       earns:
-        "A share of the small fixed OPEN fee a participant pays to enable notifications on a trade. The rest is split between the treasury and ecosystem allocations. Gateways are rewarded for successfully delivering, not merely for being online.",
+        "Nothing yet. The intended model is a share of a small fixed OPEN fee a participant pays to enable notifications on a trade, with the remainder split between treasury and ecosystem allocations — but no such fee exists anywhere in the protocol today and no gateway rewards are paid. Treat it as design intent, not income.",
       requirements: [
         "Implement the published notification specification",
         "Register gateway metadata: channels, protocol version, pricing, endpoints",
