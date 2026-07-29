@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guides redesign — 3 · Paths</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0e14; --surface:#121822; --surface-alt:#0f151e;
+    --ink:#f2f5f9; --body:#b9c4d1; --muted:#8c98a7; --faint:#778494;
+    --accent:#0070f8; --accent-mid:#58a6ff; --accent-soft:#0d2035;
+    --teal:#00b098; --teal-mid:#2ad0b8;
+    --line:#1c2532; --line-strong:#2a3441; --code-bg:#06090d;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--body); font-family:"Plus Jakarta Sans",system-ui,sans-serif; font-size:.9375rem; line-height:1.5333; }
+  a { color:inherit; text-decoration:none; }
+  .wrap { max-width:72rem; margin:0 auto; padding:0 1.5rem; }
+  .mono { font-family:"JetBrains Mono",monospace; }
+
+  .concept { border-bottom:1px solid var(--line); background:var(--surface-alt); }
+  .concept .wrap { padding-top:1.1rem; padding-bottom:1.1rem; display:flex; gap:1rem; align-items:baseline; flex-wrap:wrap; }
+  .concept b { color:var(--ink); font-weight:700; }
+  .concept .tag { font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.1em; text-transform:uppercase; color:var(--teal-mid); border:1px solid var(--line-strong); border-radius:999px; padding:.2rem .6rem; }
+  .concept p { color:var(--muted); font-size:.875rem; }
+  .screen-label { font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); padding:2.5rem 0 0; }
+
+  /* ---------- INDEX: paths ---------- */
+  .hero { padding:4rem 0 3rem; text-align:center; border-bottom:1px solid var(--line); background-image:radial-gradient(rgba(0,112,248,.12) 1px,transparent 1px); background-size:24px 24px; }
+  .hero h1 { color:var(--ink); font-size:clamp(2rem,5vw,3rem); font-weight:800; letter-spacing:-.02em; }
+  .hero p { margin:.9rem auto 0; max-width:52ch; color:var(--body); }
+
+  .paths { padding:3rem 0 4rem; display:grid; gap:1.25rem; }
+  .path { border:1px solid var(--line); border-radius:20px; background:var(--surface); padding:1.75rem 2rem; transition:border-color .15s; }
+  .path:hover { border-color:var(--line-strong); }
+  .path .head { display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap; }
+  .path .role { font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.1em; text-transform:uppercase; border-radius:999px; padding:.3rem .75rem; }
+  .r-trader { color:var(--teal-mid); background:rgba(0,176,152,.08); border:1px solid rgba(0,176,152,.25); }
+  .r-merchant { color:var(--teal-mid); background:rgba(0,176,152,.08); border:1px solid rgba(0,176,152,.25); }
+  .r-operator { color:var(--accent-mid); background:var(--accent-soft); border:1px solid rgba(0,112,248,.3); }
+  .r-builder { color:var(--ink); background:var(--surface-alt); border:1px solid var(--line-strong); }
+  .path h2 { color:var(--ink); font-size:1.375rem; font-weight:700; letter-spacing:-.01em; }
+  .path .meta { margin-left:auto; font-family:"JetBrains Mono",monospace; font-size:.6875rem; color:var(--faint); }
+  .path .pitch { margin-top:.5rem; color:var(--muted); font-size:.875rem; max-width:64ch; }
+
+  .milestones { margin-top:1.5rem; display:flex; align-items:flex-start; gap:0; overflow-x:auto; padding-bottom:.5rem; }
+  .ms { flex:1 0 9.5rem; max-width:12rem; position:relative; padding-top:1.4rem; }
+  .ms::before { content:""; position:absolute; top:.45rem; left:0; right:0; height:1px; background:var(--line-strong); }
+  .ms:first-child::before { left:1rem; }
+  .ms:last-child::before { right:calc(100% - 1rem); }
+  .ms .dot { position:absolute; top:.45rem; left:1rem; transform:translate(-50%,-50%); width:.8rem; height:.8rem; border-radius:50%; border:2px solid var(--line-strong); background:var(--bg); }
+  .ms.done .dot { border-color:var(--teal); background:var(--teal); }
+  .ms.done::before { background:var(--teal); }
+  .ms .n { font-family:"JetBrains Mono",monospace; font-size:.625rem; color:var(--faint); }
+  .ms .t { display:block; margin-top:.25rem; padding-right:1rem; font-size:.8125rem; font-weight:600; color:var(--ink); line-height:1.35; }
+  .ms:hover .t { color:var(--accent-mid); }
+  .ms .d { display:block; margin-top:.2rem; padding-right:1rem; font-family:"JetBrains Mono",monospace; font-size:.625rem; color:var(--faint); }
+  .legend { margin-top:.5rem; font-family:"JetBrains Mono",monospace; font-size:.625rem; color:var(--faint); }
+  .legend i { display:inline-block; width:.55rem; height:.55rem; border-radius:50%; background:var(--teal); margin:0 .35rem 0 .9rem; vertical-align:-1px; }
+
+  .az { border-top:1px solid var(--line); padding:2.5rem 0 4rem; }
+  .az h3 { font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); margin-bottom:1rem; }
+  .az ul { list-style:none; columns:2; gap:3rem; }
+  @media (max-width:48rem){ .az ul { columns:1; } }
+  .az li a { display:flex; justify-content:space-between; gap:1rem; padding:.6rem 0; border-bottom:1px solid var(--line); font-size:.875rem; }
+  .az li a:hover { color:var(--accent-mid); }
+  .az li a span:last-child { font-family:"JetBrains Mono",monospace; font-size:.6875rem; color:var(--faint); }
+
+  /* ---------- DETAIL: stepper ---------- */
+  .pathstrip { border-bottom:1px solid var(--line); background:var(--surface-alt); position:sticky; top:0; z-index:5; }
+  .pathstrip .wrap { padding-top:.9rem; padding-bottom:.9rem; display:flex; align-items:center; gap:1rem; overflow-x:auto; }
+  .pathstrip .pname { font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-mid); white-space:nowrap; }
+  .strip-ms { display:flex; align-items:center; gap:.5rem; font-size:.75rem; color:var(--faint); white-space:nowrap; }
+  .strip-ms i { width:.5rem; height:.5rem; border-radius:50%; border:1.5px solid var(--line-strong); }
+  .strip-ms.done { color:var(--muted); } .strip-ms.done i { background:var(--teal); border-color:var(--teal); }
+  .strip-ms.now { color:var(--ink); font-weight:600; } .strip-ms.now i { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  .strip-sep { width:1.25rem; height:1px; background:var(--line-strong); flex:none; }
+
+  .g-hero { padding:3.5rem 0 0; max-width:46rem; }
+  .g-hero .where { font-family:"JetBrains Mono",monospace; font-size:.75rem; color:var(--faint); }
+  .g-hero h1 { margin-top:.6rem; color:var(--ink); font-size:clamp(1.75rem,4vw,2.5rem); font-weight:800; letter-spacing:-.02em; line-height:1.1; }
+  .g-hero .intro { margin-top:1rem; color:var(--body); }
+
+  .giant-step { margin-top:4rem; display:grid; gap:2rem; grid-template-columns:7rem minmax(0,1fr); }
+  @media (max-width:48rem){ .giant-step { grid-template-columns:1fr; } }
+  .giant-step .bignum { position:sticky; top:5.5rem; align-self:start; font-family:"JetBrains Mono",monospace; font-size:3.5rem; font-weight:600; color:transparent; -webkit-text-stroke:1px var(--line-strong); line-height:1; }
+  .giant-step.current .bignum { -webkit-text-stroke:1px var(--accent); }
+  .giant-step h3 { color:var(--ink); font-size:1.375rem; font-weight:700; letter-spacing:-.01em; }
+  .giant-step .body { margin-top:.75rem; font-size:.9rem; max-width:62ch; }
+  .giant-step .check { margin-top:1rem; display:inline-flex; align-items:center; gap:.5rem; font-family:"JetBrains Mono",monospace; font-size:.6875rem; color:var(--faint); border:1px solid var(--line-strong); border-radius:999px; padding:.4rem .8rem; cursor:pointer; }
+  .giant-step .check:hover { color:var(--teal-mid); border-color:var(--teal); }
+  .code { margin-top:1.25rem; border:1px solid var(--line); border-radius:12px; background:var(--code-bg); overflow:hidden; }
+  .code .bar { display:flex; justify-content:space-between; padding:.55rem .9rem; border-bottom:1px solid var(--line); background:var(--surface-alt); font-family:"JetBrains Mono",monospace; font-size:.6875rem; color:var(--muted); }
+  .code .bar button { font:inherit; color:var(--accent-mid); background:none; border:0; cursor:pointer; }
+  .code pre { padding:1rem; overflow-x:auto; font-family:"JetBrains Mono",monospace; font-size:.78rem; line-height:1.55; color:#e6edf5; }
+
+  .stepnav { margin:4rem 0 5rem; display:flex; justify-content:space-between; gap:1rem; border-top:1px solid var(--line); padding-top:1.5rem; }
+  .stepnav a { font-size:.875rem; font-weight:600; color:var(--ink); }
+  .stepnav a span { display:block; font-family:"JetBrains Mono",monospace; font-size:.625rem; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); margin-bottom:.3rem; }
+  .stepnav a:hover { color:var(--accent-mid); }
+  .stepnav .next { text-align:right; }
+</style>
+</head>
+<body>
+
+<div class="concept">
+  <div class="wrap">
+    <span class="tag">Concept 3</span>
+    <b>Paths</b>
+    <p>Guides stop being a flat list and become role-based journeys: "I want to be an operator" gives you an ordered path with milestones. Each guide knows where it sits on its path. Mockup — static HTML.</p>
+  </div>
+</div>
+
+<div class="wrap"><div class="screen-label">Screen A — Guides index · /en/guides</div></div>
+
+<!-- ================= INDEX ================= -->
+<header class="hero">
+  <div class="wrap">
+    <h1>Pick a path, follow it end to end</h1>
+    <p>Every guide belongs to a role journey. Start at milestone one; each step tells you what to do, what it costs, and what comes next.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="paths">
+
+    <section class="path">
+      <div class="head">
+        <span class="role r-trader">Trader</span>
+        <h2>Make and take offers</h2>
+        <span class="meta">2 milestones · ~50 min</span>
+      </div>
+      <p class="pitch">From zero to a completed escrow trade, then the other side of the book if you want it.</p>
+      <div class="milestones">
+        <a class="ms done" href="#"><span class="dot"></span><span class="n">01</span><span class="t">Make your first trade</span><span class="d">7 steps · ~20 min</span></a>
+        <a class="ms" href="#"><span class="dot"></span><span class="n">02</span><span class="t">Become a merchant</span><span class="d">6 steps · ~30 min</span></a>
+      </div>
+    </section>
+
+    <section class="path">
+      <div class="head">
+        <span class="role r-operator">Operator</span>
+        <h2>Run the infrastructure</h2>
+        <span class="meta">6 milestones · ~3 h</span>
+      </div>
+      <p class="pitch">Stake, run a node, and take on the paid responsibilities — arbitration, oracles, notifications.</p>
+      <div class="milestones">
+        <a class="ms done" href="#"><span class="dot"></span><span class="n">01</span><span class="t">Run a node</span><span class="d">standalone page</span></a>
+        <a class="ms done" href="#"><span class="dot"></span><span class="n">02</span><span class="t">Vote on a proposal</span><span class="d">7 steps · ~20 min</span></a>
+        <a class="ms" href="#"><span class="dot"></span><span class="n">03</span><span class="t">Stake OPEN for a role</span><span class="d">8 steps · ~25 min</span></a>
+        <a class="ms" href="#"><span class="dot"></span><span class="n">04</span><span class="t">Become an arbitrator</span><span class="d">standalone page</span></a>
+        <a class="ms" href="#"><span class="dot"></span><span class="n">05</span><span class="t">Run an oracle provider</span><span class="d">5 steps · ~40 min</span></a>
+        <a class="ms" href="#"><span class="dot"></span><span class="n">06</span><span class="t">Run a notification gateway</span><span class="d">7 steps · ~35 min</span></a>
+      </div>
+      <p class="legend">Progress is stored locally in your browser — no account needed.<i></i>completed</p>
+    </section>
+
+    <section class="path">
+      <div class="head">
+        <span class="role r-builder">Builder</span>
+        <h2>Integrate the protocol</h2>
+        <span class="meta">1 milestone · ~45 min</span>
+      </div>
+      <p class="pitch">One end-to-end integration guide today; more paths as the SDK surface grows.</p>
+      <div class="milestones">
+        <a class="ms" href="#"><span class="dot"></span><span class="n">01</span><span class="t">Build on OpenFiat</span><span class="d">7 steps · TypeScript / Rust</span></a>
+      </div>
+    </section>
+  </div>
+
+  <section class="az">
+    <h3>All guides, A–Z</h3>
+    <ul>
+      <li><a href="#"><span>Become a merchant</span><span>trade · 6 steps</span></a></li>
+      <li><a href="#"><span>Become an arbitrator</span><span>operate · standalone</span></a></li>
+      <li><a href="#"><span>Build on OpenFiat</span><span>build · 7 steps</span></a></li>
+      <li><a href="#"><span>Make your first trade</span><span>trade · 7 steps</span></a></li>
+      <li><a href="#"><span>Run a node</span><span>operate · standalone</span></a></li>
+      <li><a href="#"><span>Run a notification gateway</span><span>operate · 7 steps</span></a></li>
+      <li><a href="#"><span>Run an oracle provider</span><span>operate · 5 steps</span></a></li>
+      <li><a href="#"><span>Stake OPEN for a role</span><span>operate · 8 steps</span></a></li>
+      <li><a href="#"><span>Vote on a proposal</span><span>operate · 7 steps</span></a></li>
+    </ul>
+  </section>
+</main>
+
+<div class="wrap"><div class="screen-label">Screen B — Guide detail · /en/guides/stake-open</div></div>
+
+<!-- ================= DETAIL ================= -->
+<div class="pathstrip">
+  <div class="wrap">
+    <span class="pname">Operator path</span>
+    <span class="strip-ms done"><i></i>Run a node</span><span class="strip-sep"></span>
+    <span class="strip-ms done"><i></i>Vote on a proposal</span><span class="strip-sep"></span>
+    <span class="strip-ms now"><i></i>Stake OPEN</span><span class="strip-sep"></span>
+    <span class="strip-ms"><i></i>Become an arbitrator</span><span class="strip-sep"></span>
+    <span class="strip-ms"><i></i>Oracle provider</span><span class="strip-sep"></span>
+    <span class="strip-ms"><i></i>Notification gateway</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="g-hero">
+    <span class="where">Milestone 03 of 06 · Operator path</span>
+    <h1>Stake OPEN for a role</h1>
+    <p class="intro">Almost every role beyond buying does something that could hurt somebody else if done carelessly, so those roles put OPEN at risk before they get to do it. Staking is that deposit. It stays yours, and it can be cut if you misbehave.</p>
+  </div>
+
+  <section class="giant-step">
+    <span class="bignum">01</span>
+    <div>
+      <h3>What stake is, and what it is not</h3>
+      <p class="body">Stake is a deposit you keep ownership of, not a fee you pay to anyone. It is not reputation either, and it cannot be turned into reputation. What stake actually buys is skin in the game — a number the protocol can reduce if you break a rule, which is what makes strangers willing to rely on you.</p>
+      <button class="check">✓ Mark step done</button>
+    </div>
+  </section>
+
+  <section class="giant-step current">
+    <span class="bignum">02</span>
+    <div>
+      <h3>Choose the role you are staking for</h3>
+      <p class="body">There are seven staked roles, and a stake account is keyed by (owner, role) — so one wallet can hold completely independent stakes under several roles at once. The role is fixed when you open the account.</p>
+      <div class="code">
+        <div class="bar"><span>The seven roles, and their on-chain values</span><button>Copy</button></div>
+        <pre>Merchant                  = 0
+Arbitrator                = 1
+NodeOperator              = 2
+NotificationProvider      = 3
+OracleProvider            = 4
+RiskIntelligenceProvider  = 5
+SnapshotProvider          = 6</pre>
+      </div>
+      <button class="check">✓ Mark step done</button>
+    </div>
+  </section>
+
+  <section class="giant-step">
+    <span class="bignum">03</span>
+    <div>
+      <h3>Get OPEN into your wallet</h3>
+      <p class="body">The devnet OPEN mint's mint authority is permanently unset — the full billion-token supply was minted once at genesis and nobody can ever create more. So there is no faucet: on devnet it has to be sent to you by someone already holding it.</p>
+      <div class="code">
+        <div class="bar"><span>terminal</span><button>Copy</button></div>
+        <pre>spl-token display 29w8TroBTYoaqrXBDcpv5L54VZRA8Kf7kU5U1cakvFdj --url devnet</pre>
+      </div>
+      <button class="check">✓ Mark step done</button>
+    </div>
+  </section>
+
+  <p class="mono" style="margin-top:2.5rem; font-size:.75rem; color:var(--faint);">Steps 04–08 follow the same giant-numeral rhythm.</p>
+
+  <nav class="stepnav">
+    <a href="#"><span>← Previous on path</span>Vote on a proposal</a>
+    <a class="next" href="#"><span>Next on path →</span>Become an arbitrator</a>
+  </nav>
+</main>
+
+</body>
+</html>

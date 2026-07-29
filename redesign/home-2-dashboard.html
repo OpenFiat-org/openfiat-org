@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homepage redesign — 2 · The dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0e14; --surface:#121822; --surface-alt:#0f151e;
+    --ink:#f2f5f9; --body:#b9c4d1; --muted:#8c98a7; --faint:#778494;
+    --accent:#0070f8; --accent-mid:#58a6ff; --accent-soft:#0d2035;
+    --teal:#00b098; --teal-mid:#2ad0b8;
+    --line:#1c2532; --line-strong:#2a3441; --code-bg:#06090d;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--body); font-family:"Plus Jakarta Sans",system-ui,sans-serif; font-size:.9375rem; line-height:1.5333; }
+  a { color:inherit; text-decoration:none; }
+  .wrap { max-width:76rem; margin:0 auto; padding:0 1.5rem; }
+  .mono { font-family:"JetBrains Mono",monospace; }
+
+  .concept { border-bottom:1px solid var(--line); background:var(--surface-alt); }
+  .concept .wrap { padding-top:1.1rem; padding-bottom:1.1rem; display:flex; gap:1rem; align-items:baseline; flex-wrap:wrap; }
+  .concept b { color:var(--ink); font-weight:700; }
+  .concept .tag { font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.1em; text-transform:uppercase; color:var(--teal-mid); border:1px solid var(--line-strong); border-radius:999px; padding:.2rem .6rem; }
+  .concept p { color:var(--muted); font-size:.875rem; }
+
+  .btn { display:inline-flex; align-items:center; justify-content:center; border-radius:999px; padding:.7rem 1.4rem; font-weight:600; font-size:.875rem; transition:.15s; }
+  .btn-p { background:var(--accent); color:#fff; }
+  .btn-p:hover { background:#2b8fff; }
+  .btn-s { border:1px solid var(--line-strong); color:var(--ink); }
+  .btn-s:hover { border-color:var(--accent); color:var(--accent-mid); }
+
+  /* compact hero */
+  .hero { padding:3.5rem 0 3rem; }
+  .hero h1 { color:var(--ink); font-size:clamp(2.25rem,5vw,3.75rem); font-weight:800; letter-spacing:-.02em; line-height:1.04; max-width:20ch; }
+  .hero h1 em { font-style:normal; color:var(--accent-mid); }
+  .hero .lede { margin-top:1.25rem; max-width:58ch; font-size:1.0625rem; line-height:1.6; color:var(--body); }
+  .hero .pills { margin-top:1.5rem; display:flex; gap:.5rem; flex-wrap:wrap; }
+  .pill { font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.06em; border:1px solid var(--line-strong); border-radius:999px; padding:.35rem .75rem; color:var(--muted); }
+  .pill b { color:var(--teal-mid); font-weight:500; }
+
+  /* action grid */
+  .actions { padding:0 0 4rem; }
+  .agrid { display:grid; gap:1rem; grid-template-columns:1fr 1fr; }
+  @media (max-width:56rem){ .agrid { grid-template-columns:1fr; } }
+  .acard { border:1px solid var(--line); border-radius:20px; background:var(--surface); padding:1.75rem 2rem; display:flex; flex-direction:column; }
+  .acard .k { display:flex; justify-content:space-between; align-items:center; font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); }
+  .acard h2 { margin-top:.75rem; color:var(--ink); font-size:1.375rem; font-weight:700; letter-spacing:-.01em; }
+  .acard > p { margin-top:.5rem; color:var(--muted); font-size:.875rem; }
+  .acard .body { flex:1; }
+  .acard .foot { margin-top:1.5rem; display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
+  .acard.sale { border-color:rgba(0,112,248,.45); background:linear-gradient(180deg,var(--accent-soft),var(--surface) 55%); }
+
+  /* sale card internals */
+  .rate { margin-top:1.25rem; display:flex; align-items:baseline; gap:.75rem; }
+  .rate .big { font-size:2rem; font-weight:800; letter-spacing:-.01em; color:var(--ink); }
+  .rate .per { font-family:"JetBrains Mono",monospace; font-size:.75rem; color:var(--faint); }
+  .bar { margin-top:1rem; }
+  .bar .lbl { display:flex; justify-content:space-between; font-family:"JetBrains Mono",monospace; font-size:.6875rem; color:var(--faint); margin-bottom:.4rem; }
+  .bar .track { height:.4rem; border-radius:999px; background:var(--bar-track,#1a222c); overflow:hidden; }
+  .bar .track i { display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--teal)); border-radius:999px; }
+  .statusdot { display:inline-flex; align-items:center; gap:.45rem; font-family:"JetBrains Mono",monospace; font-size:.6875rem; color:var(--muted); }
+  .statusdot i { width:.5rem; height:.5rem; border-radius:50%; background:var(--faint); }
+  .statusdot.soon i { background:#e8b93e; box-shadow:0 0 8px rgba(232,185,62,.5); }
+
+  /* repo rows */
+  .repos { margin-top:1.25rem; border-top:1px solid var(--line); }
+  .repos a { display:flex; justify-content:space-between; gap:1rem; padding:.55rem 0; border-bottom:1px solid var(--line); font-size:.875rem; }
+  .repos a:hover .rname { color:var(--accent-mid); }
+  .rname { color:var(--ink); font-weight:600; font-family:"JetBrains Mono",monospace; font-size:.8125rem; }
+  .rlang { color:var(--faint); font-family:"JetBrains Mono",monospace; font-size:.6875rem; padding-top:.15rem; white-space:nowrap; }
+
+  /* learn rows */
+  .learns { margin-top:1.25rem; border-top:1px solid var(--line); }
+  .learns a { display:flex; align-items:center; gap:.75rem; padding:.6rem 0; border-bottom:1px solid var(--line); font-size:.875rem; }
+  .learns a:hover .lt { color:var(--accent-mid); }
+  .learns .n { font-family:"JetBrains Mono",monospace; font-size:.6875rem; color:var(--faint); }
+  .learns .lt { color:var(--ink); font-weight:600; }
+  .learns .lm { margin-left:auto; font-family:"JetBrains Mono",monospace; font-size:.6875rem; color:var(--faint); }
+
+  /* whitepaper card */
+  .wpstat { margin-top:1.25rem; display:flex; gap:2rem; }
+  .wpstat .num { font-size:1.75rem; font-weight:800; color:var(--ink); letter-spacing:-.01em; }
+  .wpstat .cap { font-family:"JetBrains Mono",monospace; font-size:.625rem; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); margin-top:.15rem; }
+  .chapters { margin-top:1.25rem; border-top:1px solid var(--line); }
+  .chapters a { display:flex; gap:.75rem; padding:.5rem 0; border-bottom:1px solid var(--line); font-size:.8125rem; color:var(--muted); }
+  .chapters a:hover { color:var(--ink); }
+  .chapters .cn { font-family:"JetBrains Mono",monospace; font-size:.6875rem; color:var(--faint); }
+
+  /* trade strip */
+  .strip { border-top:1px solid var(--line); padding:3.5rem 0; }
+  .strip h2 { color:var(--ink); font-size:2.25rem; font-weight:700; letter-spacing:-.015em; }
+  .strip .sub { margin-top:.75rem; color:var(--body); max-width:56ch; }
+  .steps4 { margin-top:2.25rem; display:grid; gap:1.5rem; grid-template-columns:repeat(4,1fr); }
+  @media (max-width:56rem){ .steps4 { grid-template-columns:1fr 1fr; } }
+  @media (max-width:36rem){ .steps4 { grid-template-columns:1fr; } }
+  .steps4 .sn { font-family:"JetBrains Mono",monospace; font-size:.75rem; color:var(--accent-mid); }
+  .steps4 h3 { margin-top:.4rem; color:var(--ink); font-size:1.0625rem; font-weight:700; }
+  .steps4 p { margin-top:.4rem; font-size:.8125rem; color:var(--muted); }
+
+  /* scenarios */
+  .scen { border-top:1px solid var(--line); padding:3.5rem 0; }
+  .scen h2 { color:var(--ink); font-size:2.25rem; font-weight:700; letter-spacing:-.015em; }
+  .scen ul { margin-top:2rem; list-style:none; border-top:1px solid var(--line); }
+  .scen li { display:flex; gap:1.5rem; padding:1rem 0; border-bottom:1px solid var(--line); align-items:baseline; }
+  .scen .cc { font-family:"JetBrains Mono",monospace; font-size:.8125rem; color:var(--faint); width:4rem; flex:none; }
+  .scen .ct { color:var(--ink); font-weight:500; }
+  .rails { margin-top:1.5rem; font-size:.8125rem; color:var(--muted); }
+  .rails b { color:var(--faint); font-family:"JetBrains Mono",monospace; font-size:.6875rem; text-transform:uppercase; letter-spacing:.08em; font-weight:500; }
+
+  /* stats band */
+  .stats { border-top:1px solid var(--line); background:var(--surface-alt); }
+  .stats .wrap { padding-top:2.5rem; padding-bottom:2.5rem; display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; }
+  @media (max-width:48rem){ .stats .wrap { grid-template-columns:1fr 1fr; } }
+  .stat .num { font-size:2.5rem; font-weight:800; letter-spacing:-.01em; color:var(--ink); }
+  .stat .cap { margin-top:.25rem; font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="concept">
+  <div class="wrap">
+    <span class="tag">Homepage · Concept 2</span>
+    <b>The dashboard</b>
+    <p>Action-first: a compact hero, then a 2×2 grid where every card is a thing to do — presale, code, learn, whitepaper — each with a live-feeling preview inside. Explanation comes after action. Mockup — static HTML.</p>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <h1>Turn stablecoins into <em>cash in your own currency</em>.</h1>
+    <p class="lede">Trade directly with people in your country — bank transfer, mobile money or cash. Your crypto is locked in escrow before you send a single shilling, peso or naira, and no company sits in the middle taking a cut or deciding who is allowed to trade.</p>
+    <div class="pills">
+      <span class="pill">settlement <b>Solana</b></span>
+      <span class="pill">coordination <b>open P2P network</b></span>
+      <span class="pill">license <b>Apache-2.0</b></span>
+      <span class="pill">status <b>devnet</b></span>
+    </div>
+  </div>
+</header>
+
+<!-- ACTION GRID -->
+<main class="actions">
+  <div class="wrap">
+    <div class="agrid">
+
+      <section class="acard sale">
+        <div class="k"><span>Token sale</span><span class="statusdot soon"><i></i>opens soon</span></div>
+        <h2>The OPEN community presale</h2>
+        <p>OPEN is the stake behind the roles that keep the marketplace honest. The presale offers the community allocation at a fixed rate — no sale contract is deployed yet.</p>
+        <div class="body">
+          <div class="rate"><span class="big">1 OPEN</span><span class="per">= 1 USDC · fixed in the program</span></div>
+          <div class="bar">
+            <div class="lbl"><span>Raised — waiting for launch</span><span>target is a goal, not a cap</span></div>
+            <div class="track"><i></i></div>
+          </div>
+        </div>
+        <div class="foot">
+          <a class="btn btn-p" href="#">Connect wallet to check readiness</a>
+          <a class="btn btn-s" href="#">Sale terms</a>
+        </div>
+      </section>
+
+      <section class="acard">
+        <div class="k"><span>Contribute</span><span>github.com/OpenFiat-org</span></div>
+        <h2>Contribute code</h2>
+        <p>Every layer is open source. Pick a repository; the specs repo accepts prose and translations too.</p>
+        <div class="body repos">
+          <a href="#"><span class="rname">openfiat-core</span><span class="rlang">Rust</span></a>
+          <a href="#"><span class="rname">openfiat-sdks</span><span class="rlang">Rust · TypeScript · Python</span></a>
+          <a href="#"><span class="rname">openfiat-app</span><span class="rlang">TypeScript</span></a>
+          <a href="#"><span class="rname">openfiat-specs</span><span class="rlang">Markdown</span></a>
+          <a href="#"><span class="rname">awesome-openfiat</span><span class="rlang">Community</span></a>
+        </div>
+        <div class="foot">
+          <a class="btn btn-p" href="#">Browse all 10 repositories</a>
+          <a class="btn btn-s" href="#">Contributing guide</a>
+        </div>
+      </section>
+
+      <section class="acard">
+        <div class="k"><span>Learn</span><span>9 guides · 3 paths</span></div>
+        <h2>Learn how it works</h2>
+        <p>Five minutes for the idea, a guide path for the practice — real commands against the live devnet.</p>
+        <div class="body learns">
+          <a href="#"><span class="n">01</span><span class="lt">How a trade works</span><span class="lm">5 min overview</span></a>
+          <a href="#"><span class="n">02</span><span class="lt">Trader path</span><span class="lm">2 milestones</span></a>
+          <a href="#"><span class="n">03</span><span class="lt">Operator path</span><span class="lm">6 milestones</span></a>
+          <a href="#"><span class="n">04</span><span class="lt">Builder path</span><span class="lm">1 milestone</span></a>
+        </div>
+        <div class="foot">
+          <a class="btn btn-p" href="#">See how a trade works</a>
+          <a class="btn btn-s" href="#">All guides</a>
+        </div>
+      </section>
+
+      <section class="acard">
+        <div class="k"><span>Read</span><span>free · no sign-up</span></div>
+        <h2>Read the whitepaper</h2>
+        <p>The protocol in full, published as web pages. Assumes no prior blockchain experience.</p>
+        <div class="body">
+          <div class="wpstat">
+            <div><div class="num">28</div><div class="cap">chapters</div></div>
+            <div><div class="num">76k</div><div class="cap">words</div></div>
+            <div><div class="num">28</div><div class="cap">specifications</div></div>
+          </div>
+          <div class="chapters">
+            <a href="#"><span class="cn">01</span>Executive Summary</a>
+            <a href="#"><span class="cn">02</span>Why OpenFiat Exists</a>
+            <a href="#"><span class="cn">04</span>System Architecture</a>
+          </div>
+        </div>
+        <div class="foot">
+          <a class="btn btn-p" href="#">Start reading</a>
+          <a class="btn btn-s" href="#">Download PDFs</a>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<!-- TRADE STRIP -->
+<section class="strip">
+  <div class="wrap">
+    <h2>How a trade works</h2>
+    <p class="sub">Four steps, and the money is protected from the second step onward.</p>
+    <div class="steps4">
+      <div><span class="sn">01</span><h3>Reserve</h3><p>You reserve part of a merchant's advertisement; the node records it across the network.</p></div>
+      <div><span class="sn">02</span><h3>Escrow locks</h3><p>The seller's stablecoin moves into an on-chain escrow vault keyed by your reservation.</p></div>
+      <div><span class="sn">03</span><h3>You pay fiat</h3><p>Bank transfer, mobile money or cash — over your ordinary rail, directly to the merchant.</p></div>
+      <div><span class="sn">04</span><h3>Escrow releases</h3><p>The merchant confirms; the program pays you. A dispute goes to staked arbitrators, not a company.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENARIOS -->
+<section class="scen">
+  <div class="wrap">
+    <h2>What people use it for</h2>
+    <ul>
+      <li><span class="cc">KES</span><span class="ct">A freelancer receives payment in USDC and converts it to Kenyan Shillings to pay rent.</span></li>
+      <li><span class="cc">USDC</span><span class="ct">A business converts local currency into stablecoins to pay an overseas supplier.</span></li>
+      <li><span class="cc">PHP</span><span class="ct">A traveler exchanges stablecoins for local currency while visiting another country.</span></li>
+      <li><span class="cc">NGN</span><span class="ct">Someone sends stablecoins internationally, and the recipient converts them into local cash.</span></li>
+    </ul>
+    <p class="rails"><b>Pay and get paid with&nbsp;&nbsp;</b>Bank transfer, Mobile money, ACH, SEPA, Faster Payments, PIX, Cash deposit, Regional instant payment networks</p>
+  </div>
+</section>
+
+<!-- STATS -->
+<aside class="stats">
+  <div class="wrap">
+    <div class="stat"><div class="num">7</div><div class="cap">staked roles</div></div>
+    <div class="stat"><div class="num">2</div><div class="cap">layers, one goal</div></div>
+    <div class="stat"><div class="num">10</div><div class="cap">open repositories</div></div>
+    <div class="stat"><div class="num">0</div><div class="cap">companies in the middle</div></div>
+  </div>
+</aside>
+
+</body>
+</html>

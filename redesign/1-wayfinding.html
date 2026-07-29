@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guides redesign — 1 · Wayfinding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0e14; --surface:#121822; --surface-alt:#0f151e;
+    --ink:#f2f5f9; --body:#b9c4d1; --muted:#8c98a7; --faint:#778494;
+    --accent:#0070f8; --accent-mid:#58a6ff; --accent-soft:#0d2035;
+    --teal:#00b098; --teal-mid:#2ad0b8;
+    --line:#1c2532; --line-strong:#2a3441; --code-bg:#06090d;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--body); font-family:"Plus Jakarta Sans",system-ui,sans-serif; font-size:.9375rem; line-height:1.5333; }
+  a { color:inherit; text-decoration:none; }
+  .wrap { max-width:72rem; margin:0 auto; padding:0 1.5rem; }
+  .mono { font-family:"JetBrains Mono",monospace; }
+
+  /* concept banner */
+  .concept { border-bottom:1px solid var(--line); background:var(--surface-alt); }
+  .concept .wrap { padding-top:1.1rem; padding-bottom:1.1rem; display:flex; gap:1rem; align-items:baseline; flex-wrap:wrap; }
+  .concept b { color:var(--ink); font-weight:700; }
+  .concept .tag { font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.1em; text-transform:uppercase; color:var(--teal-mid); border:1px solid var(--line-strong); border-radius:999px; padding:.2rem .6rem; }
+  .concept p { color:var(--muted); font-size:.875rem; }
+  .screen-label { font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); padding:2.5rem 0 0; }
+
+  /* ---------- INDEX ---------- */
+  .hero { padding:3.5rem 0 3rem; background-image:radial-gradient(rgba(0,112,248,.12) 1px,transparent 1px); background-size:24px 24px; border-bottom:1px solid var(--line); }
+  .hero h1 { color:var(--ink); font-size:clamp(2rem,5vw,3rem); font-weight:800; letter-spacing:-.02em; line-height:1.1; max-width:22ch; }
+  .hero .lede { margin-top:1rem; max-width:56ch; color:var(--body); font-size:1rem; }
+  .hero .meta { margin-top:1.25rem; font-family:"JetBrains Mono",monospace; font-size:.75rem; color:var(--faint); }
+
+  .group { padding:3rem 0 1rem; }
+  .group-head { display:flex; align-items:baseline; gap:1rem; margin-bottom:1.5rem; }
+  .group-head h2 { color:var(--ink); font-size:1.375rem; font-weight:700; letter-spacing:-.01em; }
+  .group-head .count { font-family:"JetBrains Mono",monospace; font-size:.75rem; color:var(--faint); }
+  .group-head .blurb { margin-left:auto; color:var(--muted); font-size:.875rem; max-width:34ch; text-align:right; }
+
+  .cards { display:grid; gap:1rem; grid-template-columns:repeat(auto-fill,minmax(20rem,1fr)); }
+  .card { display:flex; flex-direction:column; border:1px solid var(--line); border-radius:16px; background:var(--surface); padding:1.5rem; transition:border-color .15s, transform .15s, box-shadow .15s; }
+  .card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:0 10px 30px rgba(0,0,0,.55); }
+  .card .eyebrow { display:flex; gap:.5rem; align-items:center; margin-bottom:.9rem; }
+  .chip { font-family:"JetBrains Mono",monospace; font-size:.625rem; font-weight:500; letter-spacing:.08em; text-transform:uppercase; border-radius:999px; padding:.25rem .6rem; }
+  .chip-trade { color:var(--teal-mid); background:rgba(0,176,152,.08); border:1px solid rgba(0,176,152,.25); }
+  .chip-operate { color:var(--accent-mid); background:var(--accent-soft); border:1px solid rgba(0,112,248,.3); }
+  .chip-build { color:var(--ink); background:var(--surface-alt); border:1px solid var(--line-strong); }
+  .chip-standalone { color:var(--faint); border:1px dashed var(--line-strong); }
+  .card h3 { color:var(--ink); font-size:1.125rem; font-weight:700; letter-spacing:-.01em; }
+  .card p { margin-top:.5rem; color:var(--muted); font-size:.875rem; flex:1; }
+  .card .foot { margin-top:1.25rem; padding-top:.9rem; border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; font-family:"JetBrains Mono",monospace; font-size:.6875rem; color:var(--faint); }
+  .card .foot .go { color:var(--accent-mid); font-size:.75rem; }
+
+  /* ---------- DETAIL ---------- */
+  .detail { display:grid; gap:3rem; grid-template-columns:16rem minmax(0,1fr); padding:3rem 0 5rem; }
+  @media (max-width:56rem){ .detail { grid-template-columns:1fr; } .rail { position:static !important; } }
+  .rail { position:sticky; top:2rem; align-self:start; }
+  .rail .back { font-family:"JetBrains Mono",monospace; font-size:.75rem; color:var(--muted); }
+  .rail .back:hover { color:var(--accent-mid); }
+  .rail h4 { margin-top:1.5rem; font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); }
+  .progress { margin-top:.75rem; height:3px; border-radius:2px; background:var(--line); overflow:hidden; }
+  .progress i { display:block; height:100%; width:37.5%; background:linear-gradient(90deg,var(--accent),var(--teal)); }
+  .progress-label { margin-top:.5rem; font-family:"JetBrains Mono",monospace; font-size:.6875rem; color:var(--faint); }
+  .toc { margin-top:1rem; list-style:none; }
+  .toc li a { display:flex; gap:.65rem; padding:.45rem 0; font-size:.8125rem; color:var(--muted); border-left:1px solid var(--line); padding-left:.9rem; margin-left:0; }
+  .toc li a .n { font-family:"JetBrains Mono",monospace; font-size:.6875rem; color:var(--faint); padding-top:.1rem; }
+  .toc li a:hover { color:var(--ink); }
+  .toc li a.now { color:var(--ink); border-left:2px solid var(--accent); padding-left:calc(.9rem - 1px); font-weight:600; }
+  .toc li a.now .n { color:var(--accent-mid); }
+
+  .g-hero .group-line { font-family:"JetBrains Mono",monospace; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:var(--teal-mid); }
+  .g-hero h1 { margin-top:.6rem; color:var(--ink); font-size:clamp(1.75rem,4vw,2.5rem); font-weight:800; letter-spacing:-.02em; line-height:1.1; }
+  .g-hero .intro { margin-top:1rem; color:var(--body); max-width:64ch; }
+
+  .reqs { margin-top:2.5rem; border:1px solid var(--line); border-radius:16px; background:var(--surface-alt); padding:1.5rem; }
+  .reqs h2 { font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); margin-bottom:1rem; }
+  .reqs ul { list-style:none; display:grid; gap:.6rem; }
+  .reqs li { display:flex; gap:.7rem; font-size:.875rem; }
+  .reqs li::before { content:""; flex:none; margin-top:.45rem; width:.9rem; height:.9rem; border-radius:4px; border:1px solid var(--teal); background:rgba(0,176,152,.1); }
+
+  .step { margin-top:3rem; padding-top:2rem; border-top:1px solid var(--line); display:grid; gap:1.5rem; grid-template-columns:minmax(0,1fr); }
+  @media (min-width:64rem){ .step.has-code { grid-template-columns:minmax(0,1fr) minmax(0,1fr); } }
+  .step .num { font-family:"JetBrains Mono",monospace; font-size:.75rem; color:var(--accent-mid); }
+  .step h3 { margin-top:.4rem; color:var(--ink); font-size:1.25rem; font-weight:700; letter-spacing:-.01em; }
+  .step .body { margin-top:.75rem; font-size:.875rem; color:var(--body); max-width:58ch; }
+  .code { min-width:0; border:1px solid var(--line); border-radius:12px; background:var(--code-bg); overflow:hidden; align-self:start; }
+  .code .bar { display:flex; align-items:center; justify-content:space-between; padding:.55rem .9rem; border-bottom:1px solid var(--line); background:var(--surface-alt); font-family:"JetBrains Mono",monospace; font-size:.6875rem; color:var(--muted); }
+  .code .bar button { font:inherit; color:var(--accent-mid); background:none; border:0; cursor:pointer; }
+  .code pre { padding:1rem; overflow-x:auto; font-family:"JetBrains Mono",monospace; font-size:.78rem; line-height:1.55; color:#e6edf5; }
+
+  .prevnext { margin-top:4rem; display:grid; gap:1rem; grid-template-columns:1fr 1fr; }
+  .pn { border:1px solid var(--line); border-radius:16px; padding:1.25rem 1.5rem; background:var(--surface); }
+  .pn:hover { border-color:var(--accent); }
+  .pn .dir { font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); }
+  .pn .t { margin-top:.4rem; color:var(--ink); font-weight:700; }
+  .pn.next { text-align:right; }
+  @media (max-width:40rem){ .prevnext { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<div class="concept">
+  <div class="wrap">
+    <span class="tag">Concept 1</span>
+    <b>Wayfinding</b>
+    <p>Cards with real metadata on the index; a sticky step rail with reading progress on the guide itself. Keeps the current hairline-dark language, adds orientation. Mockup — static HTML, not wired to the app.</p>
+  </div>
+</div>
+
+<div class="wrap"><div class="screen-label">Screen A — Guides index · /en/guides</div></div>
+
+<!-- ================= INDEX ================= -->
+<header class="hero">
+  <div class="wrap">
+    <h1>Guides</h1>
+    <p class="lede">Hands-on walkthroughs for every role in the network — from your first trade to running infrastructure. Each guide is checked against the deployed devnet programs, not against a design document.</p>
+    <p class="meta">9 guides · 3 tracks · en / zh</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="group">
+    <div class="group-head">
+      <h2>Trade</h2><span class="count">2 guides</span>
+      <p class="blurb">Buy, sell, and take the other side of the book as a merchant.</p>
+    </div>
+    <div class="cards">
+      <a class="card" href="#">
+        <span class="eyebrow"><span class="chip chip-trade">Trade</span></span>
+        <h3>Make your first trade</h3>
+        <p>Buy or sell stablecoins for local currency, with the crypto held in escrow before you pay.</p>
+        <span class="foot"><span>7 steps · ~20 min · app + CLI</span><span class="go">Start →</span></span>
+      </a>
+      <a class="card" href="#">
+        <span class="eyebrow"><span class="chip chip-trade">Trade</span></span>
+        <h3>Become a merchant</h3>
+        <p>Post advertisements, fund escrows, and build the reputation that wins order flow.</p>
+        <span class="foot"><span>6 steps · ~30 min · stake required</span><span class="go">Start →</span></span>
+      </a>
+    </div>
+  </section>
+
+  <section class="group">
+    <div class="group-head">
+      <h2>Operate</h2><span class="count">6 guides</span>
+      <p class="blurb">Run the infrastructure: nodes, staking, governance, oracles, notifications.</p>
+    </div>
+    <div class="cards">
+      <a class="card" href="#">
+        <span class="eyebrow"><span class="chip chip-operate">Operate</span><span class="chip chip-standalone">standalone page</span></span>
+        <h3>Run a node</h3>
+        <p>Sync the peer-to-peer book, serve RPC, and relay trades for the network.</p>
+        <span class="foot"><span>own page · hosting offers included</span><span class="go">Open →</span></span>
+      </a>
+      <a class="card" href="#">
+        <span class="eyebrow"><span class="chip chip-operate">Operate</span><span class="chip chip-standalone">standalone page</span></span>
+        <h3>Become an arbitrator</h3>
+        <p>Settle disputes between traders and merchants; the role with the higher bar.</p>
+        <span class="foot"><span>own page · 10,000 OPEN min stake</span><span class="go">Open →</span></span>
+      </a>
+      <a class="card" href="#">
+        <span class="eyebrow"><span class="chip chip-operate">Operate</span></span>
+        <h3>Stake OPEN for a role</h3>
+        <p>Bond OPEN to a protocol role, unbond it, and understand what can be slashed.</p>
+        <span class="foot"><span>8 steps · ~25 min · app + SDK</span><span class="go">Start →</span></span>
+      </a>
+      <a class="card" href="#">
+        <span class="eyebrow"><span class="chip chip-operate">Operate</span></span>
+        <h3>Vote on a proposal</h3>
+        <p>Stake-weighted governance: create an OFIP, vote on one, and see how quorum and threshold are settled.</p>
+        <span class="foot"><span>7 steps · ~20 min · SDK</span><span class="go">Start →</span></span>
+      </a>
+      <a class="card" href="#">
+        <span class="eyebrow"><span class="chip chip-operate">Operate</span></span>
+        <h3>Run an oracle provider</h3>
+        <p>Publish fiat exchange rates on chain so escrows can be valued in local currency.</p>
+        <span class="foot"><span>5 steps · ~40 min · service setup</span><span class="go">Start →</span></span>
+      </a>
+      <a class="card" href="#">
+        <span class="eyebrow"><span class="chip chip-operate">Operate</span></span>
+        <h3>Run a notification gateway</h3>
+        <p>Deliver trade events to users over SMS, e-mail, and push — and get rated on delivery.</p>
+        <span class="foot"><span>7 steps · ~35 min · service setup</span><span class="go">Start →</span></span>
+      </a>
+    </div>
+  </section>
+
+  <section class="group" style="padding-bottom:4rem;">
+    <div class="group-head">
+      <h2>Build</h2><span class="count">1 guide</span>
+      <p class="blurb">Integrate the protocol into your own product.</p>
+    </div>
+    <div class="cards">
+      <a class="card" href="#">
+        <span class="eyebrow"><span class="chip chip-build">Build</span></span>
+        <h3>Build on OpenFiat</h3>
+        <p>From SDK install to a working integration: reservations, escrows, and event streams.</p>
+        <span class="foot"><span>7 steps · ~45 min · TypeScript / Rust</span><span class="go">Start →</span></span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<div class="wrap"><div class="screen-label">Screen B — Guide detail · /en/guides/stake-open</div></div>
+
+<!-- ================= DETAIL ================= -->
+<div class="wrap">
+  <div class="detail">
+    <aside class="rail">
+      <a class="back" href="#">← All guides</a>
+      <h4>Progress</h4>
+      <div class="progress"><i></i></div>
+      <p class="progress-label">Step 3 of 8</p>
+      <h4>Steps</h4>
+      <ol class="toc">
+        <li><a href="#"><span class="n">01</span>What stake is, and what it is not</a></li>
+        <li><a href="#"><span class="n">02</span>Choose the role you are staking for</a></li>
+        <li><a class="now" href="#"><span class="n">03</span>Get OPEN into your wallet</a></li>
+        <li><a href="#"><span class="n">04</span>Open a stake account and fund it</a></li>
+        <li><a href="#"><span class="n">05</span>Read the real limits</a></li>
+        <li><a href="#"><span class="n">06</span>Unbond when you want out</a></li>
+        <li><a href="#"><span class="n">07</span>Withdraw once the period is up</a></li>
+        <li><a href="#"><span class="n">08</span>Rewards accrue; slashing subtracts</a></li>
+      </ol>
+    </aside>
+
+    <article>
+      <div class="g-hero">
+        <span class="group-line">Operate · Staking</span>
+        <h1>Stake OPEN for a role</h1>
+        <p class="intro">Almost every role beyond buying does something that could hurt somebody else if done carelessly, so those roles put OPEN at risk before they get to do it. Staking is that deposit. It stays yours, and it can be cut if you misbehave. It does not pay you anything today: the reward instructions exist, but nothing has ever called them.</p>
+      </div>
+
+      <div class="reqs">
+        <h2>Before you start</h2>
+        <ul>
+          <li>A Solana wallet on devnet, holding some SOL for transaction fees</li>
+          <li>OPEN in that wallet as a Token-2022 account — see the step below on where OPEN comes from</li>
+          <li>The role you intend to take: one stake account per (wallet, role), so decide before you open one</li>
+          <li>For anything past staking itself — unbonding, withdrawing, claiming rewards — a script using the SDK</li>
+        </ul>
+      </div>
+
+      <section class="step" id="s1">
+        <div>
+          <span class="num">01</span>
+          <h3>What stake is, and what it is not</h3>
+          <p class="body">Stake is a deposit you keep ownership of, not a fee you pay to anyone. It is not reputation either, and it cannot be turned into reputation: an operator who performs badly cannot make up for it by staking more, because reputation is earned from completed work and tracked separately. What stake actually buys is skin in the game — a number the protocol can reduce if you break a rule, which is what makes strangers willing to rely on you.</p>
+        </div>
+      </section>
+
+      <section class="step has-code" id="s2">
+        <div>
+          <span class="num">02</span>
+          <h3>Choose the role you are staking for</h3>
+          <p class="body">There are seven staked roles, and a stake account is keyed by (owner, role) — so one wallet can hold completely independent stakes under several roles at once, each with its own balance and its own unbonding timer. The role is fixed when you open the account; to move stake between roles you unbond from one and stake into the other.</p>
+        </div>
+        <div class="code">
+          <div class="bar"><span>The seven roles, and their on-chain values</span><button>Copy</button></div>
+          <pre>Merchant                  = 0
+Arbitrator                = 1
+NodeOperator              = 2
+NotificationProvider      = 3
+OracleProvider            = 4
+RiskIntelligenceProvider  = 5
+SnapshotProvider          = 6</pre>
+        </div>
+      </section>
+
+      <section class="step has-code" id="s3">
+        <div>
+          <span class="num">03</span>
+          <h3>Get OPEN into your wallet</h3>
+          <p class="body">The devnet OPEN mint's mint authority is permanently unset — the full billion-token supply was minted once at genesis and nobody, including the project, can ever create more. So there is no faucet: on devnet it has to be sent to you by someone already holding it from the genesis distribution.</p>
+        </div>
+        <div class="code">
+          <div class="bar"><span>terminal</span><button>Copy</button></div>
+          <pre># The devnet OPEN mint. Note "Mint authority: (not set)"
+spl-token display 29w8TroBTYoaqrXBDcpv5L54VZRA8Kf7kU5U1cakvFdj --url devnet
+
+# Your own balance, once somebody has sent you some.
+spl-token balance 29w8TroBTYoaqrXBDcpv5L54VZRA8Kf7kU5U1cakvFdj --url devnet</pre>
+        </div>
+      </section>
+
+      <section class="step has-code" id="s4">
+        <div>
+          <span class="num">04</span>
+          <h3>Open a stake account and fund it</h3>
+          <p class="body">Two instructions: one creates the account for your (wallet, role) pair, the other moves OPEN from your token account into the program's vault. The easiest route is the Stake page in the OpenFiat app — though its form currently offers only four roles, so the other three need the SDK.</p>
+        </div>
+        <div class="code">
+          <div class="bar"><span>TypeScript</span><button>Copy</button></div>
+          <pre>const instructions = [
+  onchain.staking.initializeStakeAccountIx(owner, role),
+  onchain.staking.stakeIx(owner, mint, role, from, amount),
+];</pre>
+        </div>
+      </section>
+
+      <p class="mono" style="margin-top:2rem; font-size:.75rem; color:var(--faint);">Steps 05–08 continue the same rhythm — text left, command right, each anchored in the rail.</p>
+
+      <nav class="prevnext">
+        <a class="pn" href="#"><span class="dir">← Previous guide</span><div class="t">Become an arbitrator</div></a>
+        <a class="pn next" href="#"><span class="dir">Next guide →</span><div class="t">Vote on a proposal</div></a>
+      </nav>
+    </article>
+  </div>
+</div>
+
+</body>
+</html>

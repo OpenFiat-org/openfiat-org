@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guides redesign — concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0e14; --surface:#121822; --surface-alt:#0f151e;
+    --ink:#f2f5f9; --body:#b9c4d1; --muted:#8c98a7; --faint:#778494;
+    --accent:#0070f8; --accent-mid:#58a6ff; --accent-soft:#0d2035;
+    --teal-mid:#2ad0b8; --line:#1c2532; --line-strong:#2a3441;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--body); font-family:"Plus Jakarta Sans",system-ui,sans-serif; font-size:.9375rem; line-height:1.5333; }
+  a { color:inherit; text-decoration:none; }
+  .wrap { max-width:64rem; margin:0 auto; padding:0 1.5rem; }
+  header { padding:4rem 0 2.5rem; border-bottom:1px solid var(--line); }
+  header h1 { color:var(--ink); font-size:clamp(2rem,5vw,3rem); font-weight:800; letter-spacing:-.02em; }
+  header p { margin-top:.75rem; max-width:58ch; color:var(--body); }
+  header .note { margin-top:1rem; font-family:"JetBrains Mono",monospace; font-size:.75rem; color:var(--faint); }
+  .items { padding:2.5rem 0 5rem; display:grid; gap:1rem; }
+  .item { display:block; border:1px solid var(--line); border-radius:16px; background:var(--surface); padding:1.75rem 2rem; transition:border-color .15s, transform .15s; }
+  .item:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .item .top { display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap; }
+  .item .n { font-family:"JetBrains Mono",monospace; font-size:.75rem; color:var(--accent-mid); }
+  .item h2 { color:var(--ink); font-size:1.375rem; font-weight:700; letter-spacing:-.01em; }
+  .item .open { margin-left:auto; font-family:"JetBrains Mono",monospace; font-size:.75rem; color:var(--accent-mid); }
+  .item p { margin-top:.6rem; color:var(--muted); font-size:.875rem; max-width:72ch; }
+  .item ul { margin-top:.9rem; list-style:none; display:flex; flex-wrap:wrap; gap:.5rem; }
+  .item li { font-family:"JetBrains Mono",monospace; font-size:.625rem; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); border:1px solid var(--line-strong); border-radius:999px; padding:.3rem .7rem; }
+  .group-label { margin-top:2.5rem; font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); }
+  .group-label:first-child { margin-top:0; }
+  .rec { margin-top:.5rem; font-family:"JetBrains Mono",monospace; font-size:.625rem; letter-spacing:.08em; text-transform:uppercase; color:var(--teal-mid); }
+  .done-tag { margin-top:.5rem; font-family:"JetBrains Mono",monospace; font-size:.625rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-mid); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Redesign concepts</h1>
+    <p>Directions for the guides section and the homepage, each as a self-contained mockup. All use the site's real tokens — dark ground, <code>#0070f8</code> accent, teal secondary, Jakarta + JetBrains Mono — and real copy from the dictionaries, guides and whitepaper, so any of them can be built from the existing Tailwind theme.</p>
+    <p class="note">Static HTML mockups · open each file in a browser</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="items">
+    <p class="group-label">Guides section</p>
+    <a class="item" href="1-wayfinding.html">
+      <span class="top"><span class="n">01</span><h2>Wayfinding</h2><span class="rec">recommended — smallest change, biggest gain</span><span class="open">Open mockup →</span></span>
+      <p>An evolution of what exists today. The index keeps its grouped structure but moves from bare hairline rows to cards that carry real metadata (steps, time, tooling) and a chip marking the two standalone pages. The guide page gains a sticky left rail: numbered step table of contents, reading progress, and prev/next guide navigation.</p>
+      <ul><li>card shelf</li><li>step rail + progress</li><li>prev / next</li><li>fits current Section/Rows system</li></ul>
+    </a>
+
+    <a class="item" href="2-docs-console.html">
+      <span class="top"><span class="n">02</span><h2>Docs console</h2><span class="open">Open mockup →</span></span>
+      <p>Treats guides as technical documentation rather than marketing pages. The index becomes one dense, filterable table (slug, summary, track, step count) with a search field aimed at commands and role names. The guide page adopts the classic three-column docs layout: persistent guide nav on the left, content in the middle, "on this page" plus an edit-on-GitHub link on the right.</p>
+      <ul><li>search + filters</li><li>3-column docs layout</li><li>persistent nav</li><li>best when guide count grows</li></ul>
+    </a>
+
+    <a class="item" href="3-paths.html">
+      <span class="top"><span class="n">03</span><h2>Paths</h2><span class="done-tag">implemented — now live in the app</span><span class="open">Open mockup →</span></span>
+      <p>Reorganizes guides around intent instead of topic: Trader, Operator, Builder journeys with ordered milestones. The index is a set of path cards with progress dots (stored client-side); each guide gets a sticky path strip showing where it sits in the journey, giant outlined step numerals, "mark step done" check-offs, and prev/next along the path.</p>
+      <ul><li>role journeys</li><li>local progress tracking</li><li>milestone strip</li><li>lib/guides/paths.ts</li></ul>
+    </a>
+
+    <p class="group-label">Homepage</p>
+
+    <a class="item" href="home-1-pitch.html">
+      <span class="top"><span class="n">01</span><h2>The pitch</h2><span class="open">Open mockup →</span></span>
+      <p>A manifesto arc taken straight from whitepaper ch. 1: "Ownership is solved. Commerce isn't." → the struck-through list of what a single company controls today → the two-layer answer (Solana settlement, OpenFiat coordination) → four doors out: presale, whitepaper, contribute code, learn how it works.</p>
+      <ul><li>problem → solution arc</li><li>two-layer split</li><li>4 CTA doors</li><li>whitepaper-grounded</li></ul>
+    </a>
+
+    <a class="item" href="home-2-dashboard.html">
+      <span class="top"><span class="n">02</span><h2>The dashboard</h2><span class="open">Open mockup →</span></span>
+      <p>Action-first: compact hero, then a 2×2 grid where every card is a thing to do — join the presale (with the rate and raise bar inside), contribute code (real repo list), learn (guide paths), read the whitepaper (chapter stats inside). Explanation — trade steps, scenarios, rails — comes after action.</p>
+      <ul><li>conversion-first</li><li>live-feeling cards</li><li>real repos + scenarios</li><li>works with existing sale panel</li></ul>
+    </a>
+
+    <a class="item" href="home-3-network.html">
+      <span class="top"><span class="n">03</span><h2>The living network</h2><span class="open">Open mockup →</span></span>
+      <p>The homepage as a status page for a network that exists today: devnet status line in the hero, structural telemetry band, the two-layer architecture as a stack diagram, a four-move trade timeline, the whitepaper as a chapter index, repos as a grid, and the presale as a closing band with the fixed terms in a fact table.</p>
+      <ul><li>status-page framing</li><li>architecture diagram</li><li>chapter index</li><li>sale fact table</li></ul>
+    </a>
+
+    <a class="item" href="home-4-combined.html">
+      <span class="top"><span class="n">04</span><h2>Combined</h2><span class="done-tag">implemented — now live in the app</span><span class="open">Open mockup →</span></span>
+      <p>The merge: home-3's hero (status line, node field, "no company can switch off") with the current homepage's rewards card restored beside it — connect wallet, see your contribution, claim OPEN. Then home-1's manifesto flow (struck-through problem list → two-layer split), the four-move trade timeline as the learn element, home-3's chapter index and repo grid, and the closing presale band with the terms fact table.</p>
+      <ul><li>hero + claim rewards card</li><li>problem → layers arc</li><li>trade timeline</li><li>chapter index · repo grid · sale band</li></ul>
+    </a>
+  </div>
+</main>
+
+</body>
+</html>
