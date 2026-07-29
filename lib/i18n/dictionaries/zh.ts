@@ -23,6 +23,7 @@ export const zh: Dictionary = {
     whitepaper: "白皮书",
     specs: "规范",
     actors: "参与方式",
+    guides: "操作指南",
     sale: "代币销售",
     runNode: "运行节点",
     launchApp: "打开应用",
@@ -55,6 +56,7 @@ export const zh: Dictionary = {
       actors: "全部角色",
       merchants: "商户",
       nodeOperators: "节点运营者",
+      guides: "操作指南",
       runNode: "运行节点",
       becomeArbitrator: "成为仲裁者",
       developers: "开发者",
@@ -294,6 +296,46 @@ export const zh: Dictionary = {
       "无需输入优惠码。在 Discord 或 allenhark.com 的在线聊天中说明你正在运行 OpenFiat 节点，折扣即会应用到你的订单。",
     hostingDiscord: "在 Discord 询问",
     hostingChat: "开始在线聊天",
+  },
+
+  guides: {
+    title: "操作指南",
+    intro:
+      "分步骤说明，并附有真实可用的命令。每篇指南都以软件当前的实际状态撰写，因此凡是尚未实现的部分，指南都会直接说明，而不是描述它将来的样子。",
+    accuracyNote:
+      "仅限 devnet。本页中的程序 ID 与端点均为 devnet 上的产物；目前不存在主网部署。",
+    allGuides: "全部指南",
+    requirementsTitle: "开始之前",
+    stepsTitle: "操作步骤",
+    relatedTitle: "相关内容",
+    copy: "复制",
+    copied: "已复制",
+    groups: {
+      trade: {
+        title: "交易",
+        blurb: "买入与卖出，以及为他人提供可供交易的流动性。",
+      },
+      operate: {
+        title: "运行基础设施",
+        blurb: "维持网络运转的各类角色，并因此从协议收入中获得回报。",
+      },
+      build: {
+        title: "在 OpenFiat 之上构建",
+        blurb: "面向协议本身开发软件，而不是使用他人编写的应用。",
+      },
+    },
+    standalone: {
+      runNode: {
+        title: "运行节点",
+        summary:
+          "从硬件准备到监控告警，完整安装、配置并运维一个 OpenFiat 节点。",
+      },
+      becomeArbitrator: {
+        title: "成为仲裁者",
+        summary:
+          "质押 OPEN、接手争议案件，并投出决定结果的「先承诺后揭示」投票。",
+      },
+    },
   },
 
   becomeArbitrator: {

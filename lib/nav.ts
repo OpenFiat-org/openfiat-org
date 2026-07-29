@@ -12,6 +12,7 @@ export const PRIMARY_NAV: { key: NavKey; href: string }[] = [
   { key: "howItWorks", href: "/how-it-works" },
   { key: "trust", href: "/trust" },
   { key: "actors", href: "/participate" },
+  { key: "guides", href: "/guides" },
   { key: "whitepaper", href: "/whitepaper" },
   { key: "runNode", href: "/run-a-node" },
 ];
@@ -38,6 +39,7 @@ export const FOOTER_COLUMNS: {
       { key: "actors", href: "/participate" },
       { key: "merchants", href: "/participate/merchants" },
       { key: "nodeOperators", href: "/participate/node-operators" },
+      { key: "guides", href: "/guides" },
       { key: "runNode", href: "/run-a-node" },
       { key: "becomeArbitrator", href: "/become-an-arbitrator" },
       { key: "sale", href: "/sale" },

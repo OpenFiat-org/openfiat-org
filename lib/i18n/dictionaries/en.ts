@@ -16,6 +16,7 @@ export const en = {
     whitepaper: "Whitepaper",
     specs: "Specs",
     actors: "Participate",
+    guides: "Guides",
     sale: "Token sale",
     runNode: "Run a node",
     launchApp: "Launch app",
@@ -48,6 +49,7 @@ export const en = {
       actors: "All roles",
       merchants: "Merchants",
       nodeOperators: "Node operators",
+      guides: "Guides",
       runNode: "Run a node",
       becomeArbitrator: "Become an arbitrator",
       developers: "Developers",
@@ -292,6 +294,51 @@ export const en = {
       "There is no code to enter. Ask on Discord or in the chat on allenhark.com, say you are running an OpenFiat node, and the discount is applied to your order.",
     hostingDiscord: "Ask on Discord",
     hostingChat: "Open a chat",
+  },
+
+  /* Shell copy for /guides and the shared guide renderer. Each guide's own
+     words live in its module under lib/guides, in every locale. */
+  guides: {
+    title: "Guides",
+    intro:
+      "Step-by-step, with the real commands. Every guide is written against the software as it exists today, so where something is not built yet, the guide says so instead of describing what it would look like.",
+    accuracyNote:
+      "Devnet only. Program ids and endpoints on these pages are devnet artifacts; there is no mainnet deployment.",
+    allGuides: "All guides",
+    requirementsTitle: "Before you start",
+    stepsTitle: "Steps",
+    relatedTitle: "Related",
+    copy: "Copy",
+    copied: "Copied",
+    groups: {
+      trade: {
+        title: "Trading",
+        blurb:
+          "Buying and selling, and putting up the liquidity others trade against.",
+      },
+      operate: {
+        title: "Running infrastructure",
+        blurb:
+          "The roles that keep the network up, and earn from protocol revenue for it.",
+      },
+      build: {
+        title: "Building on OpenFiat",
+        blurb:
+          "Writing software against the protocol rather than using an app someone else wrote.",
+      },
+    },
+    standalone: {
+      runNode: {
+        title: "Run a node",
+        summary:
+          "Install, configure and operate an OpenFiat node, from hardware to monitoring.",
+      },
+      becomeArbitrator: {
+        title: "Become an arbitrator",
+        summary:
+          "Bond OPEN, take a dispute case, and cast the commit-reveal vote that decides it.",
+      },
+    },
   },
 
   becomeArbitrator: {
