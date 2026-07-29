@@ -12,7 +12,7 @@
  * OPEN) — this is not a raise-ceiling sizing choice, because the presale
  * itself has no hard cap on demand. Per OFS-4100 §3:
  *
- *  - Presale: 1 OPEN = 1 USDC, target $2,000,000 (a goal, not a cap — see
+ *  - Presale: 1 OPEN = 1 USDC, target $20,000,000 (a goal, not a cap — see
  *    `RAISE_GOAL_USDC` in ./config). If demand exceeds the target, the sale
  *    keeps selling out of the same 200M bucket rather than stopping.
  *  - Public Sale: whatever of the 200M bucket remains unsold when the
