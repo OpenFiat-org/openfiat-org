@@ -443,33 +443,26 @@ export const enContent = {
 
     ports: {
       p2pQuic:
-        "Peer-to-peer traffic. QUIC is the primary transport, so this UDP port must be reachable.",
-      p2pTcp: "TCP fallback for peers that cannot use QUIC.",
-      api: "The API clients and interfaces connect to. Open it only if you serve applications.",
+        "Peer-to-peer traffic. QUIC is the primary transport, so this UDP port must be reachable — the one people most often forget to open.",
+      api: "JSON-RPC, WebSocket, REST, health, and metrics — one real port serves all of it, there is no separate port per surface.",
       metrics:
-        "Prometheus metrics. Keep this on loopback or a private network.",
+        "Same port as the API above (GET /metrics). Firewall it to loopback/a private network if you don't want it public.",
     },
 
     troubleshooting: {
       noPeers: {
         symptom: "No peers connect",
         cause:
-          "UDP 7400 is blocked, or the announced address does not match how peers can actually reach the host.",
+          "UDP 4001 is blocked, or CLI_BOOTSTRAP_PEERS points at an address peers can't actually reach — it must be a static multiaddr/IP, not a hostname (DNS bootstrap doesn't resolve).",
       },
       stuckSync: {
         symptom: "Synchronization never completes",
         cause:
-          "The snapshot import did not finish. A node does not join the network until import succeeds.",
-      },
-      snapshotMismatch: {
-        symptom: "Snapshot rejected",
-        cause:
-          "A state-root or signature mismatch invalidates the snapshot. Fetch a fresh one, ideally from a different provider.",
+          "Snapshot import (OFS-1300) hasn't finished, or no peer has announced a recent-enough snapshot yet — check getLatestSnapshot/getCheckpointHeight.",
       },
       highDisk: {
         symptom: "Disk usage keeps growing",
-        cause:
-          "RocksDB has not compacted, or old snapshots were retained after import.",
+        cause: "RocksDB has not compacted.",
       },
       clockSkew: {
         symptom: "Signatures or expiries rejected",
@@ -495,18 +488,18 @@ export const enContent = {
       },
       {
         id: "identity",
-        title: "Create the node's identity",
-        body: "The node signs everything it publishes with its own key, and its peer id is derived from that key. Keep the file — if you lose it the node rejoins as a stranger and starts building reputation again from zero.",
+        title: "Generate the node's wallet",
+        body: "There is no separate \"node identity\" format — a node's identity is a real Solana CLI wallet.json, the same file solana-keygen produces. Its seed is reused for both the node's gossip/peer identity and its Solana signing key. Keep the file — if you lose it the node rejoins as a stranger and starts building reputation again from zero.",
       },
       {
         id: "configure",
-        title: "Write the configuration",
-        body: "One file sets where data lives, which addresses to listen on, which address to advertise to peers, and where to find the bootstrap hosts. Behind NAT the advertised address is the one that matters.",
+        title: "Set the environment",
+        body: "openfiat-node has no config file of its own — every setting is an environment variable, read once at startup: where data lives, which address to listen on, which peers to dial on start, and (optionally) which Solana RPC endpoint to use. Bootstrap peers must be a static multiaddr/IP, not a hostname — DNS bootstrap doesn't resolve.",
       },
       {
         id: "firewall",
         title: "Open the right ports",
-        body: "Peers reach the node over UDP because QUIC is the primary transport — that is the port people most often forget. Metrics stay private.",
+        body: "Peers reach the node over UDP because QUIC is the primary transport — that is the port people most often forget. One TCP port serves JSON-RPC, WebSocket, REST, health, and metrics together; keep it private if you don't want to serve clients publicly.",
       },
       {
         id: "service",
@@ -516,32 +509,32 @@ export const enContent = {
       {
         id: "sync",
         title: "Let it catch up",
-        body: "Rather than replaying all history, a new node downloads a signed snapshot of current marketplace state and verifies it — signature, protocol version, compression and state root all have to match. Then it replays the events since. Until that finishes the node does not serve the network.",
+        body: "Rather than replaying all history, a new node can discover and import a peer-announced snapshot of current marketplace state (OFS-1300) — real JSON-RPC methods, not a separate tool: getLatestSnapshot, getCheckpointHeight. Signature, protocol version, and state root all have to match before it's trusted.",
       },
       {
         id: "verify",
         title: "Check that it is healthy",
-        body: "One request tells you whether it is synchronized, how many peers it has, and how fresh its snapshot is. Peers climbing and a small snapshot age mean it is working.",
+        body: "GET /health confirms the process is up; getChainStatus over JSON-RPC tells you whether it's GossipOnly or RpcConnected, and its current blockhash if the latter.",
       },
       {
         id: "register",
-        title: "Announce it to the network",
-        body: "Registration gossips your endpoint and capabilities to other nodes, and nobody approves it. Staking is the separate step that makes the node an active participant, and it sets reward eligibility and traffic priority.",
+        title: "It's already part of the network",
+        body: 'There\'s no separate "announce" step — once a node has bootstrap peers, it gossips and is gossiped about automatically; nobody approves it. Staking, publishing service-registry metadata, joining disputes, and casting governance votes are all separate, wallet-driven actions a client performs against the running node — see the relevant participate guide for each.',
       },
       {
         id: "monitor",
         title: "Watch it",
-        body: "The metrics that actually predict trouble are connected peers, snapshot age, and synchronization state. Alert on those three and you will know before your users do.",
+        body: "The signals that actually predict trouble are connected peers, chain mode (GossipOnly vs RpcConnected), and blockhash age. Alert on those and you will know before your users do.",
       },
       {
         id: "upgrade",
         title: "Keep it current",
-        body: "Verify the release signature, stop, replace, start. Nodes upgrade one at a time, so the network never needs a coordinated outage, and missed events replay on startup.",
+        body: "Stop, replace the binary, start. Nodes upgrade one at a time, so the network never needs a coordinated outage, and missed gossip events replay on startup.",
       },
       {
         id: "backup",
         title: "Back up what cannot be regenerated",
-        body: "Marketplace state can always be re-synced from a snapshot. The node key and wallet cannot. Balances and escrow live on Solana, not on your disk.",
+        body: "Marketplace state can always be re-synced from a snapshot. The wallet cannot be regenerated. Balances and escrow live on Solana, not on your disk.",
       },
     ],
 

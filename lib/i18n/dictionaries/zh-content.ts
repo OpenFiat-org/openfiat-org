@@ -411,29 +411,27 @@ export const zhContent: ContentDictionary = {
     ],
 
     ports: {
-      p2pQuic: "点对点流量。QUIC 是主要传输方式，因此该 UDP 端口必须可达。",
-      p2pTcp: "面向无法使用 QUIC 的对等节点的 TCP 备用通道。",
-      api: "客户端与界面连接的 API。仅在你需要对外提供服务时开放。",
-      metrics: "Prometheus 指标。请仅在回环地址或内网上开放。",
+      p2pQuic:
+        "点对点流量。QUIC 是主要传输方式，因此该 UDP 端口必须可达——也是最容易被遗漏的端口。",
+      api: "JSON-RPC、WebSocket、REST、健康检查与指标共用同一个真实端口，并非各自独立的端口。",
+      metrics:
+        "与上面的 API 同一端口（GET /metrics）。如不希望公开，请仅在回环地址或内网上开放。",
     },
 
     troubleshooting: {
       noPeers: {
         symptom: "没有对等节点连接",
         cause:
-          "UDP 7400 被拦截，或对外公告的地址与对等节点实际可达的地址不一致。",
+          "UDP 4001 被拦截，或 CLI_BOOTSTRAP_PEERS 指向了对等节点实际无法访问的地址——它必须是静态的 multiaddr/IP，而不是主机名（DNS 引导地址无法解析）。",
       },
       stuckSync: {
         symptom: "同步始终无法完成",
-        cause: "快照导入尚未完成。在导入成功之前，节点不会加入网络。",
-      },
-      snapshotMismatch: {
-        symptom: "快照被拒绝",
-        cause: "状态根或签名不匹配会使快照失效。请重新获取，最好换一个提供方。",
+        cause:
+          "快照导入（OFS-1300）尚未完成，或还没有对等节点公告足够新的快照——可检查 getLatestSnapshot / getCheckpointHeight。",
       },
       highDisk: {
         symptom: "磁盘占用持续增长",
-        cause: "RocksDB 尚未压缩，或导入后仍保留了旧快照。",
+        cause: "RocksDB 尚未压缩。",
       },
       clockSkew: {
         symptom: "签名或有效期被拒绝",
@@ -454,18 +452,18 @@ export const zhContent: ContentDictionary = {
       },
       {
         id: "identity",
-        title: "创建节点身份",
-        body: "节点用自己的密钥为所发布的一切签名，其节点 ID 也由该密钥推导而来。请务必保留该文件——一旦丢失，节点将以陌生身份重新加入，信誉也要从零重新积累。",
+        title: "生成节点的钱包",
+        body: "并不存在单独的“节点身份”格式——节点的身份就是一个真实的 Solana CLI 格式 wallet.json，与 solana-keygen 生成的文件相同。它的种子会同时用作节点的 gossip/对等身份与 Solana 签名密钥。请务必保留该文件——一旦丢失，节点将以陌生身份重新加入，信誉也要从零重新积累。",
       },
       {
         id: "configure",
-        title: "编写配置文件",
-        body: "一个文件即可设定数据存放位置、监听地址、对外公告给对等节点的地址，以及引导节点的位置。在 NAT 之后，真正起作用的是对外公告的那个地址。",
+        title: "设置环境变量",
+        body: "openfiat-node 没有自己的配置文件——每一项设置都是启动时读取一次的环境变量：数据存放位置、监听地址、启动时拨号的对等节点，以及（可选的）使用哪个 Solana RPC 端点。引导节点必须是静态的 multiaddr/IP，而不是主机名——DNS 引导地址无法解析。",
       },
       {
         id: "firewall",
         title: "开放必要端口",
-        body: "由于 QUIC 是主要传输方式，对等节点通过 UDP 访问节点——这也是最容易被遗漏的端口。指标端口保持内部可见即可。",
+        body: "由于 QUIC 是主要传输方式，对等节点通过 UDP 访问节点——这也是最容易被遗漏的端口。JSON-RPC、WebSocket、REST、健康检查与指标共用同一个 TCP 端口；如不希望公开对外提供服务，请将其保持私有。",
       },
       {
         id: "service",
@@ -475,32 +473,32 @@ export const zhContent: ContentDictionary = {
       {
         id: "sync",
         title: "让它完成追赶",
-        body: "新节点不会重放全部历史，而是下载一份带签名的当前市场状态快照并进行校验——签名、协议版本、压缩完整性与状态根都必须匹配，随后再重放此后的事件。在此完成之前，节点不会对外提供服务。",
+        body: "新节点不会重放全部历史，而是可以发现并导入对等节点公告的市场状态快照（OFS-1300）——这是真实的 JSON-RPC 方法，而非独立工具：getLatestSnapshot、getCheckpointHeight。签名、协议版本与状态根都必须匹配，才会被信任。",
       },
       {
         id: "verify",
         title: "确认运行健康",
-        body: "一次请求即可看到它是否已同步、连接了多少对等节点，以及快照的新鲜度。对等节点数上升且快照时延很小，说明一切正常。",
+        body: "GET /health 确认进程已启动；通过 JSON-RPC 调用 getChainStatus 可以看到它处于 GossipOnly 还是 RpcConnected，以及（若为后者）当前的区块哈希。",
       },
       {
         id: "register",
-        title: "向网络注册",
-        body: "注册会把你的接入地址与能力通过 gossip 广播给其他节点，无需任何人批准。质押是另一个步骤：节点必须质押才能成为活跃参与者，并据此获得奖励资格与流量优先级。",
+        title: "它已经是网络的一部分",
+        body: "并不存在单独的“注册”步骤——只要节点配置了引导节点，就会自动进行 gossip 广播与被广播，无需任何人批准。质押、发布服务注册元数据、加入争议仲裁与参与治理投票，都是客户端针对运行中节点执行的独立、由钱包驱动的操作——请参阅各自对应的参与指南。",
       },
       {
         id: "monitor",
         title: "持续监控",
-        body: "真正能预警问题的指标是：已连接对等节点数、快照新鲜度与同步状态。为这三项配置告警，你就能比用户更早发现异常。",
+        body: "真正能预警问题的信号是：已连接对等节点数、链路模式（GossipOnly 还是 RpcConnected）与区块哈希的新鲜度。为这些配置告警，你就能比用户更早发现异常。",
       },
       {
         id: "upgrade",
         title: "保持版本更新",
-        body: "校验发布签名，停止、替换、再启动。节点各自独立升级，网络无需协同停机，期间缺失的事件会在启动时自动重放。",
+        body: "停止、替换二进制文件、再启动。节点各自独立升级，网络无需协同停机，期间缺失的 gossip 事件会在启动时自动重放。",
       },
       {
         id: "backup",
         title: "备份无法再生成的内容",
-        body: "市场状态随时可以通过快照重新同步，而节点密钥与钱包无法再生成。余额与履约托管存放在 Solana 上，而不在你的磁盘中。",
+        body: "市场状态随时可以通过快照重新同步，而钱包无法再生成。余额与履约托管存放在 Solana 上，而不在你的磁盘中。",
       },
     ],
 

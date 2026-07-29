@@ -41,7 +41,7 @@ const STEP_CODE: Record<string, { code: string; filename?: string }[]> = {
   prepare: [{ code: CODE.prereqs }],
   install: [],
   identity: [{ code: CODE.identity }],
-  configure: [{ code: CODE.config, filename: "/etc/openfiat/node.toml" }],
+  configure: [{ code: CODE.config, filename: "/etc/openfiat/node.env" }],
   firewall: [{ code: CODE.firewall }],
   service: [
     { code: CODE.systemd, filename: "openfiat-node.service" },
@@ -49,7 +49,7 @@ const STEP_CODE: Record<string, { code: string; filename?: string }[]> = {
   ],
   sync: [{ code: CODE.snapshotManual }],
   verify: [{ code: CODE.verify }],
-  register: [{ code: CODE.register }],
+  register: [],
   monitor: [{ code: CODE.prometheus, filename: "prometheus.yml" }],
   upgrade: [{ code: CODE.upgrade }],
   backup: [{ code: CODE.backup }],
