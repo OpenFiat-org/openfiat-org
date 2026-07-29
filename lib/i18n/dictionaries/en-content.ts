@@ -95,7 +95,7 @@ export const enContent = {
     dispute: [
       {
         title: "Either side opens a case",
-        body: "The person opening it pays a small fee in OPEN, refunded if the dispute was raised in good faith and forfeited if it was frivolous. Both sides submit evidence: receipts, payment confirmations, the trade conversation.",
+        body: "Raising a dispute costs the buyer nothing. The arbitration deposit is posted by the merchant from their liquidity vault whichever side opened the case, and they forfeit it only if the outcome goes against them. Both sides submit evidence: receipts, payment confirmations, the trade conversation. The deposit is specified and not yet charged.",
       },
       {
         title: "Arbitrators stake to take the case",
@@ -107,7 +107,7 @@ export const enContent = {
       },
       {
         title: "The escrow settles the outcome",
-        body: "The decision executes on chain. Arbitrators in the majority earn a reward; those outside it lose part of their stake. Penalties are deliberately moderate — the aim is to deter negligence and collusion, not to punish honest disagreement.",
+        body: "The decision executes on chain. The design pays arbitrators in the majority and takes part of the stake of those outside it, with penalties deliberately moderate — the aim is to deter negligence and collusion, not to punish honest disagreement. Neither the reward nor the penalty is implemented yet, so today a vote earns nothing and voting against consensus costs nothing.",
       },
     ],
   },
@@ -190,7 +190,7 @@ export const enContent = {
         "File a dispute with evidence if something goes wrong",
       ],
       stake:
-        "None. Buyers do not publish advertisements and stake nothing. The only OPEN at risk is the dispute filing fee, which may be refunded if the dispute was filed in good faith and forfeited if it was frivolous.",
+        "None. Buyers do not publish advertisements, stake nothing, and pay nothing to raise a dispute — the arbitration deposit is posted by the merchant regardless of who opens the case. A buyer's only cost is the settlement fee, and only on a trade that completes.",
       earns:
         "Nothing directly. The benefit is competition between merchants and no dependence on a single operator staying online.",
       requirements: [
@@ -215,7 +215,7 @@ export const enContent = {
       stake:
         "Merchant registration requires staking OPEN. It discourages spam, provides economic accountability, and sets the merchant's initial advertisement capacity. Importantly, merchant stake does not back individual trades — settlement is secured by the escrow vault. Staking also does not grant reputation, which must be earned through completed trades.",
       earns:
-        "The spread on their own pricing. Merchants pay rather than receive protocol fees: each active advertisement requires a listing fee denominated in OPEN.",
+        "The spread on their own pricing. Merchants pay rather than receive protocol fees: an advertisement carries a listing fee in OPEN, and the arbitration deposit on a disputed trade comes from the merchant's vault. Neither is charged yet — both are specified and read by no instruction, so advertising currently costs nothing.",
       requirements: [
         "Register a merchant profile before advertising",
         "Stake OPEN; capacity scales with stake, reputation, account age, trade history and dispute rate",
@@ -238,7 +238,7 @@ export const enContent = {
       stake:
         "Required to be an active participant. Stake alone does not determine reputation, though — an operator with poor performance cannot compensate by staking more. Effective priority combines reputation, stake and measured network performance, and staked nodes are eligible for protocol rewards.",
       earns:
-        "Compensation comes from protocol revenue rather than token inflation, weighted by stake, reputation, availability, synchronization success, peer connectivity and service quality. No formula or rate is published.",
+        "Compensation comes from protocol revenue rather than token inflation, weighted by stake, connectivity and availability — a node bridging to Solana earns more than one only gossiping. The formula is published in OFS-4100 §9.2. Nothing pays it yet: the calculation exists, but nothing submits the result and the rewards vault is empty.",
       requirements: [
         "Commodity server hardware — 4 cores, 16 GB RAM and 250 GB NVMe at minimum",
         "A stable connection and a generated node identity",
@@ -259,7 +259,7 @@ export const enContent = {
       stake:
         "Per case. An arbitrator commits additional stake for each case they join, and that case stays economically secured until resolution. Arbitrators whose revealed vote falls outside the final consensus may lose part of that stake. Penalties are intentionally moderate: the goal is to discourage negligence and collusion, not to punish good-faith disagreement.",
       earns:
-        "Rewards funded by dispute fees, filing fees and future governance-defined incentive pools, distributed automatically after settlement.",
+        "The design funds rewards from the arbitration pool, split among arbitrators whose revealed vote matched the outcome, pro-rata by revealed weight. None of it is implemented — an arbitrator earns nothing today, and there is no on-chain field to hold a payout.",
       requirements: [
         "A minimum OPEN stake and minimum arbitrator reputation",
         "Sufficient protocol age and no active arbitration penalties",
@@ -300,7 +300,7 @@ export const enContent = {
       stake:
         "Required before publishing pricing information. Providers who consistently publish incorrect or unavailable data may lose reward eligibility and face governance-defined penalties; proven oracle misconduct is a stated cause for slashing.",
       earns:
-        "Named as a recipient of protocol revenue. No formula, fee or rate is published.",
+        "Reads are free, and the provider is paid by the protocol instead — scaled by how many currency pairs they actually cover and by observed uptime. The formula is proposed in OFS-4100 §9.6 and is not final, and nothing pays it yet.",
       requirements: [
         "Register through the service registry with supported pairs and update frequency",
         "Sign every record — unsigned oracle updates must be rejected",
@@ -321,7 +321,7 @@ export const enContent = {
       stake:
         "Required, as an infrastructure commitment. Publishing corrupted snapshots is listed among malicious behaviours subject to governance-approved slashing.",
       earns:
-        "Additional protocol rewards when selected by governance-approved reward formulas. The formulas are not published.",
+        "Nothing. Downloads are free and the role carries no compensation, by decision — serving a snapshot is a marginal cost on infrastructure a node operator already runs and is already paid for. There is no revenue in a standalone snapshot service and none is planned.",
       requirements: [
         "Advertise the capability through the service registry",
         "Publish complete snapshot metadata including snapshot height and state root",
@@ -330,7 +330,8 @@ export const enContent = {
     },
     "risk-intelligence-providers": {
       name: "Risk intelligence providers",
-      definition: "Any qualified organization may become a provider.",
+      definition:
+        "The one provider role that requires governance approval before operating.",
       summary: "Publish advisory wallet risk information.",
       responsibilities: [
         "Publish signed risk records naming wallet address, category, severity and confidence",
@@ -338,8 +339,9 @@ export const enContent = {
         "Support multi-provider consensus and false-positive handling",
       ],
       stake:
-        "Not specified. This is the one provider role the whitepaper's staking table omits, and no staking requirement appears for it anywhere. The site does not claim one.",
-      earns: "Not specified. No reward mechanism is described for this role.",
+        "Not specified — this is the one provider role the whitepaper's staking table omits, and no staking requirement appears for it anywhere. Approval by governance, not stake, is what gates the role: a standing subscription drawn from the treasury has no natural bound on abuse the way a useless oracle does.",
+      earns:
+        "A fixed subscription paid by the treasury — 1,000 USDC per month by default, scaled by observed uptime, governance-configurable and expected to change as the network grows. Neither the payment nor the approval gate below is built yet.",
       requirements: [
         "Register through the service registry",
         "Accept that records are advisory: applications may reject deposits, warn, require confirmation or ignore the advisory entirely",
@@ -639,7 +641,7 @@ export const enContent = {
       {
         id: "resolve",
         title: "The outcome executes itself",
-        body: "Once every arbitrator has revealed, or the reveal window closes, anyone — you, the buyer, the seller, or an unrelated bot — can call execute_dispute_outcome. It only tallies votes already recorded on-chain: the majority earns a share of the case's fees, and whoever revealed against it loses part of their stake.",
+        body: "Once every arbitrator has revealed, or the reveal window closes, anyone — you, the buyer, the seller, or an unrelated bot — can call execute_dispute_outcome. It only tallies votes already recorded on-chain. The design then pays the majority a share of the case's fees and takes part of the stake of whoever revealed against it — but neither the reward nor the penalty is implemented, so today the tally moves the traders' funds and nothing else.",
       },
     ],
   },

@@ -24,6 +24,7 @@ export const zh: Dictionary = {
     specs: "规范",
     actors: "参与方式",
     guides: "操作指南",
+    fees: "费用",
     sale: "代币销售",
     runNode: "运行节点",
     launchApp: "打开应用",
@@ -57,6 +58,7 @@ export const zh: Dictionary = {
       merchants: "商户",
       nodeOperators: "节点运营者",
       guides: "操作指南",
+      fees: "费用",
       runNode: "运行节点",
       becomeArbitrator: "成为仲裁者",
       developers: "开发者",
@@ -298,6 +300,35 @@ export const zh: Dictionary = {
     hostingChat: "开始在线聊天",
   },
 
+  fees: {
+    title: "费用",
+    intro:
+      "协议收取的每一项费用，以及它支付出去的每一笔款项。以下大部分内容都已确定并写入文档，但尚未实际收取或发放，每一行都会标明其真实状态——一个让人误以为全部已经生效的费用页面，会是最具误导性的错误。",
+    accuracyNote: "仅限 devnet。每一项费用都是治理参数，而非固定常量。",
+    payTitle: "你需要支付什么",
+    payIntro:
+      "共三项费用，且并非由同一方承担。买方只在交易完成时付费，提出争议则无需付费；商户承担的是发布挂单与接受仲裁这两项持续性成本。",
+    receiveTitle: "各角色能获得什么",
+    receiveIntro:
+      "「使用是否付费」与「谁来补偿提供方」是两个不同的问题。一项服务完全可以对使用者免费，同时由协议出资供养——预言机汇率正是如此。",
+    permissionedTitle: "唯一需要许可的角色",
+    permissionedBody:
+      "风险情报是唯一需要先获得治理批准才能开展服务的角色。AllenHark 为默认提供方。",
+    defaultProviderLabel: "默认服务公钥",
+    governanceTitle: "每一项费用都是参数",
+    governanceBody:
+      "此处没有任何金额是固定常量。每一项都可由治理调整，因为以代币计价的费用必须随该代币价格变化而变化。页面所示为当前默认值，其中标注为提案的部分尚未获得最终确认。",
+    columnPayer: "支付方",
+    columnAmount: "金额",
+    columnConsumer: "使用者支付",
+    columnReceives: "提供方所得",
+    status: {
+      live: "目前已收取",
+      specified: "已定义，尚未生效",
+      none: "按决定不予支付",
+    },
+  },
+
   guides: {
     title: "操作指南",
     intro:
@@ -317,7 +348,8 @@ export const zh: Dictionary = {
       },
       operate: {
         title: "运行基础设施",
-        blurb: "维持网络运转的各类角色，并因此从协议收入中获得回报。",
+        blurb:
+          "维持网络运转的各类角色。协议收入本应为此付费，但目前尚未有任何款项发放。",
       },
       build: {
         title: "在 OpenFiat 之上构建",

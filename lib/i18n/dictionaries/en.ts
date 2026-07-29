@@ -17,6 +17,7 @@ export const en = {
     specs: "Specs",
     actors: "Participate",
     guides: "Guides",
+    fees: "Fees",
     sale: "Token sale",
     runNode: "Run a node",
     launchApp: "Launch app",
@@ -50,6 +51,7 @@ export const en = {
       merchants: "Merchants",
       nodeOperators: "Node operators",
       guides: "Guides",
+      fees: "Fees",
       runNode: "Run a node",
       becomeArbitrator: "Become an arbitrator",
       developers: "Developers",
@@ -298,6 +300,36 @@ export const en = {
 
   /* Shell copy for /guides and the shared guide renderer. Each guide's own
      words live in its module under lib/guides, in every locale. */
+  fees: {
+    title: "Fees",
+    intro:
+      "Every fee the protocol charges and everything it pays out. Most of what follows is decided and documented but not yet collected or paid, and each row says which it is — a fees page that read as if it were all live would be the most consequential kind of wrong.",
+    accuracyNote:
+      "Devnet only. Every fee is a governance parameter, never a constant.",
+    payTitle: "What you pay",
+    payIntro:
+      "Three fees, and they do not fall on the same party. A buyer pays only on a completed trade and nothing to raise a dispute; a merchant carries the standing costs of advertising and being arbitrated.",
+    receiveTitle: "What each role receives",
+    receiveIntro:
+      "Consumption and compensation are separate questions. A service can be free to consume and still be paid for by the protocol — that is exactly how oracle rates work.",
+    permissionedTitle: "The one permissioned role",
+    permissionedBody:
+      "Risk intelligence is the only role that requires governance approval before operating. AllenHark is the default provider.",
+    defaultProviderLabel: "Default service key",
+    governanceTitle: "Every fee is a parameter",
+    governanceBody:
+      "No amount here is a constant. Each one is governance-updatable, because fees denominated in a token have to move as that token's price does. The figures shown are current defaults, and those marked as proposed have not been signed off.",
+    columnPayer: "Payer",
+    columnAmount: "Amount",
+    columnConsumer: "Consumer pays",
+    columnReceives: "Provider receives",
+    status: {
+      live: "Charged today",
+      specified: "Specified, not yet active",
+      none: "Nothing, by decision",
+    },
+  },
+
   guides: {
     title: "Guides",
     intro:
@@ -319,7 +351,7 @@ export const en = {
       operate: {
         title: "Running infrastructure",
         blurb:
-          "The roles that keep the network up, and earn from protocol revenue for it.",
+          "The roles that keep the network up. Protocol revenue is meant to pay for it; none of it is flowing yet.",
       },
       build: {
         title: "Building on OpenFiat",
