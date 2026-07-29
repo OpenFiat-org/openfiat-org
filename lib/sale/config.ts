@@ -109,7 +109,7 @@ export const SALE_LIVE: boolean =
  *    this cluster. On devnet that is a small click-through test figure, so it
  *    is deliberately not shown as the goal.
  */
-export const RAISE_GOAL_USDC = 2_000_000;
+export const RAISE_GOAL_USDC = 20_000_000;
 
 /**
  * Read-only RPC endpoint. Pinned via env rather than falling back to a random
