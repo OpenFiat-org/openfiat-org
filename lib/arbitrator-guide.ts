@@ -14,7 +14,15 @@
  * gets slashed — it reads your `Arbitrator`-role `StakeAccount` directly
  * at reveal time, no CPI. They're independent instances of the same
  * decision, not one relayed from the other, so a real arbitrator client
- * casts both with the same outcome and salt.
+ * casts both, with the same salt and the same *decision*.
+ *
+ * Not the same byte, though. The two enums disagree: off-chain `Vote` is
+ * `BuyerWins=0, MerchantWins=1, Invalid=2`, while on-chain
+ * `DisputeOutcome` inserts `MutualSettlement` at 2, making
+ * `InvalidDispute=3`. Hashing the off-chain byte into the on-chain
+ * commitment therefore produces a commitment you can never open — you
+ * cannot reveal, and a non-revealing arbitrator is exactly who the
+ * protocol slashes. Use each side's own enum, as the snippets below do.
  *
  * DEVNET ONLY, same as every other program reference on this site.
  */
@@ -81,6 +89,9 @@ client.send_vote_commit(VoteCommit { dispute_id, arbitrator: peer_id(&keypair), 
 import { onchain } from "@openfiat/sdk";
 import { createHash } from "node:crypto";
 
+// onchain.DisputeOutcome, NOT the off-chain Vote byte: the two enums
+// diverge from Invalid onwards (see this file's header). Hash the wrong
+// one and the commitment can never be opened.
 const commitment = createHash("sha256").update(Buffer.from([onchain.DisputeOutcome.BuyerWins])).update(salt).digest();
 const ix = onchain.escrow.commitDisputeVoteIx(arbitrator, reservationId, commitment);`,
 

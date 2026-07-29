@@ -569,7 +569,7 @@ export const zhContent: ContentDictionary = {
       {
         id: "commit",
         title: "提交你的承诺——需要两次",
-        body: "有两个并行的「先承诺后揭示」投票：一个是链下的，记入案件自身的审计记录与信誉；另一个是链上的，针对 openfiat-escrow 的 DisputeCase 账户，真正决定按质押加权的结果。两边都要用同样的结果与随机数（salt）提交承诺——包括几分钟后的你自己在内，任何人都无法仅凭承诺值反推出投票内容。",
+        body: "有两个并行的「先承诺后揭示」投票：一个是链下的，记入案件自身的审计记录与信誉；另一个是链上的，针对 openfiat-escrow 的 DisputeCase 账户，真正决定按质押加权的结果。两边要使用同一个裁决结论与同一个随机数（salt）——但必须各用各自的枚举，而不是同一个数字：链下的 Invalid 为 2，链上的 InvalidDispute 为 3，因为链上的 2 是 MutualSettlement。一旦哈希了错误的字节，你所承诺的内容将永远无法揭示，而无法揭示恰恰正是仲裁者被罚没的情形。",
       },
       {
         id: "reveal",

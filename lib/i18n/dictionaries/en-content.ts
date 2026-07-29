@@ -629,7 +629,7 @@ export const enContent = {
       {
         id: "commit",
         title: "Commit your vote — twice",
-        body: "Two commit-reveal votes run side by side: an off-chain one that records into the case's own audit trail and reputation, and an on-chain one against openfiat-escrow's DisputeCase account that actually decides the stake-weighted outcome. Commit the same outcome and salt to both — nobody, including you a few minutes from now, can recover a vote from its commitment alone.",
+        body: "Two commit-reveal votes run side by side: an off-chain one that records into the case's own audit trail and reputation, and an on-chain one against openfiat-escrow's DisputeCase account that actually decides the stake-weighted outcome. Use the same decision and the same salt for both — but each side's own enum, not the same number: off-chain Invalid is 2, on-chain InvalidDispute is 3, because MutualSettlement sits at 2 on chain. Hash the wrong byte and you commit to something you can never reveal, which is precisely what gets an arbitrator slashed.",
       },
       {
         id: "reveal",
