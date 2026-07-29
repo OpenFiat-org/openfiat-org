@@ -73,7 +73,7 @@ use openfiat_sdk::{Client, ClientConfig};
 use openfiat_types::{MarketDataService, ServiceId, ServiceType, Timestamp};
 
 let client = Client::new(ClientConfig {
-    endpoint: "http://localhost:8080".to_string(),
+    endpoint: "http://localhost:7080".to_string(),
     ..ClientConfig::default()
 });
 
@@ -95,7 +95,7 @@ client.send_provider_register(registration, &keypair).await?;`,
           filename: "TypeScript",
           code: `import { Client, providers, toBytes, type Registration } from "@openfiat/sdk";
 
-const client = new Client({ endpoint: "http://localhost:8080", timeoutMs: 30_000 });
+const client = new Client({ endpoint: "http://localhost:7080", timeoutMs: 30_000 });
 
 const registration: Registration = {
   service_id: "my-oracle-1",
@@ -177,7 +177,7 @@ await oracles.sendOraclePublish(client, publish, keypair);`,
       },
       code: [
         {
-          code: `curl -s -X POST http://localhost:8080/rpc -H 'content-type: application/json' \\
+          code: `curl -s -X POST http://localhost:7080/rpc -H 'content-type: application/json' \\
   -d '{"jsonrpc":"2.0","id":1,"method":"getMedianExchangeRate","params":{"base":"USDC","quote":"KES"}}'`,
         },
       ],

@@ -1,5 +1,6 @@
 import { ACTORS } from "./actors";
 import { getChapters, getSpecs } from "./content";
+import { GUIDES } from "./guides";
 
 /**
  * Every locale-relative path the site publishes, with a crawl priority.
@@ -20,7 +21,9 @@ const STATIC_ROUTES: SiteRoute[] = [
   { path: "/whitepaper", priority: 0.9, changeFrequency: "monthly" },
   { path: "/specs", priority: 0.9, changeFrequency: "monthly" },
   { path: "/participate", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/guides", priority: 0.85, changeFrequency: "monthly" },
   { path: "/run-a-node", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/become-an-arbitrator", priority: 0.8, changeFrequency: "monthly" },
   { path: "/sale", priority: 0.8, changeFrequency: "weekly" },
   { path: "/glossary", priority: 0.6, changeFrequency: "monthly" },
   { path: "/roadmap", priority: 0.6, changeFrequency: "monthly" },
@@ -43,6 +46,11 @@ export function allRoutes(): SiteRoute[] {
     ...ACTORS.map((actor) => ({
       path: `/participate/${actor.slug}`,
       priority: 0.7,
+      changeFrequency: "monthly" as const,
+    })),
+    ...GUIDES.map((guide) => ({
+      path: `/guides/${guide.slug}`,
+      priority: 0.8,
       changeFrequency: "monthly" as const,
     })),
     ...getChapters().map((chapter) => ({

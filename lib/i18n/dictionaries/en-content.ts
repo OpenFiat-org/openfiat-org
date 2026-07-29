@@ -599,7 +599,7 @@ export const enContent = {
 
   becomeArbitrator: {
     requirements: [
-      "A Solana wallet holding at least 50,000 OPEN (OFIP-0019) — bond it via openfiat-app's Stake page, or the instructions below if you're building your own client",
+      "A Solana wallet holding at least 10,000 OPEN — the deployed staking config's min_stake_arbitrator, which governance can change — bond it via openfiat-app's Stake page, or the instructions below if you're building your own client",
       "A script or bot using the OpenFiat SDKs — working a case has no browser-only flow yet; only bonding does",
       "Network access to at least one OpenFiat node's JSON-RPC endpoint, your own or a public one",
     ],
@@ -614,7 +614,7 @@ export const enContent = {
       {
         id: "bond",
         title: "Bond OPEN to unlock the arbitration pool",
-        body: "Arbitrators must stake before they can see a single case's evidence — that's what makes bribing one pointless (you don't know which case to target) and gives the network something to slash if you vote against the revealed consensus. The current minimum is 50,000 OPEN (OFIP-0019).",
+        body: "Arbitrators must stake before they can see a single case's evidence — that's what makes bribing one pointless (you don't know which case to target) and gives the network something to slash if you vote against the revealed consensus. The deployed devnet config sets the arbitrator minimum at 10,000 OPEN, ten times the 1,000 every other role posts.",
       },
       {
         id: "discover",

@@ -24,11 +24,13 @@ export const DEVNET_PROGRAM_IDS = {
   staking: "HYEXk8XQukBkZbiYB33JyVefQDxqyCpPudad3wBCyYmx",
 };
 
-export const ARBITRATOR_MIN_BOND = 50_000; // OPEN, per OFIP-0019
+/** Read from the deployed devnet `StakingConfig` (`min_stake_arbitrator`
+ *  = 10_000 OPEN), which matches OFS-4100 §4. Governance can change it. */
+export const ARBITRATOR_MIN_BOND = 10_000;
 
 export const CODE = {
   discover: `# Any node will do — arbitrators pick a case, nobody assigns one.
-curl -s -X POST http://localhost:8080/rpc -H 'content-type: application/json' \\
+curl -s -X POST http://localhost:7080/rpc -H 'content-type: application/json' \\
   -d '{"jsonrpc":"2.0","id":1,"method":"getDisputes","params":{}}'
 # Filter the result for status: "Open" and arbitrators.length < required_arbitrators`,
 
@@ -39,7 +41,7 @@ import { onchain } from "@openfiat/sdk";
 // Role.Arbitrator = 1 — same instruction pair openfiat-app's Stake page
 // submits when you connect a wallet and bond there directly.
 const from = getAssociatedTokenAddressSync(mint, owner, false, TOKEN_2022_PROGRAM_ID);
-const amount = 50_000n * 1_000_000_000n; // OPEN has 9 decimals (OFS-4100 §1)
+const amount = 10_000n * 1_000_000_000n; // OPEN has 9 decimals (OFS-4100 §1)
 
 const instructions = [
   onchain.staking.initializeStakeAccountIx(owner, onchain.Role.Arbitrator),

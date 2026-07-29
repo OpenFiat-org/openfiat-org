@@ -53,8 +53,8 @@ export type PortRow = {
  *  `crates/cli/src/main.rs`). */
 export const PORTS: PortRow[] = [
   { port: 4001, protocol: "UDP", key: "p2pQuic", public: true },
-  { port: 8080, protocol: "TCP", key: "api", public: true },
-  { port: 8080, protocol: "TCP", key: "metrics", public: false },
+  { port: 7080, protocol: "TCP", key: "api", public: true },
+  { port: 7080, protocol: "TCP", key: "metrics", public: false },
 ];
 
 export const CODE = {
@@ -76,14 +76,14 @@ services:
     # health, and metrics together — there is no separate metrics port.
     ports:
       - "4001:4001/udp"
-      - "8080:8080/tcp"
+      - "7080:7080/tcp"
     volumes:
       - /var/lib/openfiat:/data
       - /etc/openfiat/wallet.json:/data/wallet.json:ro
     environment:
       CLI_DATA_DIR: /data
       CLI_WALLET_PATH: /data/wallet.json
-      CLI_HTTP_ADDR: 0.0.0.0:8080
+      CLI_HTTP_ADDR: 0.0.0.0:7080
       CLI_LISTEN_ADDR: /ip4/0.0.0.0/udp/4001/quic-v1
       # Comma-separated static multiaddrs — DNS bootstrap does not
       # resolve (see this file's own top comment).
@@ -124,7 +124,7 @@ solana-keygen pubkey /etc/openfiat/wallet.json`,
 
 CLI_DATA_DIR=/var/lib/openfiat
 CLI_WALLET_PATH=/etc/openfiat/wallet.json
-CLI_HTTP_ADDR=0.0.0.0:8080
+CLI_HTTP_ADDR=0.0.0.0:7080
 CLI_LISTEN_ADDR=/ip4/0.0.0.0/udp/4001/quic-v1
 
 # Comma-separated multiaddrs of peers to dial on startup — static
@@ -146,7 +146,7 @@ CLI_LISTEN_ADDR=/ip4/0.0.0.0/udp/4001/quic-v1
   firewall: `ufw default deny incoming
 ufw allow 22/tcp                 # keep your own access
 ufw allow 4001/udp               # libp2p, QUIC — the port people most often forget
-ufw allow 8080/tcp               # JSON-RPC/WebSocket/REST/health/metrics — all one port
+ufw allow 7080/tcp               # JSON-RPC/WebSocket/REST/health/metrics — all one port
 ufw enable && ufw status verbose`,
 
   systemd: `# /etc/systemd/system/openfiat-node.service
@@ -191,10 +191,10 @@ systemctl enable --now openfiat-node
 journalctl -u openfiat-node -f`,
 
   verify: `# Is it up, and which mode is it in?
-curl -s http://localhost:8080/health
+curl -s http://localhost:7080/health
 # ok
 
-curl -s -X POST http://localhost:8080/rpc -H 'content-type: application/json' \\
+curl -s -X POST http://localhost:7080/rpc -H 'content-type: application/json' \\
   -d '{"jsonrpc":"2.0","id":1,"method":"getChainStatus","params":{}}'
 # {"jsonrpc":"2.0","id":1,"result":{"mode":"GossipOnly","blockhash":null,"slot":null,"age_ms":null}}
 # ("RpcConnected" with a real blockhash once CLI_SOLANA_RPC_URLS is set)`,
@@ -202,9 +202,9 @@ curl -s -X POST http://localhost:8080/rpc -H 'content-type: application/json' \\
   snapshotManual: `# Snapshot sync (OFS-1300) is real JSON-RPC, not a separate CLI —
 # a new node discovers and imports a peer-announced snapshot instead of
 # replaying all history:
-curl -s -X POST http://localhost:8080/rpc -H 'content-type: application/json' \\
+curl -s -X POST http://localhost:7080/rpc -H 'content-type: application/json' \\
   -d '{"jsonrpc":"2.0","id":1,"method":"getLatestSnapshot","params":{}}'
-curl -s -X POST http://localhost:8080/rpc -H 'content-type: application/json' \\
+curl -s -X POST http://localhost:7080/rpc -H 'content-type: application/json' \\
   -d '{"jsonrpc":"2.0","id":1,"method":"getCheckpointHeight","params":{}}'`,
 
   prometheus: `# /etc/prometheus/prometheus.yml — same port as everything else,
@@ -212,7 +212,7 @@ curl -s -X POST http://localhost:8080/rpc -H 'content-type: application/json' \\
 scrape_configs:
   - job_name: openfiat-node
     static_configs:
-      - targets: ["127.0.0.1:8080"]`,
+      - targets: ["127.0.0.1:7080"]`,
 
   upgrade: `systemctl stop openfiat-node        # SIGTERM, lets RocksDB flush
 # docker: docker compose pull node && docker compose up -d node

@@ -1,5 +1,11 @@
+import { becomeAMerchant } from "./become-a-merchant";
+import { buildOnOpenfiat } from "./build-on-openfiat";
+import { makeYourFirstTrade } from "./make-your-first-trade";
+import { runANotificationGateway } from "./run-a-notification-gateway";
 import { runAnOracleProvider } from "./run-an-oracle-provider";
+import { stakeOpen } from "./stake-open";
 import type { Guide, GuideGroup } from "./types";
+import { voteOnAProposal } from "./vote-on-a-proposal";
 
 export type { Guide, GuideGroup, GuideStep } from "./types";
 
@@ -13,7 +19,15 @@ export type { Guide, GuideGroup, GuideStep } from "./types";
  * renderer has no business growing a special case for. The index links to
  * them alongside these, so a reader sees one list either way.
  */
-export const GUIDES: Guide[] = [runAnOracleProvider];
+export const GUIDES: Guide[] = [
+  makeYourFirstTrade,
+  becomeAMerchant,
+  stakeOpen,
+  voteOnAProposal,
+  runAnOracleProvider,
+  runANotificationGateway,
+  buildOnOpenfiat,
+];
 
 export const GUIDE_GROUPS: GuideGroup[] = ["trade", "operate", "build"];
 

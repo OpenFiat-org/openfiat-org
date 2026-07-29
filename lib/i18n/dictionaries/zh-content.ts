@@ -545,7 +545,7 @@ export const zhContent: ContentDictionary = {
 
   becomeArbitrator: {
     requirements: [
-      "一个持有至少 50,000 OPEN 的 Solana 钱包（OFIP-0019）——可通过 openfiat-app 的质押页面完成，若你在开发自己的客户端，也可参照下方说明",
+      "一个持有至少 10,000 OPEN 的 Solana 钱包——这是已部署质押配置中的 min_stake_arbitrator，可由治理调整——可通过 openfiat-app 的质押页面完成，若你在开发自己的客户端，也可参照下方说明",
       "一个使用 OpenFiat SDK 的脚本或机器人——目前只有质押支持纯浏览器操作，处理案件尚无对应的浏览器流程",
       "至少一个 OpenFiat 节点 JSON-RPC 端点的网络访问权限，可以是你自己的节点，也可以是公共节点",
     ],
@@ -554,7 +554,7 @@ export const zhContent: ContentDictionary = {
       {
         id: "bond",
         title: "质押 OPEN 以解锁仲裁资格",
-        body: "仲裁者必须先质押，才能看到任何一个案件的证据——这既让贿赂变得毫无意义（你不知道该盯上哪个案件），也让网络在你投票偏离最终揭示的共识时有东西可以罚没。目前的最低质押量是 50,000 OPEN（OFIP-0019）。",
+        body: "仲裁者必须先质押，才能看到任何一个案件的证据——这既让贿赂变得毫无意义（你不知道该盯上哪个案件），也让网络在你投票偏离最终揭示的共识时有东西可以罚没。已部署的 devnet 配置将仲裁者的最低质押量设为 10,000 OPEN，是其他所有角色所需的 1,000 OPEN 的十倍。",
       },
       {
         id: "discover",
