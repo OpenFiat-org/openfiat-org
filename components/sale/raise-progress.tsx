@@ -20,8 +20,10 @@ function Figure({ label, value }: { label: string; value: string }) {
     <div>
       <p className="stat-label text-faint">{label}</p>
       {/* Sized below `.stat-num` so three of these sit on one row inside the
-          hero's measure. At 2.5rem "$2,000,000" alone forces a wrap, and a
-          figure orphaned onto its own line reads as a separate statement. */}
+          hero's measure. At 2.5rem "$20,000,000" alone forces a wrap, and a
+          figure orphaned onto its own line reads as a separate statement.
+          The goal grew a digit when the target moved from $2M to $20M, so the
+          constraint this clamp exists for got tighter, not looser. */}
       <p
         className="tnum mt-2 font-extrabold tracking-[-0.01em] text-ink"
         style={{ fontSize: "clamp(1.5rem, 2.4vw, 2rem)", lineHeight: 1.1 }}
