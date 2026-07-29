@@ -252,6 +252,7 @@ export const zh: Dictionary = {
       "节点从不托管用户资金。所有资金操作始终由 Solana 智能合约控制。",
     requirementsTitle: "硬件要求",
     installTitle: "安装方式",
+    releasesLink: "GitHub Releases 页面",
     referenceNote:
       "以下命令基于参考部署方案：服务名为 openfiat-node，配置位于 /etc/openfiat，数据位于 /var/lib/openfiat。",
     portsTitle: "端口",

@@ -425,19 +425,19 @@ export const enContent = {
 
     install: [
       {
-        id: "docker",
-        title: "Docker",
-        note: "An official image is published for each release. This is the recommended path: the image carries the binary and its runtime, so the only host requirements are Docker and a data volume.",
+        id: "source",
+        title: "Build from source — for production, today",
+        note: "No version has been tagged yet, so this is currently the only way to get a node binary. Needs the Rust toolchain and a C toolchain for RocksDB. Build it, drop it in /usr/local/bin, and run it under systemd — that is the deployment this page documents, and the one to use for a node others rely on.",
       },
       {
         id: "binary",
-        title: "Prebuilt binary",
-        note: "Static builds for x86-64 and arm64 Linux, published with detached signatures. Verify the signature, drop the binary in /usr/local/bin, and run it under systemd.",
+        title: "Prebuilt binary — once a version is tagged",
+        note: "Pushing a v* tag runs the release workflow, which builds openfiat-node on native runners and publishes linux-x86_64 and windows-x86_64 archives to GitHub Releases. Nothing is tagged yet, so that page is currently empty. Note these are ordinary release builds, not static or signed — verify what you download against the workflow that produced it.",
       },
       {
-        id: "source",
-        title: "Build from source",
-        note: "Needs the Rust toolchain and a C toolchain for RocksDB. Use this to run an unreleased commit, to build for an unsupported platform, or to audit what you run.",
+        id: "docker",
+        title: "Docker — for testing only",
+        note: "Use the image to try a node locally or to bring up a throwaway multi-node cluster — not to run a node the network depends on. It exists for reproducible local testing; production runs the binary under systemd.",
       },
     ],
 
@@ -484,7 +484,7 @@ export const enContent = {
       {
         id: "install",
         title: "Install the node",
-        body: "Pick one of the three options above. The Docker image is the shortest path and is what most operators should use.",
+        body: "Build from source and run the result under systemd — no version has been tagged yet, so that is the only way to get a binary today, and the rest of this runbook assumes it. Reach for Docker only when testing locally or standing up a throwaway cluster.",
       },
       {
         id: "identity",

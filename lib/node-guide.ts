@@ -65,6 +65,9 @@ apt update && apt install -y ca-certificates curl gnupg ufw chrony
 systemctl enable --now chrony`,
 
   dockerCompose: `# /opt/openfiat/compose.yaml
+# TESTING ONLY. Use this to try a node locally or to bring up a throwaway
+# cluster — run a production node from the binary under systemd instead
+# (see the unit file further down this page).
 services:
   node:
     image: ghcr.io/openfiat-org/openfiat-node:latest

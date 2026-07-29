@@ -394,14 +394,14 @@ export const zhContent: ContentDictionary = {
 
     install: [
       {
-        id: "docker",
-        title: "Docker",
-        note: "每个版本都会发布官方镜像。推荐使用这种方式：镜像已包含二进制文件及其运行时，主机只需具备 Docker 与一个数据卷。",
+        id: "binary",
+        title: "预编译二进制——用于生产环境",
+        note: "提供适用于 x86-64 与 arm64 Linux 的静态构建。放入 /usr/local/bin，再交由 systemd 运行。这是运行一个供他人依赖的节点时受支持的方式：服务会在崩溃或重启后自动恢复，并有足够长的停机宽限期让数据库干净地落盘。",
       },
       {
-        id: "binary",
-        title: "预编译二进制",
-        note: "提供适用于 x86-64 与 arm64 Linux 的静态构建，并附带独立签名。校验签名后放入 /usr/local/bin，再交由 systemd 运行即可。",
+        id: "docker",
+        title: "Docker——仅用于测试",
+        note: "每个版本都会发布官方镜像。可用于在本地试用节点，或搭建一个用完即弃的多节点集群——但不要用它运行网络所依赖的节点。该镜像的用途是可复现的本地测试，本页所记录的参考部署方案是上面的 systemd 方式。",
       },
       {
         id: "source",
@@ -448,7 +448,7 @@ export const zhContent: ContentDictionary = {
       {
         id: "install",
         title: "安装节点",
-        body: "从上面三种方式中选择一种。Docker 镜像最为简便，也是多数运营者应当采用的方式。",
+        body: "如果这个节点会被他人依赖，请安装二进制文件并交由 systemd 运行——本手册后续步骤均以此为前提。在本地测试或搭建用完即弃的集群时可以使用 Docker；当你需要运行未发布的提交，或想审计自己实际运行的代码时，则从源码构建。",
       },
       {
         id: "identity",

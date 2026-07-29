@@ -175,6 +175,17 @@ export default async function RunANodePage({ params }: Props) {
               <div>
                 <h3 className="text-h3 text-ink">{option.title}</h3>
                 <p className="mt-3 text-body-sm text-body">{option.note}</p>
+                {option.id === "binary" && (
+                  <a
+                    href={`${SITE.githubOrg}/openfiat-core/releases`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 inline-flex items-center gap-1.5 text-body-sm font-medium text-accent-mid transition-colors hover:text-accent-hover"
+                  >
+                    {t.runNode.releasesLink}
+                    <span aria-hidden>↗</span>
+                  </a>
+                )}
               </div>
               {/*
                * `min-w-0` overrides a grid item's default `min-width: auto`,

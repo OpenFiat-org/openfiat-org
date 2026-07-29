@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
-import { Container } from "@/components/ui/container";
 import { CtaBand } from "@/components/ui/cta-band";
 import { PageHero } from "@/components/ui/page-hero";
 import { Row, Rows } from "@/components/ui/rows";

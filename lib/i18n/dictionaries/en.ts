@@ -246,6 +246,7 @@ export const en = {
       "Nodes never custody user funds. All financial operations remain under the control of Solana smart contracts.",
     requirementsTitle: "Hardware",
     installTitle: "Installing it",
+    releasesLink: "GitHub Releases",
     referenceNote:
       "Commands below use the reference deployment: the openfiat-node service, /etc/openfiat for configuration and /var/lib/openfiat for data.",
     portsTitle: "Ports",

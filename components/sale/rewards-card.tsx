@@ -168,7 +168,7 @@ export function RewardsCard({
               </div>
             )}
 
-            {!loading && (!status || !status.hasContributed) && (
+            {!loading && !status?.hasContributed && (
               <div className="mt-6">
                 <p className="text-body-sm text-body">
                   {sale.rewardsNoContribution}

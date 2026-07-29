@@ -47,6 +47,7 @@ export function LanguageSwitcher({
 
   function choose(next: Locale) {
     // Max-age one year; Lax is enough for a display preference.
+    // biome-ignore lint/suspicious/noDocumentCookie: the suggested Cookie Store API is still unavailable in Safari and Firefox, and this is a plain display preference — `next` is a Locale, so nothing here can inject an unintended cookie attribute.
     document.cookie = `openfiat-locale=${next}; path=/; max-age=31536000; samesite=lax`;
     setOpen(false);
     router.push(localePath(stripLocale(pathname), next));
