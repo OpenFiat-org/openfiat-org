@@ -21,8 +21,8 @@ export const stakeOpen: Guide = {
     zh: "为某个协议角色质押 OPEN、解除质押，并了解哪些情况会被罚没。",
   },
   intro: {
-    en: "Almost every role beyond buying does something that could hurt somebody else if done carelessly, so those roles put OPEN at risk before they get to do it. Staking is that deposit. It stays yours, and it can be cut if you misbehave. It does not pay you anything today: the reward instructions exist, but nothing has ever called them, so no stake has earned a token.",
-    zh: "除买方之外，几乎每一种角色所做的事，一旦草率行事都可能损害他人，因此这些角色必须先让自己的 OPEN 承担风险，才能获得相应权限。质押就是这笔保证金。它仍归你所有，在你行为不当时可能被削减；但目前它不会带来任何收益：奖励指令虽然存在，却从未被调用过，因此没有任何质押曾获得过一枚代币。",
+    en: "Almost every role beyond buying does something that could hurt somebody else if done carelessly, so those roles put OPEN at risk before they get to do it. Staking is that deposit. It stays yours, and it can be cut if you misbehave. It does not pay you anything today. The reward calculation now exists and nodes publish the liveness observations it runs on, but nobody is running the submission step on devnet and the rewards vault is empty, so no stake has yet earned a token.",
+    zh: "除买方之外，几乎每一种角色所做的事，一旦草率行事都可能损害他人，因此这些角色必须先让自己的 OPEN 承担风险，才能获得相应权限。质押就是这笔保证金。它仍归你所有，在你行为不当时可能被削减；但目前它不会带来任何收益。奖励的计算逻辑现已实现，节点也会公布其所依据的存活性观测数据，但 devnet 上尚无人执行提交环节，且奖励金库为空，因此还没有任何质押真正获得过一枚代币。",
   },
 
   requirements: {
@@ -244,8 +244,8 @@ let ix = staking::request_unstake_ix(&owner, role, 500 * 1_000_000_000u64);`,
         zh: "奖励会累积，罚没则会扣减",
       },
       body: {
-        en: "No rewards have been distributed to anyone. The mechanism is built — a rewards authority credits your stake account with an amount it decides off-chain, and the design pays a node genuinely connected to Solana RPC more than one only gossiping — but the off-chain process that would compute those amounts and call it does not exist, so every pending balance is zero and claiming fails. Treat staking as something you do to be allowed to act, not to earn. When rewards do arrive they sit as a pending balance until claimed, so they never quietly change the stake figure your role eligibility is measured against. Slashing runs the other way: a slashing authority can cut a fixed percentage of your active stake, the forfeited tokens go to a treasury rather than being burned, and the total is recorded permanently on your account. Only your active stake is exposed — anything already unbonding is not.",
-        zh: "目前尚未向任何人发放过奖励。机制本身已经实现——奖励授权方在链下决定金额后记入你的质押账户，且设计上真正连接 Solana RPC 的节点收益高于仅参与 gossip 的节点——但负责计算金额并发起调用的链下程序并不存在，因此所有待领取余额均为零，领取操作会失败。请把质押视为获得行为资格的前提，而不是收益来源。将来奖励到账后会以待领取余额的形式存在，直到你主动领取，因此不会悄悄改变用于衡量角色资格的质押数额。罚没的方向则相反：罚没授权方可以按固定比例削减你的有效质押，被没收的代币会进入国库而非被销毁，累计罚没额会永久记录在你的账户上。只有有效质押会承担这一风险——已进入解押状态的部分不会。",
+        en: "No rewards have been distributed to anyone yet, though the gap is narrower than it was. The calculation is real: a node records which peers it heard from across an epoch, and a share is computed from stake weighted by connectivity and availability, paying a node genuinely connected to Solana RPC more than one only gossiping. What is missing is the last two steps — nobody runs the submission on devnet, and no instruction funds the rewards vault, whose balance is zero. So every pending balance is zero and claiming fails. Treat staking as something you do to be allowed to act, not to earn. When rewards do arrive they sit as a pending balance until claimed, so they never quietly change the stake figure your role eligibility is measured against. Slashing runs the other way: a slashing authority can cut a fixed percentage of your active stake, the forfeited tokens go to a treasury rather than being burned, and the total is recorded permanently on your account. Only your active stake is exposed — anything already unbonding is not.",
+        zh: "目前仍未向任何人发放过奖励，但差距已经缩小。计算部分是真实存在的：节点会记录在一个周期内听到过哪些对等节点，并据此按质押量乘以连通性与可用性来计算份额，真正连接 Solana RPC 的节点收益高于仅参与 gossip 的节点。缺的是最后两步——devnet 上无人执行提交，且没有任何指令为奖励金库注资，其余额为零。因此所有待领取余额均为零，领取操作会失败。请把质押视为获得行为资格的前提，而不是收益来源。将来奖励到账后会以待领取余额的形式存在，直到你主动领取，因此不会悄悄改变用于衡量角色资格的质押数额。罚没的方向则相反：罚没授权方可以按固定比例削减你的有效质押，被没收的代币会进入国库而非被销毁，累计罚没额会永久记录在你的账户上。只有有效质押会承担这一风险——已进入解押状态的部分不会。",
       },
       code: [
         {
