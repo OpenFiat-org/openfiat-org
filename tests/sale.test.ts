@@ -69,8 +69,10 @@ describe("solscan links", () => {
 });
 
 describe("presale terms", () => {
-  it("targets $2M", () => {
-    expect(RAISE_GOAL_USDC).toBe(2_000_000);
+  it("targets $20M", () => {
+    // OFS-4100 §3. A goal, not a cap: the presale keeps selling out of the
+    // full 200,000,000 OPEN bucket past this figure rather than stopping.
+    expect(RAISE_GOAL_USDC).toBe(20_000_000);
   });
 
   it("keeps the goal distinct from the enforced hard cap", () => {
