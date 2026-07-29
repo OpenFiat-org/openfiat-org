@@ -241,6 +241,15 @@ export function RewardsCard({
                     </p>
                   )}
 
+                {/* Reachable only if the chain reports `softCapMissed`, which
+                    requires a non-zero `soft_cap`. OFS-4100 §3 records no soft
+                    cap, expressed on chain as `soft_cap = 0`, so a correctly
+                    configured sale can never enter that state and this branch
+                    never renders. Kept rather than deleted: it is driven by
+                    real chain state, so if a sale ever is configured with a
+                    soft cap, offering the refund is the right behaviour. The
+                    devnet fixture does carry a small non-zero soft cap, which
+                    is why this path is still exercised there. */}
                 {status.canRefund && (
                   <div className="mt-5 border-s-2 border-copper ps-4">
                     <p className="text-body-sm text-body">
