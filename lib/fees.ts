@@ -167,13 +167,13 @@ export const PROVIDER_PAY: ProviderPay[] = [
     role: { en: "Risk intelligence provider", zh: "风险情报提供方" },
     consumerPays: { en: "Nothing directly", zh: "无需直接付费" },
     receives: {
-      en: "1,000 USDC per month from the treasury, scaled by uptime",
-      zh: "每月从国库支付 1,000 USDC，并按在线率加权",
+      en: "From the treasury: a 1,000 USDC per month base, plus an amount scaling with the number of wallets processed, all scaled by uptime",
+      zh: "由国库支付：每月 1,000 USDC 基础费用，加上按已处理钱包数量递增的部分，整体再按在线率加权。",
     },
     status: "specified",
     note: {
-      en: "The only permissioned role: a provider must be approved by governance before operating. Every other role is permissionless because a bad actor's cost is bounded — a useless oracle is outvoted by the median, a dead gateway simply fails to deliver. A standing subscription drawn from the treasury has no such bound, so gating who may receive it is the condition that lets a paid slot exist at all. Neither the payment nor the approval gate is built yet.",
-      zh: "这是唯一需要许可的角色：提供方必须先获得治理批准才能开展服务。其他角色之所以无需许可，是因为作恶者造成的损失有上限——无用的预言机会被中位数排除，失效的网关只是投递失败而已。而从国库持续支取的订阅费用没有这样的上限，因此限定谁有资格领取，正是这一有偿名额得以存在的前提。目前付款机制与审批机制均尚未实现。",
+      en: "The only permissioned role: a provider must be approved by governance before operating. Every other role is permissionless because a bad actor's cost is bounded — a useless oracle is outvoted by the median, a dead gateway simply fails to deliver. A standing subscription drawn from the treasury has no such bound, so gating who may receive it is the condition that lets a paid slot exist at all. Pay scales with wallets processed rather than nodes served, because one flagged wallet read by a thousand nodes is a single piece of work — and a wallet only counts when it was screened against real protocol activity, never because a provider chose to publish a record naming it. Neither the payment nor the approval gate is built yet.",
+      zh: "这是唯一需要许可的角色：提供方必须先获得治理批准才能开展服务。其他角色之所以无需许可，是因为作恶者造成的损失有上限——无用的预言机会被中位数排除，失效的网关只是投递失败而已。而从国库持续支取的订阅费用没有这样的上限，因此限定谁有资格领取，正是这一有偿名额得以存在的前提。计费按已处理的钱包数量递增，而非按服务的节点数——同一个被标记的钱包即使被上千个节点读取，也只算一份工作量；并且只有针对真实协议活动完成筛查的钱包才计入，提供方自行发布一条提及某钱包的记录并不算数。目前付款机制与审批机制均尚未实现。",
     },
   },
 ];
