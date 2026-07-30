@@ -75,3 +75,16 @@ export const LEGAL_NAV: { key: FooterLinkKey; href: string }[] = [
   { key: "privacy", href: "/privacy" },
   { key: "terms", href: "/terms" },
 ];
+
+/** Keys with an icon in the footer's social row — see components/footer.tsx. */
+export type SocialLinkKey = "github" | "discussions";
+
+/**
+ * External destinations, not pages. Kept short and verified rather than a
+ * full row of social platforms: OpenFiat has no dedicated account on any of
+ * them, so only the GitHub org and its specs-repo Discussions are listed.
+ */
+export const SOCIAL_LINKS: { key: SocialLinkKey; href: string }[] = [
+  { key: "github", href: SITE.githubOrg },
+  { key: "discussions", href: SITE.specsDiscussionsUrl },
+];

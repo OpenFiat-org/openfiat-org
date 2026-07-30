@@ -65,6 +65,7 @@ export const en = {
       documentation: "Documentation",
       status: "Status",
       github: "GitHub",
+      discussions: "Discussions",
       contact: "Contact",
       privacy: "Privacy",
       terms: "Terms",

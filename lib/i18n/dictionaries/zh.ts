@@ -72,6 +72,7 @@ export const zh: Dictionary = {
       documentation: "文档",
       status: "服务状态",
       github: "GitHub",
+      discussions: "讨论区",
       contact: "联系我们",
       privacy: "隐私政策",
       terms: "使用条款",
