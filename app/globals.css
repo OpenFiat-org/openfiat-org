@@ -175,6 +175,97 @@ body {
 }
 
 /*
+ * Range input.
+ *
+ * Written out rather than left to the user agent because the default control
+ * is the one element on this site that would still look like the operating
+ * system it is running on. `appearance: none` removes the native track and
+ * thumb, which means every part of the control — including the focus ring —
+ * has to be re-declared here; a partial restyle leaves the thumb native on
+ * WebKit and drawn on Firefox.
+ *
+ * The vendor prefixes are duplicated rather than combined into one selector
+ * list deliberately: a selector list containing an unrecognised pseudo-element
+ * is dropped whole by the browser, so `::-webkit-slider-thumb,
+ * ::-moz-range-thumb { ... }` would style neither.
+ */
+.range {
+  appearance: none;
+  width: 100%;
+  height: 22px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.range:focus-visible {
+  outline: none;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 999px;
+  /* `--fill` is set inline by the component. The hard stop paints the
+     travelled part of the track in the accent and the rest in the track
+     colour, which is the only way a range input can show its own progress. */
+  background: linear-gradient(
+    to right,
+    var(--color-accent) var(--fill, 0%),
+    var(--color-bar-track) var(--fill, 0%)
+  );
+}
+
+.range::-moz-range-track {
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-accent) var(--fill, 0%),
+    var(--color-bar-track) var(--fill, 0%)
+  );
+}
+
+.range::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  /* Half the thumb minus half the track, to sit the thumb on the centreline. */
+  margin-top: -6.5px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-accent);
+  box-shadow: var(--shadow-glow);
+  transition: transform 120ms ease;
+}
+
+.range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-accent);
+  box-shadow: var(--shadow-glow);
+  transition: transform 120ms ease;
+}
+
+.range:hover::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+
+.range:hover::-moz-range-thumb {
+  transform: scale(1.12);
+}
+
+/* Keyboard focus has to be visible on the thumb itself: the input's own
+   outline traces a 22px-tall transparent box and reads as unrelated. */
+.range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px var(--accent-ring);
+}
+
+.range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px var(--accent-ring);
+}
+
+/*
  * Reader typography for the whitepaper and specifications.
  *
  * Hand-written rather than a prose plugin: the corpus has an unusual shape

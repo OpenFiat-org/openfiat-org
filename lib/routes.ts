@@ -23,6 +23,7 @@ const STATIC_ROUTES: SiteRoute[] = [
   { path: "/participate", priority: 0.8, changeFrequency: "monthly" },
   { path: "/guides", priority: 0.85, changeFrequency: "monthly" },
   { path: "/fees", priority: 0.85, changeFrequency: "monthly" },
+  { path: "/earn", priority: 0.85, changeFrequency: "monthly" },
   { path: "/run-a-node", priority: 0.8, changeFrequency: "monthly" },
   { path: "/become-an-arbitrator", priority: 0.8, changeFrequency: "monthly" },
   { path: "/sale", priority: 0.8, changeFrequency: "weekly" },

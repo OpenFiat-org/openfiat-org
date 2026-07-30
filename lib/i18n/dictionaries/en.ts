@@ -52,6 +52,7 @@ export const en = {
       nodeOperators: "Node operators",
       guides: "Guides",
       fees: "Fees",
+      earn: "How you earn",
       runNode: "Run a node",
       becomeArbitrator: "Become an arbitrator",
       developers: "Developers",
@@ -367,6 +368,136 @@ export const en = {
       "There is no code to enter. Ask on Discord or in the chat on allenhark.com, say you are running an OpenFiat node, and the discount is applied to your order.",
     hostingDiscord: "Ask on Discord",
     hostingChat: "Open a chat",
+  },
+
+  /*
+   * The earnings page, written under one rule: nothing here may imply a
+   * return. Every figure it shows is either computed from the reader's own
+   * inputs or labelled as resting on an assumption they set themselves, and
+   * the sections explaining what is deliberately absent carry as much weight
+   * as the ones explaining what is there.
+   */
+  earn: {
+    title: "How you earn",
+    intro:
+      "A node's reward is a share of one day's emission, decided by what it staked and by three measurements of what it did with that stake. This is the formula the software actually runs, with the parts it cannot know marked as such.",
+    heroMeta:
+      "Every constant on this page is read from crates/rewards in openfiat-core. No node has been paid yet.",
+
+    modelTitle: "What decides your share",
+    modelIntro:
+      "Emission per epoch is fixed. Your reward is your weight over every eligible node's weight, and weight is a stake multiplied by three measurements of service — each of which is at most 1.0.",
+    termStakeTitle: "What you staked",
+    termStakeBody:
+      "Read from your on-chain stake account, never from a figure your node reports about itself. One stake backs one node: if two nodes name the same account, both are excluded for the epoch.",
+    termConnectivityTitle: "Whether you bridge to Solana",
+    termConnectivityBody:
+      "1.0 if the network saw your node originate a Solana blockhash announcement, 0.4 if it only ever saw you gossip. A bridging node does strictly more work, and the difference shows in its own signed announcements rather than in a claim.",
+    termAvailabilityTitle: "How much of the day you were up",
+    termAvailabilityBody:
+      "The share of the epoch's 24 one-hour slices your node was heard in at all. Being heard once in a slice scores it and being heard five hundred times scores the same, so flooding the network earns nothing.",
+    termPinningTitle: "Whether you serve content",
+    termPinningBody:
+      "1.0 if your node returned bytes matching a content address when challenged, 0.7 if it was never challenged or failed. This is the only one of the three that is proven rather than plausible — bytes that hash to a CID cannot be produced without holding them.",
+    pinningAheadOfSpec:
+      "One caveat on that fourth term. OFS-4100 §9.2's confirmed table lists three factors — stake, connectivity, availability — and does not mention pinning. The crate applies it anyway. Where the specification and the code disagree this page follows the code, because the code is what would compute a schedule; but read the pinning multiplier as running ahead of the specification rather than settled by it.",
+
+    ceilingTitle: "Nothing here can exceed 1.0",
+    ceilingLede:
+      "Every multiplier is a fraction of one, and the software refuses to start with a parameter set where one is not.",
+    ceilingBody:
+      "That is not caution, it is the only arrangement that adds up. The pool for an epoch is a fixed number of tokens, and the multipliers decide how that pool is divided. A multiplier above 1.0 would not pay a good node extra out of somewhere — it would apportion tokens the Infrastructure bucket does not contain. RewardParams::validate rejects such a set outright rather than letting the shortfall surface on payout day.",
+    ceilingPenalty:
+      "It is also why the reward for serving content is built as a penalty on nodes that do not. “Nodes that pin earn more” and “nodes that do not pin earn less” describe the same outcome, and only the second can be implemented without inventing tokens. A pinning node keeps its whole share; a node that pins nothing yields three tenths of its own.",
+    matrixCaption:
+      "Every value the two switches can take, at full availability.",
+    matrixQuality: "Multiplier",
+    matrixNote:
+      "Read the middle two rows together: a gossip-only node that serves content ({gossipPin}) still earns less than a bridging node that serves none ({rpcNoPin}). Serving content is a premium on top of a chain connection, never a substitute for one.",
+
+    calcTitle: "Try your own numbers",
+    calcIntro:
+      "The left column is what you control. The right splits the result in two: what your inputs settle exactly, and what depends on a network that has not formed yet.",
+    yourNode: "Your node",
+    stakeLabel: "Stake",
+    stakeHint:
+      "Below 1,000 OPEN a node is not weighted at all. It is not paid a smaller share — it is skipped.",
+    availabilityLabel: "Hours heard in",
+    availabilityHint:
+      "Of the epoch's 24 one-hour slices. A slice counts once, however much traffic you send during it.",
+    connectivityLabel: "Connectivity",
+    connectivityRpc: "Bridging to Solana",
+    connectivityGossip: "Gossip only",
+    pinningLabel: "Content",
+    pinningServing: "Answered a challenge",
+    pinningAbsent: "Not challenged, or failed",
+
+    determinedTitle: "Settled by your inputs",
+    qualityCeiling: "of a possible 1.00",
+    qualityLabel:
+      "Your quality multiplier — the three service factors, collapsed the way the schedule collapses them.",
+    factorConnectivity: "connectivity",
+    factorAvailability: "availability",
+    factorPinning: "pinning",
+    factorProduct: "quality",
+    ineligibleBelowFloor:
+      "At this stake the node earns nothing. {min} OPEN is the floor, and a node beneath it is left out of the weighting entirely.",
+    ineligibleOffline:
+      "A node heard in no slice of the epoch scores zero availability, which zeroes the whole weight. It earns nothing, whatever it staked.",
+
+    assumedTitle: "Depends on the rest of the network",
+    assumedNote:
+      "Your share is your weight divided by every eligible node's weight, so it cannot be computed from your inputs alone. There is no live total to substitute — this page reads no chain state, and no reward has ever been distributed. So the total is a guess, you set it, and both figures below rest on it and on nothing firmer.",
+    peersLabel: "Other eligible nodes",
+    peerStakeLabel: "Staked by each of them",
+    shareLabel: "Your share of the epoch's pool",
+    perEpochLabel: "OPEN per epoch, under that assumption",
+    poolReminder:
+      "The whole pool is {pool} OPEN per epoch, split across every eligible node. Both figures move the moment anyone else stakes, and neither is a forecast.",
+
+    emissionTitle: "The pool is finite",
+    emissionLede: "Bootstrap emission is a bucket, not a rate. It empties.",
+    emissionBody:
+      "120,000,000 OPEN — 12% of supply — is set aside to pay nodes while protocol revenue is too small to matter, spread evenly across roughly four years of daily epochs. On the day it runs out the reward pool becomes exactly the Infrastructure treasury's share of settlement fees: what the network earned, and nothing more. Anyone sizing a node against the figures above should size it against that day too.",
+    emissionBucket: "OPEN in the bucket",
+    emissionBucketNote:
+      "The Infrastructure / Node Bootstrap genesis allocation, 12% of total supply.",
+    emissionPerEpoch: "OPEN per epoch",
+    emissionPerEpochNote:
+      "Shared by every eligible node, and capped by whatever is left in the bucket.",
+    emissionEpochs: "Daily epochs",
+    emissionEpochsNote:
+      "About four years, after which emission is whatever protocol revenue funds.",
+
+    refusalTitle: "What this page will not tell you",
+    refusalLede: "Three figures are missing, and each is missing on purpose.",
+    refusalPriceTitle: "What it is worth in your currency",
+    refusalPriceBody:
+      "OPEN has no market and therefore no price. A figure in dollars, euro or renminbi here would be a number this project invented about its own token and then handed you with the authority of a calculator. There is no honest rate to convert at, so there is no conversion.",
+    refusalYieldTitle: "A yield, an APR, or a return",
+    refusalYieldBody:
+      "A percentage return reads as a promise, and this is not something the protocol can promise. The emission behind it empties in four years, the share is divided with every node that joins, and none of the parameters is fixed — §9 makes all of them governance-updatable. One annualised number would hide all three.",
+    refusalTotalTitle: "What the network has staked today",
+    refusalTotalBody:
+      "This page reads no chain state. Your share depends on the total staked across every eligible node, and rather than substitute a plausible-looking figure the calculator makes that total an assumption you set, then labels everything resting on it.",
+
+    statusTitle: "What is actually running",
+    statusBadge: "Devnet · nothing paid",
+    statusLede: "The calculation exists. The payment does not.",
+    statusBody:
+      "Nodes observe each other's liveness and publish what they saw, and the schedule that turns those observations into amounts is implemented and tested — deterministically, so anyone holding the same observations derives the same answer and the paying node can be checked rather than trusted. What is missing is the last step: nothing submits a schedule on chain, and the rewards vault is empty. No node has ever been paid.",
+    statusParams:
+      "Every value here is a governance parameter rather than a constant: the {min} OPEN floor, the {buckets} availability slices and all four multipliers can be changed by a vote without a code change. These are today's defaults.",
+    sourceNote:
+      "Constants read from crates/rewards/src/params.rs; the arithmetic mirrors schedule.rs, including where it truncates.",
+    sourceLink: "Read the source",
+    specLink: "Read OFS-4100",
+
+    ctaTitle: "Run one and find out",
+    ctaBody:
+      "The reward model is the smaller half of the decision. The larger half is whether the machine, the bandwidth and the attention are worth it to you — the operator guide has the real hardware, the real commands, and the parts that are not built yet.",
+    ctaRunNode: "Run a node",
+    ctaFees: "Every fee and payout",
   },
 
   /* Shell copy for /guides and the shared guide renderer. Each guide's own

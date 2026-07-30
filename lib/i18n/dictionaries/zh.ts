@@ -59,6 +59,7 @@ export const zh: Dictionary = {
       nodeOperators: "节点运营者",
       guides: "操作指南",
       fees: "费用",
+      earn: "收益如何计算",
       runNode: "运行节点",
       becomeArbitrator: "成为仲裁者",
       developers: "开发者",
@@ -370,6 +371,124 @@ export const zh: Dictionary = {
       "无需输入优惠码。在 Discord 或 allenhark.com 的在线聊天中说明你正在运行 OpenFiat 节点，折扣即会应用到你的订单。",
     hostingDiscord: "在 Discord 询问",
     hostingChat: "开始在线聊天",
+  },
+
+  earn: {
+    title: "收益如何计算",
+    intro:
+      "节点的奖励是当日发放量中的一份，取决于它质押了多少，以及三项关于它如何使用这份质押的度量。以下是软件实际运行的公式，其中无法得知的部分都已明确标出。",
+    heroMeta:
+      "本页所有常量均取自 openfiat-core 的 crates/rewards。目前尚无任何节点获得过报酬。",
+
+    modelTitle: "什么决定你的份额",
+    modelIntro:
+      "每个周期的发放量是固定的。你的奖励等于你的权重除以所有合格节点权重之和，而权重是质押量乘以三项服务度量——每一项都不超过 1.0。",
+    termStakeTitle: "你质押了多少",
+    termStakeBody:
+      "该数值读取自你的链上质押账户，而非节点自报的数字。一份质押只对应一个节点：若两个节点指向同一账户，两者在该周期内都会被排除。",
+    termConnectivityTitle: "你是否接入 Solana",
+    termConnectivityBody:
+      "若网络观测到你的节点发起过 Solana blockhash 公告，则计为 1.0；若只观测到你参与 gossip，则计为 0.4。接入链的节点承担的工作确实更多，且这一差异体现在它自己签名的公告中，而非一句声明。",
+    termAvailabilityTitle: "你当天在线了多久",
+    termAvailabilityBody:
+      "指该周期 24 个一小时时间片中，你的节点被听到过的比例。一个时间片内被听到一次即计入，被听到五百次也一样，因此向网络灌流量不会带来任何额外收益。",
+    termPinningTitle: "你是否提供内容",
+    termPinningBody:
+      "若你的节点在被挑战时返回了与内容地址相符的字节，则计为 1.0；若从未被挑战或未能通过，则计为 0.7。这是三项度量中唯一被证明而非仅仅可信的一项——不持有内容就无法产出哈希值等于该 CID 的字节。",
+    pinningAheadOfSpec:
+      "关于第四项需要说明一点。OFS-4100 §9.2 已确认的参数表只列出三个因子——质押量、连通性、可用性——并未提及内容留存。但代码中确实应用了它。当规范与代码不一致时，本页以代码为准，因为真正计算奖励表的是代码；不过请将内容留存乘数理解为超前于规范，而非已由规范敲定。",
+
+    ceilingTitle: "任何乘数都不会超过 1.0",
+    ceilingLede:
+      "每个乘数都是不超过一的分数，若参数集中有任何一项不满足这一点，软件会拒绝启动。",
+    ceilingBody:
+      "这不是出于保守，而是唯一算得通的安排。一个周期的资金池是固定数量的代币，乘数决定的是这个池子如何被分配。高于 1.0 的乘数并不会凭空多付给优质节点，它分配的是基础设施资金池中并不存在的代币。RewardParams::validate 会直接拒绝这样的参数集，而不是让缺口在发放当天才暴露出来。",
+    ceilingPenalty:
+      "这也是为什么提供内容的奖励被实现为对不提供内容者的惩罚。「留存内容的节点收益更高」与「不留存内容的节点收益更低」描述的是同一个结果，而只有后者能在不凭空增发代币的前提下实现。留存内容的节点保留全部份额；不留存的节点则让出自身份额的十分之三。",
+    matrixCaption: "在可用性为满值时，两个开关所能构成的全部取值。",
+    matrixQuality: "乘数",
+    matrixNote:
+      "请把中间两行放在一起看：仅参与 gossip 但提供内容的节点（{gossipPin}）仍然低于接入链却不提供内容的节点（{rpcNoPin}）。提供内容是接入链之上的加成，而绝不是它的替代。",
+
+    calcTitle: "用你自己的数字试算",
+    calcIntro:
+      "左栏是你能控制的部分。右栏把结果分成两半：由你的输入完全确定的部分，以及取决于一个尚未成形的网络的部分。",
+    yourNode: "你的节点",
+    stakeLabel: "质押量",
+    stakeHint:
+      "低于 1,000 OPEN 的节点根本不参与加权。它不是拿到更小的份额，而是被直接跳过。",
+    availabilityLabel: "被听到的小时数",
+    availabilityHint:
+      "在该周期的 24 个一小时时间片中。无论你在其中发送多少流量，一个时间片只计一次。",
+    connectivityLabel: "连通性",
+    connectivityRpc: "接入 Solana",
+    connectivityGossip: "仅参与 gossip",
+    pinningLabel: "内容",
+    pinningServing: "通过了挑战",
+    pinningAbsent: "未被挑战或未通过",
+
+    determinedTitle: "由你的输入确定",
+    qualityCeiling: "上限为 1.00",
+    qualityLabel: "你的质量乘数——三项服务因子，按奖励表的方式合并计算。",
+    factorConnectivity: "连通性",
+    factorAvailability: "可用性",
+    factorPinning: "内容留存",
+    factorProduct: "质量",
+    ineligibleBelowFloor:
+      "在此质押量下节点没有任何收益。{min} OPEN 是门槛，低于该门槛的节点会被完全排除在加权之外。",
+    ineligibleOffline:
+      "在该周期任何时间片中都未被听到的节点，可用性为零，整个权重也随之归零。无论质押多少，它都不会有任何收益。",
+
+    assumedTitle: "取决于网络中的其他节点",
+    assumedNote:
+      "你的份额等于你的权重除以所有合格节点权重之和，因此仅凭你的输入无法算出。这里也没有可代入的实时总量——本页不读取任何链上状态，而且从未有过任何一次奖励发放。所以这个总量是一个假设，由你设定，下面两个数字都建立在它之上，而没有更扎实的依据。",
+    peersLabel: "其他合格节点数",
+    peerStakeLabel: "每个节点的质押量",
+    shareLabel: "你在该周期资金池中的份额",
+    perEpochLabel: "在该假设下，每周期的 OPEN",
+    poolReminder:
+      "整个资金池为每周期 {pool} OPEN，由所有合格节点共同分配。只要有任何人质押，上面两个数字都会随之变化，两者都不是预测。",
+
+    emissionTitle: "资金池是有限的",
+    emissionLede: "引导期发放是一个水池，而不是一个速率。它会被用完。",
+    emissionBody:
+      "120,000,000 OPEN——占总供应量的 12%——被划出用于在协议收入尚不足道时支付节点，并均匀分摊到大约四年的每日周期中。它耗尽的那一天，奖励资金池就只剩基础设施国库在结算费中所占的份额：网络实际赚到的部分，再无其他。任何依据上面数字来测算节点投入的人，也应当把那一天一并算进去。",
+    emissionBucket: "水池中的 OPEN",
+    emissionBucketNote: "基础设施 / 节点引导创世分配，占总供应量的 12%。",
+    emissionPerEpoch: "每周期的 OPEN",
+    emissionPerEpochNote: "由所有合格节点共享，并以水池中剩余的数量为上限。",
+    emissionEpochs: "每日周期数",
+    emissionEpochsNote: "约四年，之后的发放量取决于协议收入能支撑多少。",
+
+    refusalTitle: "本页不会告诉你的事",
+    refusalLede: "有三个数字是缺失的，而每一个都是有意不给出的。",
+    refusalPriceTitle: "换算成你的货币值多少",
+    refusalPriceBody:
+      "OPEN 没有市场，因此没有价格。在这里给出美元、欧元或人民币金额，等于本项目自行编造一个关于自家代币的数字，再借计算器之名交到你手上。没有可信的换算汇率，所以不做换算。",
+    refusalYieldTitle: "收益率、年化或回报",
+    refusalYieldBody:
+      "百分比回报读起来就像一种承诺，而这是协议无法承诺的。其背后的发放会在四年内耗尽，份额要与每一个新加入的节点分摊，且所有参数都不是固定的——§9 明确规定它们均可由治理更新。一个年化数字会把这三点全部掩盖。",
+    refusalTotalTitle: "网络今天的总质押量",
+    refusalTotalBody:
+      "本页不读取任何链上状态。你的份额取决于所有合格节点的总质押量，与其代入一个看似合理的数字，计算器选择把这个总量做成由你设定的假设，并为一切依赖它的数字加上标注。",
+
+    statusTitle: "目前真正在运行的部分",
+    statusBadge: "Devnet · 尚未支付",
+    statusLede: "计算已经存在，支付还没有。",
+    statusBody:
+      "节点会互相观测存活性并公布所见，而把这些观测转换为金额的奖励表也已实现并通过测试——其结果是确定性的，任何掌握相同观测数据的人都能推导出同样的答案，因此负责支付的节点是可被核验的，而非只能被信任。缺的是最后一步：没有任何程序把奖励表提交上链，奖励金库也是空的。从未有任何节点获得过报酬。",
+    statusParams:
+      "这里的每个数值都是治理参数而非常量：{min} OPEN 的门槛、{buckets} 个可用性时间片，以及全部四个乘数，都可以通过投票更改而无需改动代码。这些只是当前的默认值。",
+    sourceNote:
+      "常量取自 crates/rewards/src/params.rs；算术过程与 schedule.rs 一致，包括其取整方式。",
+    sourceLink: "阅读源码",
+    specLink: "阅读 OFS-4100",
+
+    ctaTitle: "跑一个节点试试",
+    ctaBody:
+      "奖励模型只是这个决定中较小的一半。较大的一半在于：这台机器、这些带宽和这份精力对你是否值得——运营者指南里有真实的硬件要求、真实的命令，以及那些尚未实现的部分。",
+    ctaRunNode: "运行节点",
+    ctaFees: "全部费用与支出",
   },
 
   fees: {
