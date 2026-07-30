@@ -81,7 +81,11 @@ export const SALE: SaleConfig = {
      expressed on chain — it is not a missing value. */
   hardCapUsdc: 200_000_000,
   softCapUsdc: 0,
-  minContributionUsdc: 1,
+  /* A floor on a wallet's FIRST contribution only — `contribute_usdc` checks
+     it under `is_first_contribution`, so later top-ups are unbounded below.
+     The devnet faucet grants 100 test USDC per request, so a newcomer can
+     clear this in a single grant. */
+  minContributionUsdc: 50,
   /* Published per-wallet limit. The UI prefers the value the program actually
      enforces (see `fetchSaleSnapshot`) and only falls back to this one when
      that read fails, so a figure here that hasn't reached the chain yet cannot
