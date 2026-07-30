@@ -75,14 +75,18 @@ export const SALE: SaleConfig = {
   openMint: "29w8TroBTYoaqrXBDcpv5L54VZRA8Kf7kU5U1cakvFdj",
   usdcMint: "SK1JEbfsjjTG2WELNirmM7iJVcdnwerqfF32kCnoWsM",
   swapProgram: "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
-  hardCapUsdc: 1_000,
-  softCapUsdc: 10,
+  /* Mirrors what nonce 1 actually enforces on devnet as of the OFS-4100 §3
+     conformance fix: the full 200,000,000-OPEN Community Presale bucket as
+     the cap, and no soft cap at all. Zero is how "no minimum to raise" is
+     expressed on chain — it is not a missing value. */
+  hardCapUsdc: 200_000_000,
+  softCapUsdc: 0,
   minContributionUsdc: 1,
   /* Published per-wallet limit. The UI prefers the value the program actually
      enforces (see `fetchSaleSnapshot`) and only falls back to this one when
      that read fails, so a figure here that hasn't reached the chain yet cannot
      invite a contribution the program will reject. */
-  maxContributionUsdc: 1_000_000,
+  maxContributionUsdc: 10_000_000,
   opensAt: "2026-07-27T18:16:07.000Z",
   closesAt: "2026-08-26T18:17:07.000Z",
   acceptedStablecoins: [],
