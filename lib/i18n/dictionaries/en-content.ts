@@ -486,6 +486,11 @@ export const enContent = {
         body: "Peers reach the node over UDP because QUIC is the primary transport — that is the port people most often forget. One TCP port serves JSON-RPC, WebSocket, REST, health, and metrics together; keep it private if you don't want to serve clients publicly.",
       },
       {
+        id: "reachable",
+        title: "Serve the network: make your node reachable",
+        body: "This is the step that turns a node from something that watches the network into something that carries it. Put nginx in front and get a certificate, then tell the node its public URL with --public-rpc-url and it advertises itself so wallets, explorers and OpenFiat's own web app can use it. The order matters: nginx over plain HTTP first, then certbot adds TLS — a config that already names a certificate cannot start, so certbot fails before it can issue the one that would have fixed it. A certificate is not optional decoration: a page served over HTTPS cannot open a plain-HTTP connection, so a node without one is invisible to every browser however healthy it is.",
+      },
+      {
         id: "service",
         title: "Run it as a service",
         body: "Under systemd the node restarts after a crash or reboot, and gets a long enough shutdown grace period that the database flushes cleanly instead of being killed mid-write.",

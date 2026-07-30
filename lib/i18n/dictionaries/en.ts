@@ -319,6 +319,11 @@ export const en = {
     releasesLink: "GitHub Releases",
     referenceNote:
       "Commands below use the reference deployment: the openfiat-node service, /etc/openfiat for configuration and /var/lib/openfiat for data.",
+    serveRpcTitle: "Serve the network, not just yourself",
+    serveRpc:
+      "A node that only reads is a guest. A node the public can reach is infrastructure — wallets, explorers and web apps have to talk to *somebody*, and today too few of those somebodies exist. Every operator who puts their node behind TLS and sets --public-rpc-url widens that set, which is the difference between a network with several independent front doors and one with a single point of failure that everyone quietly depends on. It costs a certificate and a reverse proxy. It is also paid: a reachable node is one peers can challenge and reward, and OpenFiat's own applications will use yours alongside every other.",
+    serveRpcHonest:
+      "Two things worth knowing before you do it. Serving the public means real traffic, so size the machine for it and watch the metrics endpoint. And a public node is a public commitment — people will build against the URL you publish, so take it down deliberately rather than quietly.",
     portsTitle: "Ports",
     portPublic: "Must be reachable",
     portPrivate: "Keep private",

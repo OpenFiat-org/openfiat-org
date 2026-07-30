@@ -185,6 +185,19 @@ export default async function RunANodePage({ params }: Props) {
       </Section>
 
       {/* Install options ----------------------------------------------- */}
+      {/* Why an operator should make their node public, placed before the
+          install steps: it is the decision that shapes how they set the
+          node up, not an afterthought once it is already running. */}
+      <Section
+        className="border-t border-line"
+        title={t.runNode.serveRpcTitle}
+      >
+        <div className="max-w-3xl space-y-6">
+          <p className="text-body">{t.runNode.serveRpc}</p>
+          <p className="text-body text-faint">{t.runNode.serveRpcHonest}</p>
+        </div>
+      </Section>
+
       <Section className="border-t border-line" title={t.runNode.installTitle}>
         <div className="space-y-12">
           {c.runNode.install.map((option) => (

@@ -326,6 +326,11 @@ export const zh: Dictionary = {
     releasesLink: "GitHub Releases 页面",
     referenceNote:
       "以下命令基于参考部署方案：服务名为 openfiat-node，配置位于 /etc/openfiat，数据位于 /var/lib/openfiat。",
+    serveRpcTitle: "服务网络，而不只是服务自己",
+    serveRpc:
+      "只做读取的节点是客人；能被公众访问的节点才是基础设施——钱包、浏览器和网页应用总要连上*某个人*，而今天这样的「某个人」实在太少。每一位把节点放到 TLS 之后并设置 --public-rpc-url 的运营者，都在扩大这个集合，这决定了网络究竟是拥有多个彼此独立的入口，还是所有人都默默依赖着同一个单点。代价不过是一张证书和一层反向代理，而且它是有回报的：可被访问的节点才能被对等节点挑战与奖励，OpenFiat 自己的应用也会和其他节点一样使用你的节点。",
+    serveRpcHonest:
+      "动手之前有两点值得了解。对公众提供服务意味着真实流量，请据此配置机器并关注 metrics 端点。另外，公开节点是一种公开承诺——人们会基于你发布的 URL 进行开发，因此若要下线，请有计划地进行，而不是悄然关停。",
     portsTitle: "端口",
     portPublic: "必须可达",
     portPrivate: "保持内部可见",
