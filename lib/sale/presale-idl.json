@@ -16,12 +16,23 @@
   "instructions": [
     {
       "name": "claim",
-      "discriminator": [62, 198, 214, 193, 213, 159, 108, 210],
+      "discriminator": [
+        62,
+        198,
+        214,
+        193,
+        213,
+        159,
+        108,
+        210
+      ],
       "accounts": [
         {
           "name": "buyer",
           "signer": true,
-          "relations": ["contribution"]
+          "relations": [
+            "contribution"
+          ]
         },
         {
           "name": "sale_config",
@@ -29,7 +40,19 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+                "value": [
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
               },
               {
                 "kind": "arg",
@@ -48,7 +71,19 @@
               {
                 "kind": "const",
                 "value": [
-                  112, 114, 101, 115, 97, 108, 101, 95, 118, 97, 117, 108, 116
+                  112,
+                  114,
+                  101,
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
                 ]
               }
             ]
@@ -66,7 +101,18 @@
               {
                 "kind": "const",
                 "value": [
-                  99, 111, 110, 116, 114, 105, 98, 117, 116, 105, 111, 110
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110
                 ]
               },
               {
@@ -85,8 +131,7 @@
           "writable": true
         },
         {
-          "name": "token_program",
-          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          "name": "token_program"
         }
       ],
       "args": [
@@ -98,12 +143,87 @@
     },
     {
       "name": "contribute_usdc",
-      "discriminator": [164, 188, 213, 177, 79, 222, 120, 27],
+      "discriminator": [
+        164,
+        188,
+        213,
+        177,
+        79,
+        222,
+        120,
+        27
+      ],
       "accounts": [
         {
           "name": "buyer",
           "writable": true,
           "signer": true
+        },
+        {
+          "name": "ban_record",
+          "docs": [
+            "non-existence*. Unchecked and uninitialized on purpose — the",
+            "wallet is banned iff this address is occupied, so in the passing",
+            "case there is nothing to deserialize. The soundness lives in the",
+            "constraint, not the type: `seeds`/`seeds::program` force this to",
+            "be the one canonical ban address for `buyer` under",
+            "`openfiat-governance`, so a banned caller cannot substitute an",
+            "unrelated empty account and appear unbanned. Removing either line",
+            "silently disables the ban for this instruction."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "buyer"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                249,
+                105,
+                249,
+                226,
+                158,
+                87,
+                251,
+                178,
+                106,
+                167,
+                113,
+                8,
+                80,
+                229,
+                114,
+                123,
+                154,
+                32,
+                141,
+                47,
+                151,
+                84,
+                113,
+                106,
+                245,
+                4,
+                105,
+                181,
+                66,
+                199,
+                19
+              ]
+            }
+          }
         },
         {
           "name": "sale_config",
@@ -112,7 +232,19 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+                "value": [
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
               },
               {
                 "kind": "arg",
@@ -140,7 +272,18 @@
               {
                 "kind": "const",
                 "value": [
-                  99, 111, 110, 116, 114, 105, 98, 117, 116, 105, 111, 110
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110
                 ]
               },
               {
@@ -155,8 +298,7 @@
           }
         },
         {
-          "name": "token_program",
-          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          "name": "token_program"
         },
         {
           "name": "system_program",
@@ -176,12 +318,87 @@
     },
     {
       "name": "contribute_with_swap",
-      "discriminator": [1, 140, 13, 39, 224, 128, 233, 135],
+      "discriminator": [
+        1,
+        140,
+        13,
+        39,
+        224,
+        128,
+        233,
+        135
+      ],
       "accounts": [
         {
           "name": "buyer",
           "writable": true,
           "signer": true
+        },
+        {
+          "name": "ban_record",
+          "docs": [
+            "non-existence*. Unchecked and uninitialized on purpose — the",
+            "wallet is banned iff this address is occupied, so in the passing",
+            "case there is nothing to deserialize. The soundness lives in the",
+            "constraint, not the type: `seeds`/`seeds::program` force this to",
+            "be the one canonical ban address for `buyer` under",
+            "`openfiat-governance`, so a banned caller cannot substitute an",
+            "unrelated empty account and appear unbanned. Removing either line",
+            "silently disables the ban for this instruction."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  97,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "buyer"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                249,
+                105,
+                249,
+                226,
+                158,
+                87,
+                251,
+                178,
+                106,
+                167,
+                113,
+                8,
+                80,
+                229,
+                114,
+                123,
+                154,
+                32,
+                141,
+                47,
+                151,
+                84,
+                113,
+                106,
+                245,
+                4,
+                105,
+                181,
+                66,
+                199,
+                19
+              ]
+            }
+          }
         },
         {
           "name": "sale_config",
@@ -190,7 +407,19 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+                "value": [
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
               },
               {
                 "kind": "arg",
@@ -218,7 +447,18 @@
               {
                 "kind": "const",
                 "value": [
-                  99, 111, 110, 116, 114, 105, 98, 117, 116, 105, 111, 110
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110
                 ]
               },
               {
@@ -234,7 +474,9 @@
         },
         {
           "name": "swap_program",
-          "docs": ["below. The actual swap accounts are `remaining_accounts`."]
+          "docs": [
+            "below. The actual swap accounts are `remaining_accounts`."
+          ]
         },
         {
           "name": "system_program",
@@ -258,12 +500,23 @@
     },
     {
       "name": "finalize_sale",
-      "discriminator": [62, 138, 254, 160, 192, 113, 177, 58],
+      "discriminator": [
+        62,
+        138,
+        254,
+        160,
+        192,
+        113,
+        177,
+        58
+      ],
       "accounts": [
         {
           "name": "admin",
           "signer": true,
-          "relations": ["sale_config"]
+          "relations": [
+            "sale_config"
+          ]
         },
         {
           "name": "sale_config",
@@ -272,7 +525,19 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+                "value": [
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
               },
               {
                 "kind": "arg",
@@ -293,8 +558,7 @@
           "name": "usdc_mint"
         },
         {
-          "name": "token_program",
-          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          "name": "token_program"
         }
       ],
       "args": [
@@ -306,7 +570,16 @@
     },
     {
       "name": "initialize_sale",
-      "discriminator": [208, 103, 34, 154, 179, 6, 125, 208],
+      "discriminator": [
+        208,
+        103,
+        34,
+        154,
+        179,
+        6,
+        125,
+        208
+      ],
       "accounts": [
         {
           "name": "admin",
@@ -326,7 +599,19 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+                "value": [
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
               },
               {
                 "kind": "arg",
@@ -336,7 +621,16 @@
           }
         },
         {
-          "name": "open_mint"
+          "name": "open_mint",
+          "docs": [
+            "Deliberately *not* pinned to `token_program`, unlike `usdc_mint`",
+            "below. This instruction dispatches no CPI against OPEN — it only",
+            "reads the mint's decimals and records its address — and `claim`,",
+            "which does move OPEN, carries its own pinned `token_program`.",
+            "Constraining it here would additionally force OPEN and USDC to share",
+            "a token program, which is the exact coupling this migration removes:",
+            "OPEN is Token-2022 while the stablecoin need not be."
+          ]
         },
         {
           "name": "usdc_mint"
@@ -352,7 +646,19 @@
               {
                 "kind": "const",
                 "value": [
-                  112, 114, 101, 115, 97, 108, 101, 95, 118, 97, 117, 108, 116
+                  112,
+                  114,
+                  101,
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
                 ]
               }
             ]
@@ -373,8 +679,21 @@
               {
                 "kind": "const",
                 "value": [
-                  115, 97, 108, 101, 95, 117, 115, 100, 99, 95, 118, 97, 117,
-                  108, 116
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  117,
+                  115,
+                  100,
+                  99,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
                 ]
               },
               {
@@ -402,8 +721,7 @@
           ]
         },
         {
-          "name": "token_program",
-          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          "name": "token_program"
         },
         {
           "name": "system_program",
@@ -431,12 +749,23 @@
     },
     {
       "name": "refund",
-      "discriminator": [2, 96, 183, 251, 63, 208, 46, 46],
+      "discriminator": [
+        2,
+        96,
+        183,
+        251,
+        63,
+        208,
+        46,
+        46
+      ],
       "accounts": [
         {
           "name": "buyer",
           "signer": true,
-          "relations": ["contribution"]
+          "relations": [
+            "contribution"
+          ]
         },
         {
           "name": "sale_config",
@@ -444,7 +773,19 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+                "value": [
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
               },
               {
                 "kind": "arg",
@@ -468,7 +809,18 @@
               {
                 "kind": "const",
                 "value": [
-                  99, 111, 110, 116, 114, 105, 98, 117, 116, 105, 111, 110
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110
                 ]
               },
               {
@@ -487,8 +839,7 @@
           "writable": true
         },
         {
-          "name": "token_program",
-          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          "name": "token_program"
         }
       ],
       "args": [
@@ -500,12 +851,23 @@
     },
     {
       "name": "update_sale_params",
-      "discriminator": [86, 207, 77, 222, 26, 93, 187, 111],
+      "discriminator": [
+        86,
+        207,
+        77,
+        222,
+        26,
+        93,
+        187,
+        111
+      ],
       "accounts": [
         {
           "name": "admin",
           "signer": true,
-          "relations": ["sale_config"]
+          "relations": [
+            "sale_config"
+          ]
         },
         {
           "name": "sale_config",
@@ -514,7 +876,19 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103]
+                "value": [
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
               },
               {
                 "kind": "arg",
@@ -543,11 +917,29 @@
   "accounts": [
     {
       "name": "Contribution",
-      "discriminator": [182, 187, 14, 111, 72, 167, 242, 212]
+      "discriminator": [
+        182,
+        187,
+        14,
+        111,
+        72,
+        167,
+        242,
+        212
+      ]
     },
     {
       "name": "SaleConfig",
-      "discriminator": [86, 47, 71, 156, 87, 152, 149, 246]
+      "discriminator": [
+        86,
+        47,
+        71,
+        156,
+        87,
+        152,
+        149,
+        246
+      ]
     }
   ],
   "errors": [
@@ -665,6 +1057,11 @@
       "code": 6022,
       "name": "Overflow",
       "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6023,
+      "name": "WalletBanned",
+      "msg": "This wallet is on the governance ban list (OFS-7100 §12)"
     }
   ],
   "types": [
@@ -830,14 +1227,25 @@
           {
             "name": "hard_cap",
             "docs": [
-              "USDC base units (6 decimals). OFS-4100 §3 proposes 30_000_000_000_000."
+              "USDC base units (6 decimals).",
+              "",
+              "OFS-4100 §3 gives the presale no hard cap distinct from the Community",
+              "Presale bucket itself, so the confirmed value is the full bucket:",
+              "200,000,000 OPEN at 1 OPEN = 1 USDC. It must never be set higher —",
+              "`claim` pays out of a vault holding exactly that much OPEN, and",
+              "entitlements accrue 1:1 against contributions, so a larger cap would",
+              "let the sale sell OPEN the vault cannot deliver."
             ],
             "type": "u64"
           },
           {
             "name": "soft_cap",
             "docs": [
-              "USDC base units. OFS-4100 §3 proposes 5_000_000_000_000."
+              "USDC base units. **Zero on a spec-conforming sale**: OFS-4100 §3",
+              "confirms there is no soft cap and no refund condition derived from",
+              "one, and zero is how \"no minimum to raise\" is expressed here —",
+              "`finalize_sale` then always resolves to `Finalized`, never",
+              "`SoftCapMissed`, which is the intended behaviour and not an oversight."
             ],
             "type": "u64"
           },
@@ -851,7 +1259,8 @@
           {
             "name": "max_contribution",
             "docs": [
-              "USDC base units, applies to a wallet's cumulative contributions."
+              "USDC base units, applies to a wallet's cumulative contributions.",
+              "OFS-4100 §3: 10,000,000 USDC-equivalent."
             ],
             "type": "u64"
           },
@@ -977,7 +1386,9 @@
   "constants": [
     {
       "name": "BPS_DENOMINATOR",
-      "docs": ["Basis-points denominator (10_000 = 100%)."],
+      "docs": [
+        "Basis-points denominator (10_000 = 100%)."
+      ],
       "type": "u64",
       "value": "10000"
     },
