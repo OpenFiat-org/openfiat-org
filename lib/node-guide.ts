@@ -166,10 +166,64 @@ openfiat-node \\
 # earn the full reward share, and --retention archival to keep the whole
 # history instead of a rolling 30 days.`,
 
+  reverseProxy: `# /etc/nginx/sites-available/openfiat-node
+#
+# HTTP only at this stage, with NO TLS directives. certbot --nginx works
+# by running "nginx -t" and editing this file, so a config that already
+# points at a certificate cannot load, nginx will not start, and certbot
+# fails before it can issue the certificate that would have fixed it.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name openfiat.example.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:7080;
+        proxy_http_version 1.1;
+
+        # The node serves its WebSocket event stream on the same port;
+        # without these the stream downgrades to a plain request and
+        # subscriptions silently never deliver.
+        proxy_set_header Upgrade    $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Do NOT add CORS headers here — the node already sets them, and
+        # two Access-Control-Allow-Origin headers on one response make
+        # browsers reject it while curl sees a clean 200.
+        proxy_read_timeout 300s;
+    }
+}`,
+
+  tls: `# The A record must already resolve for the world — certbot proves
+# control of the name over port 80. Check a public resolver, not your
+# own machine, whose cache can be stale:
+dig +short @8.8.8.8 openfiat.example.com
+
+ln -s /etc/nginx/sites-available/openfiat-node /etc/nginx/sites-enabled/
+nginx -t && systemctl reload nginx
+curl -s http://openfiat.example.com/health    # ok, before any certificate
+
+apt install -y certbot python3-certbot-nginx
+certbot --nginx -d openfiat.example.com
+
+# certbot edits the server block in place: it adds listen 443 ssl, the
+# certificate paths, and a redirect from :80. The location block and its
+# proxy headers carry over. Renewal installs itself as a systemd timer.
+# Do not hand-write a 443 block afterwards — certbot manages that one.
+
+# Then tell the network this node can be reached directly:
+#   openfiat-node --public-rpc-url https://openfiat.example.com`,
+
   firewall: `ufw default deny incoming
 ufw allow 22/tcp                 # keep your own access
 ufw allow 4001/udp               # libp2p, QUIC — the port people most often forget
-ufw allow 7080/tcp               # JSON-RPC/WebSocket/REST/health/metrics — all one port
+ufw allow 443/tcp                # once nginx terminates TLS in front (see below)
+ufw allow 7080/tcp               # only if the node is exposed directly, without a proxy
 ufw enable && ufw status verbose`,
 
   systemd: `# /etc/systemd/system/openfiat-node.service

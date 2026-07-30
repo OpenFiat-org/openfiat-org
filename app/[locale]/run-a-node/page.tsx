@@ -45,6 +45,12 @@ const STEP_CODE: Record<string, { code: string; filename?: string }[]> = {
   identity: [{ code: CODE.identity }],
   configure: [{ code: CODE.config }],
   firewall: [{ code: CODE.firewall }],
+  // Reachability from a browser: nginx first over plain HTTP, then
+  // certbot adds TLS. The order is load-bearing — see CODE.reverseProxy.
+  reachable: [
+    { code: CODE.reverseProxy, filename: "/etc/nginx/sites-available/openfiat-node" },
+    { code: CODE.tls },
+  ],
   service: [
     { code: CODE.systemd, filename: "openfiat-node.service" },
     { code: CODE.serviceUp },
