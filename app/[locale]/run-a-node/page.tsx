@@ -43,7 +43,7 @@ const STEP_CODE: Record<string, { code: string; filename?: string }[]> = {
   prepare: [{ code: CODE.prereqs }],
   install: [],
   identity: [{ code: CODE.identity }],
-  configure: [{ code: CODE.config, filename: "/etc/openfiat/node.env" }],
+  configure: [{ code: CODE.config }],
   firewall: [{ code: CODE.firewall }],
   service: [
     { code: CODE.systemd, filename: "openfiat-node.service" },

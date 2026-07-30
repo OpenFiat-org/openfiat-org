@@ -437,7 +437,7 @@ export const enContent = {
       noPeers: {
         symptom: "No peers connect",
         cause:
-          "UDP 4001 is blocked, or CLI_BOOTSTRAP_PEERS points at an address peers can't actually reach — it must be a static multiaddr/IP, not a hostname (DNS bootstrap doesn't resolve).",
+          "UDP 4001 is blocked, or --entrypoint points at an address peers can't actually reach — it must be a static multiaddr/IP, not a hostname (DNS bootstrap doesn't resolve). Your own node logs the addresses it is reachable at once it is listening.",
       },
       stuckSync: {
         symptom: "Synchronization never completes",

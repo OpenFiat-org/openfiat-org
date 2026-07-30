@@ -2,8 +2,8 @@
  * Concrete deployment details for running a node — kept in sync with the
  * real `openfiat-node` binary (`openfiat-core/crates/cli`), not an
  * imagined future CLI. There is exactly one binary and no subcommands:
- * `openfiat-node` reads its entire configuration from environment
- * variables at startup (see `crates/cli/src/main.rs`) — no config file,
+ * `openfiat-node` is configured entirely by command-line flags (see
+ * `crates/cli/src/main.rs`) — no environment variables, no config file,
  * no `openfiat identity`/`openfiat stake`/`openfiat snapshot` command
  * surface. Staking, joining disputes, and casting governance votes are
  * wallet actions a client performs against a *running* node's JSON-RPC
@@ -11,7 +11,17 @@
  * running the node itself, and are covered by their own guides
  * (`/participate/*`), not this one.
  *
- * Bootstrap peers are addressed by static multiaddr/IP, not hostname —
+ * Configuration is flags and nothing else, deliberately. With two
+ * sources a node's real settings become a function of the invocation AND
+ * the ambient environment, and "why does this node behave differently
+ * from the identical one beside it" turns into archaeology across shell
+ * profiles and unit files. `systemctl cat openfiat-node` shows exactly
+ * what a running node was given, and `openfiat-node --help` is the whole
+ * surface. An earlier version of this guide taught an
+ * `/etc/openfiat/node.env` file; that mechanism no longer exists and a
+ * node following it would ignore every setting.
+ *
+ * Entrypoints are addressed by static multiaddr/IP, not hostname —
  * this workspace deliberately doesn't enable libp2p's `dns` feature (two
  * unresolved `hickory-proto` CVEs; see
  * `openfiat-core/docs/architecture.md`), so a `/dns4/...` bootstrap
@@ -27,12 +37,25 @@
  * are not language-dependent; only the prose around them is translated.
  */
 
+/// The public devnet entrypoint. Peer discovery does not run yet, so a
+/// node finds only the peers it is given, and this is the one that gets
+/// a new operator onto the cluster. Verified reachable by dialing it from
+/// a clean node rather than copied from a config file.
+export const DEVNET_ENTRYPOINT =
+  "/ip4/84.32.223.111/udp/4001/quic-v1/p2p/12D3KooWK9hQ7TwbfvFiaAxUbRFCkdhS7iEpAJDnewNL1anyREQ1";
+
 export const NODE_BINARY = "openfiat-node";
 export const DATA_DIR = "/var/lib/openfiat";
 export const SERVICE = "openfiat-node";
 
-/** This workspace's real devnet program ids (`programs/devnet-addresses.json`
- *  in openfiat-core) — needed to set `CLI_STAKING_PROGRAM_ID` below. */
+/** This workspace's real devnet program ids
+ *  (`programs/devnet-addresses.json` in openfiat-core).
+ *
+ *  Shown so an operator can recognise what their node is pinned to. They
+ *  are NOT configurable: `openfiat_chain::programs` fixes them at compile
+ *  time, deliberately, because a node operator who could name the staking
+ *  program could deploy their own, mint themselves any stake, and have
+ *  their node count governance votes weighted by it. */
 export const DEVNET_PROGRAM_IDS = {
   escrow: "HaPpM1QYM3dKp3sX7zhEdft9hB6ncu6xfALAbkyQChQP",
   staking: "HYEXk8XQukBkZbiYB33JyVefQDxqyCpPudad3wBCyYmx",
@@ -80,17 +103,17 @@ services:
     volumes:
       - /var/lib/openfiat:/data
       - /etc/openfiat/wallet.json:/data/wallet.json:ro
-    environment:
-      CLI_DATA_DIR: /data
-      CLI_WALLET_PATH: /data/wallet.json
-      CLI_HTTP_ADDR: 0.0.0.0:7080
-      CLI_LISTEN_ADDR: /ip4/0.0.0.0/udp/4001/quic-v1
-      # Comma-separated static multiaddrs — DNS bootstrap does not
-      # resolve (see this file's own top comment).
-      CLI_BOOTSTRAP_PEERS: ""
-      # Unset stays GossipOnly, the safe default — set this to opt into
+    command:
+      - --ledger=/data
+      - --identity=/data/wallet.json
+      - --rpc-bind-address=0.0.0.0:7080
+      - --gossip-bind-address=/ip4/0.0.0.0/udp/4001/quic-v1
+      # Static multiaddr — DNS bootstrap does not resolve (see this
+      # file's own top comment). Repeat the flag for several.
+      - --entrypoint=/ip4/84.32.223.111/udp/4001/quic-v1/p2p/12D3KooWK9hQ7TwbfvFiaAxUbRFCkdhS7iEpAJDnewNL1anyREQ1
+      # Omit to stay GossipOnly, the safe default. Any value opts into
       # real Solana devnet connectivity (OFS-4300 §4).
-      CLI_SOLANA_RPC_URLS: ""
+      - --solana-rpc-url=https://api.devnet.solana.com
     stop_grace_period: 60s
     ulimits:
       nofile: 65536`,
@@ -118,30 +141,30 @@ solana-keygen new --outfile /etc/openfiat/wallet.json
 chmod 600 /etc/openfiat/wallet.json
 solana-keygen pubkey /etc/openfiat/wallet.json`,
 
-  config: `# /etc/openfiat/node.env — read via systemd's EnvironmentFile (see the
-# systemd unit below). openfiat-node has no config file of its own;
-# every setting below is a real environment variable it reads directly.
+  config: `# There is no config file and no environment variables. Every
+# setting is a flag on the systemd unit's ExecStart below, so
+# "systemctl cat openfiat-node" shows exactly what a running node was
+# given, and "openfiat-node --help" is the whole surface.
+#
+# Try it in the foreground first — the node prints the addresses it is
+# reachable at and whether it reached Solana:
 
-CLI_DATA_DIR=/var/lib/openfiat
-CLI_WALLET_PATH=/etc/openfiat/wallet.json
-CLI_HTTP_ADDR=0.0.0.0:7080
-CLI_LISTEN_ADDR=/ip4/0.0.0.0/udp/4001/quic-v1
+openfiat-node \\
+  --ledger /var/lib/openfiat \\
+  --identity /etc/openfiat/wallet.json \\
+  --rpc-bind-address 0.0.0.0:7080 \\
+  --gossip-bind-address /ip4/0.0.0.0/udp/4001/quic-v1 \\
+  --entrypoint /ip4/84.32.223.111/udp/4001/quic-v1/p2p/12D3KooWK9hQ7TwbfvFiaAxUbRFCkdhS7iEpAJDnewNL1anyREQ1 \\
+  --solana-rpc-url https://api.devnet.solana.com
 
-# Comma-separated multiaddrs of peers to dial on startup — static
-# IP/multiaddr only, DNS bootstrap does not resolve (see this file's own
-# top comment). Leave unset for a standalone bootstrap node.
-#CLI_BOOTSTRAP_PEERS=/ip4/203.0.113.10/udp/4001/quic-v1
-
-# Comma-separated Solana RPC endpoint(s) — set to become RpcConnected
-# (OFS-4300 §4). Leave unset to stay GossipOnly, the safe default. Never
-# commit a real endpoint/API key to version control — this file should
-# live only at /etc/openfiat/node.env on the server, mode 640.
-#CLI_SOLANA_RPC_URLS=https://api.devnet.solana.com
-
-# Needed for this node to independently verify a governance vote's real
-# on-chain stake weight (OFS-4000) — without it, votes are queued but
-# never trusted.
-#CLI_STAKING_PROGRAM_ID=${DEVNET_PROGRAM_IDS.staking}`,
+# Omit --solana-rpc-url to stay GossipOnly, the safe default: the node
+# still serves the marketplace, but its on-chain answers come
+# second-hand from peers. Never put a real endpoint or API key anywhere
+# version controlled — it belongs in the unit file on the server.
+#
+# Add --ipfs-api-url http://127.0.0.1:5001 to pin protocol content and
+# earn the full reward share, and --retention archival to keep the whole
+# history instead of a rolling 30 days.`,
 
   firewall: `ufw default deny incoming
 ufw allow 22/tcp                 # keep your own access
@@ -160,9 +183,14 @@ Wants=network-online.target
 Type=simple
 User=openfiat
 Group=openfiat
-ExecStart=/usr/local/bin/openfiat-node
+ExecStart=/usr/local/bin/openfiat-node \\
+    --ledger /var/lib/openfiat \\
+    --identity /etc/openfiat/wallet.json \\
+    --rpc-bind-address 0.0.0.0:7080 \\
+    --gossip-bind-address /ip4/0.0.0.0/udp/4001/quic-v1 \\
+    --entrypoint /ip4/84.32.223.111/udp/4001/quic-v1/p2p/12D3KooWK9hQ7TwbfvFiaAxUbRFCkdhS7iEpAJDnewNL1anyREQ1 \\
+    --solana-rpc-url https://api.devnet.solana.com
 WorkingDirectory=/var/lib/openfiat
-EnvironmentFile=-/etc/openfiat/node.env
 Restart=on-failure
 RestartSec=5s
 
@@ -177,13 +205,19 @@ ProtectHome=true
 ReadWritePaths=/var/lib/openfiat
 PrivateTmp=true
 
+# AF_NETLINK is required, not optional: binding a wildcard address makes
+# libp2p enumerate this host's interfaces, and that goes over a netlink
+# socket. Without it the QUIC listener fails and the gossip actor panics
+# while the HTTP thread survives — so systemd reports the unit active
+# and the node looks healthy while serving nothing.
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
+
 [Install]
 WantedBy=multi-user.target`,
 
   serviceUp: `useradd --system --create-home --home-dir /var/lib/openfiat --shell /usr/sbin/nologin openfiat
 install -m 755 openfiat-node /usr/local/bin/openfiat-node
 mkdir -p /etc/openfiat
-install -m 640 -o openfiat -g openfiat node.env /etc/openfiat/node.env
 chown -R openfiat:openfiat /var/lib/openfiat
 
 systemctl daemon-reload
@@ -197,7 +231,11 @@ curl -s http://localhost:7080/health
 curl -s -X POST http://localhost:7080/rpc -H 'content-type: application/json' \\
   -d '{"jsonrpc":"2.0","id":1,"method":"getChainStatus","params":{}}'
 # {"jsonrpc":"2.0","id":1,"result":{"mode":"GossipOnly","blockhash":null,"slot":null,"age_ms":null}}
-# ("RpcConnected" with a real blockhash once CLI_SOLANA_RPC_URLS is set)`,
+# ("RpcConnected" with a real blockhash once --solana-rpc-url is set)
+
+# The addresses your node is reachable at are in its own log — give one
+# of these to another operator as their --entrypoint:
+journalctl -u openfiat-node | grep "reachable at a new address"`,
 
   snapshotManual: `# Snapshot sync (OFS-1300) is real JSON-RPC, not a separate CLI —
 # a new node discovers and imports a peer-announced snapshot instead of

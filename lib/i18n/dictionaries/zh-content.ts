@@ -407,7 +407,7 @@ export const zhContent: ContentDictionary = {
       noPeers: {
         symptom: "没有对等节点连接",
         cause:
-          "UDP 4001 被拦截，或 CLI_BOOTSTRAP_PEERS 指向了对等节点实际无法访问的地址——它必须是静态的 multiaddr/IP，而不是主机名（DNS 引导地址无法解析）。",
+          "UDP 4001 被拦截，或 --entrypoint 指向了对等节点实际无法访问的地址——它必须是静态的 multiaddr/IP，而不是主机名（DNS 引导地址无法解析）。节点开始监听后会在日志中打印它自己可被访问的地址。",
       },
       stuckSync: {
         symptom: "同步始终无法完成",

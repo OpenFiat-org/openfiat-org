@@ -58,7 +58,7 @@ export const buildOnOpenfiat: Guide = {
         {
           code: `# From a clone of openfiat-core. The package is openfiat-cli;
 # the binary it produces is openfiat-node.
-CLI_HTTP_ADDR=127.0.0.1:7080 cargo run -p openfiat-cli
+cargo run -p openfiat-cli -- --rpc-bind-address 127.0.0.1:7080
 
 # In another shell:
 curl -s http://localhost:7080/health

@@ -133,16 +133,18 @@ const ix = onchain.governance.castVoteIx(
         zh: "理解链下镜像机制",
       },
       body: {
-        en: "Nodes also carry votes over the peer-to-peer governance layer, and this is where a subtle trust question lives. A gossiped vote does carry a self-reported weight field, and no node ever believes it. When a vote arrives, the node checks the signature, then queues the vote rather than applying it. On a later tick it fetches the stake account the vote names, confirms that account is genuinely owned by the staking program, confirms the account's owner field matches the voter who signed, and only then records the vote using the amount it decoded itself. A node that has no staking program id configured leaves such votes queued indefinitely rather than trusting any of them — which is the safe failure, but does mean an unconfigured node silently counts nothing.",
-        zh: "节点同时也会通过点对点治理层传播投票，而微妙的信任问题正出在这里。被 gossip 传播的投票确实带有一个自报的权重字段，但没有任何节点会相信它。当一票到达时，节点先校验签名，然后把该票排入队列而不是直接应用。在之后的某个周期里，它会去读取该票所指明的质押账户，确认该账户确实由质押程序拥有，确认账户中的 owner 字段与签名的投票者一致，只有到这时才会用它自己解码出的数额记录这一票。如果节点没有配置质押程序 ID，这类投票会被无限期地留在队列中，而不会被信任——这是安全的失败方式，但也意味着一个未配置的节点实际上不会计入任何票。",
+        en: "Nodes also carry votes over the peer-to-peer governance layer, and this is where a subtle trust question lives. A gossiped vote does carry a self-reported weight field, and no node ever believes it. When a vote arrives, the node checks the signature, then queues the vote rather than applying it. On a later tick it fetches the stake account the vote names, confirms that account is genuinely owned by the staking program, confirms the account's owner field matches the voter who signed, and only then records the vote using the amount it decoded itself. The staking program it checks against is not configurable: it is fixed at compile time, because a node operator who could name that program could deploy their own, mint themselves any stake they liked, and have their node count votes weighted by it. What an operator does control is whether the node can reach Solana at all — a GossipOnly node has nothing to verify against and leaves such votes queued rather than trusting them, which is the safe failure but does mean it counts nothing.",
+        zh: "节点同时也会通过点对点治理层传播投票，而微妙的信任问题正出在这里。被 gossip 传播的投票确实带有一个自报的权重字段，但没有任何节点会相信它。当一票到达时，节点先校验签名，然后把该票排入队列而不是直接应用。在之后的某个周期里，它会去读取该票所指明的质押账户，确认该账户确实由质押程序拥有，确认账户中的 owner 字段与签名的投票者一致，只有到这时才会用它自己解码出的数额记录这一票。它所校验的质押程序地址不可配置：该地址在编译期即已固定，因为若节点运营者能够指定该程序，他们就可以部署自己的程序、给自己铸造任意数额的质押，并让自己的节点按此计票。运营者能够决定的是节点能否连上 Solana——GossipOnly 节点没有任何可供校验的依据，会把这类投票留在队列中而不予信任，这是安全的失败方式，但也意味着它不会计入任何票。",
       },
       code: [
         {
-          filename: "/etc/openfiat/node.env",
-          code: `# Without this, a node queues every gossiped vote forever and never
-# trusts one. It is the address of the deployed staking program, which
-# is what the node checks a claimed stake account against.
-CLI_STAKING_PROGRAM_ID=HYEXk8XQukBkZbiYB33JyVefQDxqyCpPudad3wBCyYmx`,
+          code: `# A node that cannot reach Solana cannot verify a vote's stake, so it
+# queues gossiped votes rather than trusting them. Give it an endpoint:
+openfiat-node --solana-rpc-url https://api.devnet.solana.com ...
+
+# The staking program it verifies against is pinned at compile time and
+# is deliberately not a setting — see openfiat-core's
+# crates/chain/src/programs.rs for why.`,
         },
       ],
     },
