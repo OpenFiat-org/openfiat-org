@@ -13,6 +13,14 @@ export const SITE = {
    */
   specsDiscussionsUrl:
     "https://github.com/OpenFiat-org/openfiat-specs/discussions",
+  /**
+   * The OpenFiat guild — a live invite to a server named "OpenFiat", verified
+   * through Discord's invite API. Not to be confused with the invite in
+   * `lib/hosting.ts`, which reaches AllenHark's own server and exists only to
+   * claim the node-operator hosting discount.
+   */
+  discord: "https://discord.gg/Ybwn3PMkQ",
+  subreddit: "https://www.reddit.com/r/openfiat/",
   tagline: "Decentralized peer-to-peer fiat exchange",
   description:
     "OpenFiat is an open protocol for exchanging stablecoins for local fiat currency, peer to peer, with no centralized exchange operator. Settlement on Solana; coordination on an open network.",

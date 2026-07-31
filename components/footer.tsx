@@ -1,59 +1,83 @@
 import Image from "next/image";
 import Link from "next/link";
+import { FOOTER_ICONS } from "@/components/footer-icons";
 import { Container } from "@/components/ui/container";
-import { getDictionary, type Locale, localePath } from "@/lib/i18n";
 import {
-  FOOTER_COLUMNS,
-  LEGAL_NAV,
-  SOCIAL_LINKS,
-  type SocialLinkKey,
-} from "@/lib/nav";
+  type Dictionary,
+  getDictionary,
+  type Locale,
+  localePath,
+} from "@/lib/i18n";
+import { FOOTER_COLUMNS, type FooterLink, LEGAL_NAV } from "@/lib/nav";
 import { SITE } from "@/lib/site";
 
 const linkClass =
-  "rounded-sm text-sm text-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[color:var(--accent-ring)]";
+  "group inline-flex items-center gap-2 rounded-sm text-sm text-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[color:var(--accent-ring)]";
 
-const socialLinkClass =
-  "inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface-alt hover:text-ink focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[color:var(--accent-ring)]";
+/** The site's established micro-label: mono, tracked, quiet. */
+const headingClass =
+  "font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-faint";
 
-/** GitHub's own mark, not a house icon — this is a link to a third-party site. */
-function GitHubIcon() {
+function FooterLinkItem({
+  link,
+  locale,
+  t,
+}: {
+  link: FooterLink;
+  locale: Locale;
+  t: Dictionary;
+}) {
+  const Icon = link.icon ? FOOTER_ICONS[link.icon] : null;
+
+  const body = (
+    <>
+      {Icon && <Icon />}
+      <span>{t.footer.links[link.key]}</span>
+      {/* The leading space is load-bearing: without it the accessible name
+          runs the two spans together as "Launch apppreview". */}
+      {link.preview && (
+        <span className="text-xs text-faint">{` ${t.nav.preview.toLowerCase()}`}</span>
+      )}
+      {link.external && (
+        <span aria-hidden="true" className="text-faint">
+          ↗
+        </span>
+      )}
+    </>
+  );
+
   return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 16 16"
-      className="h-4 w-4"
-      fill="currentColor"
-    >
-      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
-    </svg>
+    <li>
+      {link.external ? (
+        <a
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={linkClass}
+        >
+          {body}
+        </a>
+      ) : (
+        <Link href={localePath(link.href, locale)} className={linkClass}>
+          {body}
+        </Link>
+      )}
+    </li>
   );
 }
 
-/** A discussion thread — matches the language switcher's line-icon weight. */
-function DiscussionsIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 16 16"
-      className="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.25"
-    >
-      <path
-        d="M2.5 3.75h8.5a1 1 0 0 1 1 1v4.5a1 1 0 0 1-1 1H7l-2.75 2.25v-2.25H2.5a1 1 0 0 1-1-1v-4.5a1 1 0 0 1 1-1Z"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-const SOCIAL_ICONS: Record<SocialLinkKey, () => React.JSX.Element> = {
-  github: GitHubIcon,
-  discussions: DiscussionsIcon,
-};
-
+/**
+ * Five columns, one heading each, defined by `FOOTER_COLUMNS`.
+ *
+ * The shape is the point: the site keeps gaining pages, and a flat row of
+ * links stops being readable at exactly the width where it starts being
+ * useful. Adding a link now means one entry in `lib/nav.ts` and one string in
+ * each dictionary — never a layout change.
+ *
+ * Each column's heading sits on its own hairline with a dot at the left end,
+ * so the row of headings reads as peers on a bus rather than as five
+ * unrelated lists. It is the one flourish here; everything else is quiet.
+ */
 export function Footer({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
   const year = new Date().getFullYear();
@@ -61,8 +85,8 @@ export function Footer({ locale }: { locale: Locale }) {
   return (
     <footer className="border-t border-line bg-bg">
       <Container>
-        <div className="grid gap-10 py-12 md:py-16 lg:grid-cols-12">
-          <div className="lg:col-span-4">
+        <div className="py-12 md:py-16">
+          <div className="max-w-md">
             <span className="inline-flex items-center gap-2">
               <Image
                 src="/logo-mark.png"
@@ -75,62 +99,40 @@ export function Footer({ locale }: { locale: Locale }) {
                 {SITE.name}
               </span>
             </span>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
+            <p className="mt-4 text-sm leading-relaxed text-muted">
               {t.footer.blurb}
             </p>
-            <ul className="mt-5 flex gap-1">
-              {SOCIAL_LINKS.map((link) => {
-                const Icon = SOCIAL_ICONS[link.key];
-                return (
-                  <li key={link.href}>
-                    <a
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={t.footer.links[link.key]}
-                      className={socialLinkClass}
-                    >
-                      <Icon />
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 lg:col-span-8 lg:grid-cols-4">
-            {FOOTER_COLUMNS.map((column) => (
-              <div key={column.titleKey}>
-                <h2 className="text-sm font-semibold tracking-tight text-ink">
-                  {t.footer.columns[column.titleKey]}
-                </h2>
-                <ul className="mt-4 space-y-3">
-                  {column.links.map((link) =>
-                    link.external ? (
-                      <li key={link.href}>
-                        <a
-                          href={link.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={linkClass}
-                        >
-                          {t.footer.links[link.key]}
-                        </a>
-                      </li>
-                    ) : (
-                      <li key={link.href}>
-                        <Link
-                          href={localePath(link.href, locale)}
-                          className={linkClass}
-                        >
-                          {t.footer.links[link.key]}
-                        </Link>
-                      </li>
-                    ),
-                  )}
-                </ul>
-              </div>
-            ))}
+          <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-5">
+            {FOOTER_COLUMNS.map((column) => {
+              const headingId = `footer-${column.titleKey}`;
+              return (
+                <nav
+                  key={column.titleKey}
+                  aria-labelledby={headingId}
+                  className="relative min-w-0 border-t border-line pt-5"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-[3px] left-0 h-1.5 w-1.5 rounded-full bg-accent-mid"
+                  />
+                  <h2 id={headingId} className={headingClass}>
+                    {t.footer.columns[column.titleKey]}
+                  </h2>
+                  <ul className="mt-4 space-y-3">
+                    {column.links.map((link) => (
+                      <FooterLinkItem
+                        key={link.href}
+                        link={link}
+                        locale={locale}
+                        t={t}
+                      />
+                    ))}
+                  </ul>
+                </nav>
+              );
+            })}
           </div>
         </div>
 
