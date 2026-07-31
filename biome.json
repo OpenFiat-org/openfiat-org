@@ -19,6 +19,7 @@
       "!**/.next",
       "!**/node_modules",
       "!**/content/.generated",
+      "!lib/sale/presale-idl.json",
       "!**/.content-cache",
       "!redesign"
     ]

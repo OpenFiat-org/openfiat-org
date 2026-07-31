@@ -48,7 +48,10 @@ const STEP_CODE: Record<string, { code: string; filename?: string }[]> = {
   // Reachability from a browser: nginx first over plain HTTP, then
   // certbot adds TLS. The order is load-bearing — see CODE.reverseProxy.
   reachable: [
-    { code: CODE.reverseProxy, filename: "/etc/nginx/sites-available/openfiat-node" },
+    {
+      code: CODE.reverseProxy,
+      filename: "/etc/nginx/sites-available/openfiat-node",
+    },
     { code: CODE.tls },
   ],
   service: [
@@ -188,10 +191,7 @@ export default async function RunANodePage({ params }: Props) {
       {/* Why an operator should make their node public, placed before the
           install steps: it is the decision that shapes how they set the
           node up, not an afterthought once it is already running. */}
-      <Section
-        className="border-t border-line"
-        title={t.runNode.serveRpcTitle}
-      >
+      <Section className="border-t border-line" title={t.runNode.serveRpcTitle}>
         <div className="max-w-3xl space-y-6">
           <p className="text-body">{t.runNode.serveRpc}</p>
           <p className="text-body text-faint">{t.runNode.serveRpcHonest}</p>
