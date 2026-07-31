@@ -61,12 +61,14 @@ export function Row({
       {href ? (
         <Link
           href={href}
-          className="group flex gap-5 py-5 transition-colors hover:bg-surface-alt/40 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[color:var(--accent-ring)] sm:gap-8"
+          className="group flex flex-col gap-2 py-5 transition-colors hover:bg-surface-alt/40 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[color:var(--accent-ring)] sm:flex-row sm:gap-8"
         >
           {inner}
         </Link>
       ) : (
-        <div className="flex gap-5 py-5 sm:gap-8">{inner}</div>
+        <div className="flex flex-col gap-2 py-5 sm:flex-row sm:gap-8">
+          {inner}
+        </div>
       )}
     </li>
   );

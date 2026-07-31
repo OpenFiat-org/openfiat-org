@@ -106,13 +106,25 @@ export default async function LocaleLayout({
   const locale: Locale = raw;
   const t = getDictionary(locale);
 
+  /*
+   * Inline background on <html> and <body>: the globals.css rule only
+   * applies once the external stylesheet has arrived, and not every
+   * engine paints a dark pre-CSS canvas from the color-scheme meta
+   * (WebKit keeps it white). An inline style applies the moment the
+   * parser creates the element, so no white frame can appear between
+   * navigations or before first paint on a cold load.
+   */
   return (
     <html
       lang={LOCALE_META[locale].htmlLang}
       dir={directionFor(locale)}
       className={`${plusJakarta.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      style={{ backgroundColor: "#0a0e14", colorScheme: "dark" }}
     >
-      <body className="min-h-full bg-bg antialiased">
+      <body
+        className="min-h-full bg-bg antialiased"
+        style={{ backgroundColor: "#0a0e14" }}
+      >
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:z-50 focus:rounded-sm focus:bg-surface focus:px-4 focus:py-2 focus:font-mono focus:text-sm focus:text-ink focus:start-4"

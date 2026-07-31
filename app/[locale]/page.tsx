@@ -209,17 +209,33 @@ export default async function Home({ params }: Props) {
         title={t.home.flow.title}
         subtitle={t.home.flow.subtitle}
       >
-        <ol className="flex overflow-x-auto pb-1">
+        {/*
+         * Vertical rail below lg, horizontal timeline from lg up. Four
+         * steps at min-w-52 overflow the container below lg, which forced
+         * the row into a sideways scroller — stacked, the same steps read
+         * top to bottom with the rail connecting them.
+         */}
+        <ol className="flex flex-col gap-8 lg:flex-row lg:gap-0">
           {c.trust.flow.map((step, index) => {
             const isFirst = index === 0;
             const isLast = index === c.trust.flow.length - 1;
             return (
-              <li key={step.title} className="relative min-w-52 flex-1 pt-6">
+              <li
+                key={step.title}
+                className="relative pl-8 lg:min-w-52 lg:flex-1 lg:pl-0 lg:pt-6"
+              >
+                {/* Rail to the next step (stacked layout only). */}
+                {!isLast && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute left-[5.5px] top-4 bottom-[-2rem] w-px bg-line-strong lg:hidden"
+                  />
+                )}
                 {c.trust.flow.length > 1 && (
                   <span
                     aria-hidden="true"
                     className={cn(
-                      "absolute top-[9px] h-px bg-line-strong",
+                      "absolute top-[9px] hidden h-px bg-line-strong lg:block",
                       isFirst && "left-3 right-0",
                       isLast && "left-0 w-3",
                       !isFirst && !isLast && "left-0 right-0",
@@ -229,7 +245,7 @@ export default async function Home({ params }: Props) {
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "absolute left-3 top-[9px] h-3 w-3 -translate-y-1/2 rounded-full border-2 bg-bg",
+                    "absolute left-0 top-1 h-3 w-3 rounded-full border-2 bg-bg lg:left-3 lg:top-[9px] lg:-translate-y-1/2",
                     index === 2 ? "border-teal" : "border-accent",
                   )}
                 />

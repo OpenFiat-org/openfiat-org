@@ -249,8 +249,10 @@ export default async function RunANodePage({ params }: Props) {
         <div className="max-w-3xl">
           <Rows>
             {PORTS.map((port) => (
+              // Two rows share 7080/TCP by design (metrics rides the API
+              // port), so the port pair alone is not a unique key.
               <Row
-                key={`${port.port}-${port.protocol}`}
+                key={port.key}
                 lead={`${port.port}/${port.protocol}`}
                 title={c.runNode.ports[port.key]}
                 trailing={
