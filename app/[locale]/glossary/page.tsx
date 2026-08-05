@@ -11,6 +11,13 @@ import { SITE } from "@/lib/site";
 type Props = { params: Promise<{ locale: string }> };
 
 const TITLE = { en: "Glossary", zh: "术语表" } as const;
+
+/** A `{en, zh, ...}` label indexed by any locale, falling back to English for
+ *  a locale it does not yet carry — the page-level analogue of the dictionary's
+ *  per-key fallback. */
+function pick(byLocale: { en: string; zh?: string }, locale: string): string {
+  return (byLocale as Record<string, string>)[locale] ?? byLocale.en;
+}
 const INTRO = {
   en: "The protocol's vocabulary in one place, with the specification that defines each term.",
   zh: "协议术语集中于此，并标注定义各术语的规范。",
@@ -20,12 +27,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale: raw } = await params;
   if (!isLocale(raw)) return {};
   return {
-    title: TITLE[raw],
-    description: INTRO[raw],
+    title: pick(TITLE, raw),
+    description: pick(INTRO, raw),
     alternates: { canonical: `/${raw}/glossary` },
     openGraph: {
-      title: `${TITLE[raw]} · ${SITE.name}`,
-      description: INTRO[raw],
+      title: `${pick(TITLE, raw)} · ${SITE.name}`,
+      description: pick(INTRO, raw),
       url: `/${raw}/glossary`,
     },
   };
@@ -40,7 +47,7 @@ export default async function GlossaryPage({ params }: Props) {
 
   return (
     <>
-      <PageHero title={TITLE[locale]} lede={INTRO[locale]} />
+      <PageHero title={pick(TITLE, locale)} lede={pick(INTRO, locale)} />
 
       <Container className="py-16 md:py-20">
         <dl className="max-w-3xl border-t border-line">
@@ -89,8 +96,8 @@ export default async function GlossaryPage({ params }: Props) {
         data={{
           "@context": "https://schema.org",
           "@type": "DefinedTermSet",
-          name: TITLE[locale],
-          description: INTRO[locale],
+          name: pick(TITLE, locale),
+          description: pick(INTRO, locale),
           url: `${SITE.url}/${locale}/glossary`,
           hasDefinedTerm: c.glossary.map((entry) => ({
             "@type": "DefinedTerm",

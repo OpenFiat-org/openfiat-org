@@ -10,7 +10,7 @@ import {
   PARTICIPANT_FEES,
   PROVIDER_PAY,
 } from "@/lib/fees";
-import { getDictionary, isLocale, type Locale } from "@/lib/i18n";
+import { getDictionary, isLocale, type Locale, localize } from "@/lib/i18n";
 import { SITE } from "@/lib/site";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -100,14 +100,20 @@ export default async function FeesPage({ params }: Props) {
           {PARTICIPANT_FEES.map((fee) => (
             <FeeRow
               key={fee.id}
-              name={fee.name[locale]}
+              name={localize(fee.name, locale)}
               status={fee.status}
               statusLabel={statusLabel(fee.status)}
               facts={[
-                { label: t.fees.columnPayer, value: fee.payer[locale] },
-                { label: t.fees.columnAmount, value: fee.amount[locale] },
+                {
+                  label: t.fees.columnPayer,
+                  value: localize(fee.payer, locale),
+                },
+                {
+                  label: t.fees.columnAmount,
+                  value: localize(fee.amount, locale),
+                },
               ]}
-              note={fee.note[locale]}
+              note={localize(fee.note, locale)}
             />
           ))}
         </ul>
@@ -122,17 +128,20 @@ export default async function FeesPage({ params }: Props) {
           {PROVIDER_PAY.map((row) => (
             <FeeRow
               key={row.id}
-              name={row.role[locale]}
+              name={localize(row.role, locale)}
               status={row.status}
               statusLabel={statusLabel(row.status)}
               facts={[
                 {
                   label: t.fees.columnConsumer,
-                  value: row.consumerPays[locale],
+                  value: localize(row.consumerPays, locale),
                 },
-                { label: t.fees.columnReceives, value: row.receives[locale] },
+                {
+                  label: t.fees.columnReceives,
+                  value: localize(row.receives, locale),
+                },
               ]}
-              note={row.note[locale]}
+              note={localize(row.note, locale)}
             />
           ))}
         </ul>

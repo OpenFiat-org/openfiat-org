@@ -11,7 +11,13 @@ import { PageHero } from "@/components/ui/page-hero";
 import { Row, Rows } from "@/components/ui/rows";
 import { Section } from "@/components/ui/section";
 import { GUIDES, getGuide, pathForMilestone } from "@/lib/guides";
-import { getDictionary, isLocale, type Locale, localePath } from "@/lib/i18n";
+import {
+  getDictionary,
+  isLocale,
+  type Locale,
+  localePath,
+  localize,
+} from "@/lib/i18n";
 import { SITE } from "@/lib/site";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
@@ -75,8 +81,8 @@ export default async function GuidePage({ params }: Props) {
 
       <PageHero
         variant="layers"
-        title={guide.title[locale]}
-        lede={guide.intro[locale]}
+        title={localize(guide.title, locale)}
+        lede={localize(guide.intro, locale)}
         actions={
           <Button href={l("/guides")} variant="secondary" size="lg">
             {t.guides.allGuides}
@@ -84,7 +90,7 @@ export default async function GuidePage({ params }: Props) {
         }
         meta={
           pathInfo
-            ? `${t.guides.milestoneOf(pathInfo.index + 1, milestones.length)} · ${pathInfo.path.title[locale]}`
+            ? `${t.guides.milestoneOf(pathInfo.index + 1, milestones.length)} · ${localize(pathInfo.path.title, locale)}`
             : undefined
         }
       />
@@ -94,7 +100,7 @@ export default async function GuidePage({ params }: Props) {
         title={t.guides.requirementsTitle}
       >
         <ul className="max-w-2xl space-y-3">
-          {guide.requirements[locale].map((item) => (
+          {localize(guide.requirements, locale).map((item) => (
             <li key={item} className="flex gap-3 text-body">
               <span
                 aria-hidden="true"
@@ -127,10 +133,10 @@ export default async function GuidePage({ params }: Props) {
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <h3 className="mt-2 text-h3 text-ink lg:mt-0">
-                    {step.title[locale]}
+                    {localize(step.title, locale)}
                   </h3>
                   <p className="mt-3 text-body-sm text-body">
-                    {step.body[locale]}
+                    {localize(step.body, locale)}
                   </p>
                   <div className="mt-4">
                     <StepDoneButton
@@ -203,7 +209,7 @@ export default async function GuidePage({ params }: Props) {
                 <Row
                   key={link.href}
                   href={link.external ? link.href : l(link.href)}
-                  title={link.label[locale]}
+                  title={localize(link.label, locale)}
                 />
               ))}
             </Rows>
@@ -215,14 +221,14 @@ export default async function GuidePage({ params }: Props) {
         data={{
           "@context": "https://schema.org",
           "@type": "HowTo",
-          name: guide.title[locale],
-          description: guide.summary[locale],
+          name: localize(guide.title, locale),
+          description: localize(guide.summary, locale),
           url: `${SITE.url}/${locale}/guides/${guide.slug}`,
           step: guide.steps.map((step, index) => ({
             "@type": "HowToStep",
             position: index + 1,
-            name: step.title[locale],
-            text: step.body[locale],
+            name: localize(step.title, locale),
+            text: localize(step.body, locale),
             url: `${SITE.url}/${locale}/guides/${guide.slug}#${step.id}`,
           })),
         }}

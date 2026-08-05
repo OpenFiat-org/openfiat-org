@@ -14,7 +14,7 @@ import type { Locale } from "@/lib/i18n";
  * requires every locale, so a guide that forgets a translation fails the
  * build rather than silently falling back to English.
  */
-export type Localized<T> = Record<Locale, T>;
+export type Localized<T> = { en: T } & Partial<Record<Locale, T>>;
 
 export type GuideCode = {
   code: string;

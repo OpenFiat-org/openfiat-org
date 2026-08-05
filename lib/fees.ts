@@ -17,7 +17,7 @@ import type { Locale } from "@/lib/i18n";
  * Source of truth: OFS-4100 §6 (fees), §9.2 (node rewards), §9.3 (arbitrator
  * rewards), §9.5-§9.7 (provider compensation).
  */
-export type Localized<T> = Record<Locale, T>;
+export type Localized<T> = { en: T } & Partial<Record<Locale, T>>;
 
 /**
  * - `live`: the protocol moves this money today.

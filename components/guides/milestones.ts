@@ -1,7 +1,7 @@
 import type { PathMilestone, StandaloneKey } from "@/lib/guides";
 import { getGuide } from "@/lib/guides";
 import type { Dictionary, Locale } from "@/lib/i18n";
-import { localePath } from "@/lib/i18n";
+import { localePath, localize } from "@/lib/i18n";
 
 /**
  * Turns a path milestone into everything a page needs to render it: title,
@@ -48,7 +48,7 @@ export function resolveMilestone(
     throw new Error(`Path milestone names unknown guide "${milestone.slug}"`);
   return {
     key: guide.slug,
-    title: guide.title[locale],
+    title: localize(guide.title, locale),
     href: localePath(`/guides/${guide.slug}`, locale),
     meta: t.guides.stepsMeta(guide.steps.length),
     slug: guide.slug,

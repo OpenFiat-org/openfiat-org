@@ -10,7 +10,13 @@ import { PageHero } from "@/components/ui/page-hero";
 import { Row, Rows } from "@/components/ui/rows";
 import { Section } from "@/components/ui/section";
 import { GUIDE_PATHS, GUIDES, type PathId } from "@/lib/guides";
-import { getDictionary, isLocale, type Locale, localePath } from "@/lib/i18n";
+import {
+  getDictionary,
+  isLocale,
+  type Locale,
+  localePath,
+  localize,
+} from "@/lib/i18n";
 import { SITE } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -53,8 +59,8 @@ export default async function GuidesIndexPage({ params }: Props) {
   const allGuides = [
     ...GUIDES.map((guide) => ({
       href: l(`/guides/${guide.slug}`),
-      title: guide.title[locale],
-      subtitle: guide.summary[locale],
+      title: localize(guide.title, locale),
+      subtitle: localize(guide.summary, locale),
       meta: `${t.guides.groups[guide.group].title} · ${t.guides.stepsMeta(guide.steps.length)}`,
     })),
     {
@@ -89,14 +95,18 @@ export default async function GuidesIndexPage({ params }: Props) {
                 className="rounded-lg border border-line bg-surface p-6 transition-colors hover:border-line-strong md:p-8"
               >
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                  <Badge tone={PATH_TONES[path.id]}>{path.role[locale]}</Badge>
-                  <h2 className="text-h3 text-ink">{path.title[locale]}</h2>
+                  <Badge tone={PATH_TONES[path.id]}>
+                    {localize(path.role, locale)}
+                  </Badge>
+                  <h2 className="text-h3 text-ink">
+                    {localize(path.title, locale)}
+                  </h2>
                   <span className="ms-auto font-mono text-xs text-faint">
                     {t.guides.milestonesMeta(path.milestones.length)}
                   </span>
                 </div>
                 <p className="mt-3 max-w-2xl text-body-sm text-muted">
-                  {path.pitch[locale]}
+                  {localize(path.pitch, locale)}
                 </p>
 
                 {/*

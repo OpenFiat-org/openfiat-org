@@ -1,6 +1,8 @@
-import { type Locale, localePath } from "./config";
+import { LOCALES, type Locale, localePath } from "./config";
+import { mergeContent, mergeDictionary } from "./deep-merge";
 import { type Dictionary, en } from "./dictionaries/en";
 import { type ContentDictionary, enContent } from "./dictionaries/en-content";
+import { UI_PARTIALS } from "./dictionaries/partials";
 import { zh } from "./dictionaries/zh";
 import { zhContent } from "./dictionaries/zh-content";
 
@@ -18,11 +20,28 @@ export {
 export type { Dictionary } from "./dictionaries/en";
 export type { ActorCopy, ContentDictionary } from "./dictionaries/en-content";
 
-const DICTIONARIES: Record<Locale, Dictionary> = { en, zh };
-const CONTENT: Record<Locale, ContentDictionary> = {
-  en: enContent,
-  zh: zhContent,
-};
+/**
+ * Every locale's dictionary, resolved once at module load. English and Chinese
+ * are complete and used as-is; every other locale is English with its partial
+ * translations (`UI_PARTIALS`) merged on top, so a missing key renders in
+ * English rather than crashing the build. Long-form content is not yet
+ * translated for the new locales, so it falls back wholesale to English.
+ */
+const DICTIONARIES = Object.fromEntries(
+  LOCALES.map((locale) => {
+    if (locale === "en") return [locale, en];
+    if (locale === "zh") return [locale, zh];
+    return [locale, mergeDictionary(en, UI_PARTIALS[locale] ?? {})];
+  }),
+) as Record<Locale, Dictionary>;
+
+const CONTENT = Object.fromEntries(
+  LOCALES.map((locale) => {
+    if (locale === "en") return [locale, enContent];
+    if (locale === "zh") return [locale, zhContent];
+    return [locale, mergeContent(enContent, {})];
+  }),
+) as Record<Locale, ContentDictionary>;
 
 /**
  * Dictionaries are plain modules rather than dynamic imports: the whole set is
@@ -44,4 +63,18 @@ export function getContent(locale: Locale): ContentDictionary {
  */
 export function linker(locale: Locale) {
   return (path: string) => localePath(path, locale);
+}
+
+/**
+ * Reads a per-locale value, falling back to English for a locale it does not
+ * carry — the page-data analogue of the dictionary's per-key fallback. Data
+ * like the fee tables and guides is typed as `{ en: T } & Partial<...>`, so a
+ * locale that has not translated a row still renders its English text rather
+ * than `undefined`.
+ */
+export function localize<T>(
+  value: { en: T } & Partial<Record<Locale, T>>,
+  locale: Locale,
+): T {
+  return value[locale] ?? value.en;
 }
