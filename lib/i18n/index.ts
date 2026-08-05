@@ -3,6 +3,7 @@ import { mergeContent, mergeDictionary } from "./deep-merge";
 import { type Dictionary, en } from "./dictionaries/en";
 import { type ContentDictionary, enContent } from "./dictionaries/en-content";
 import { es } from "./dictionaries/es";
+import { esContent } from "./dictionaries/es-content";
 import { UI_PARTIALS } from "./dictionaries/partials";
 import { zh } from "./dictionaries/zh";
 import { zhContent } from "./dictionaries/zh-content";
@@ -13,6 +14,13 @@ import { zhContent } from "./dictionaries/zh-content";
  * its `UI_PARTIALS` entry merged onto English, or plain English if it has none.
  */
 const FULL_DICTIONARIES: Partial<Record<Locale, Dictionary>> = { en, zh, es };
+
+/** Locales with complete long-form content. Absent here → English content. */
+const FULL_CONTENT: Partial<Record<Locale, ContentDictionary>> = {
+  en: enContent,
+  zh: zhContent,
+  es: esContent,
+};
 
 export {
   DEFAULT_LOCALE,
@@ -45,8 +53,8 @@ const DICTIONARIES = Object.fromEntries(
 
 const CONTENT = Object.fromEntries(
   LOCALES.map((locale) => {
-    if (locale === "en") return [locale, enContent];
-    if (locale === "zh") return [locale, zhContent];
+    const full = FULL_CONTENT[locale];
+    if (full) return [locale, full];
     return [locale, mergeContent(enContent, {})];
   }),
 ) as Record<Locale, ContentDictionary>;
