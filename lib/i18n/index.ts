@@ -2,9 +2,17 @@ import { LOCALES, type Locale, localePath } from "./config";
 import { mergeContent, mergeDictionary } from "./deep-merge";
 import { type Dictionary, en } from "./dictionaries/en";
 import { type ContentDictionary, enContent } from "./dictionaries/en-content";
+import { es } from "./dictionaries/es";
 import { UI_PARTIALS } from "./dictionaries/partials";
 import { zh } from "./dictionaries/zh";
 import { zhContent } from "./dictionaries/zh-content";
+
+/**
+ * Locales with a complete, hand-written dictionary (not a partial merged over
+ * English). These are the "full coverage" languages; a locale absent here uses
+ * its `UI_PARTIALS` entry merged onto English, or plain English if it has none.
+ */
+const FULL_DICTIONARIES: Partial<Record<Locale, Dictionary>> = { en, zh, es };
 
 export {
   DEFAULT_LOCALE,
@@ -29,8 +37,8 @@ export type { ActorCopy, ContentDictionary } from "./dictionaries/en-content";
  */
 const DICTIONARIES = Object.fromEntries(
   LOCALES.map((locale) => {
-    if (locale === "en") return [locale, en];
-    if (locale === "zh") return [locale, zh];
+    const full = FULL_DICTIONARIES[locale];
+    if (full) return [locale, full];
     return [locale, mergeDictionary(en, UI_PARTIALS[locale] ?? {})];
   }),
 ) as Record<Locale, Dictionary>;
