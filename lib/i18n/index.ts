@@ -1,5 +1,7 @@
 import { LOCALES, type Locale, localePath } from "./config";
 import { mergeContent, mergeDictionary } from "./deep-merge";
+import { ar } from "./dictionaries/ar";
+import { arContent } from "./dictionaries/ar-content";
 import { type Dictionary, en } from "./dictionaries/en";
 import { type ContentDictionary, enContent } from "./dictionaries/en-content";
 import { es } from "./dictionaries/es";
@@ -13,13 +15,19 @@ import { zhContent } from "./dictionaries/zh-content";
  * English). These are the "full coverage" languages; a locale absent here uses
  * its `UI_PARTIALS` entry merged onto English, or plain English if it has none.
  */
-const FULL_DICTIONARIES: Partial<Record<Locale, Dictionary>> = { en, zh, es };
+const FULL_DICTIONARIES: Partial<Record<Locale, Dictionary>> = {
+  en,
+  zh,
+  es,
+  ar,
+};
 
 /** Locales with complete long-form content. Absent here → English content. */
 const FULL_CONTENT: Partial<Record<Locale, ContentDictionary>> = {
   en: enContent,
   zh: zhContent,
   es: esContent,
+  ar: arContent,
 };
 
 export {
