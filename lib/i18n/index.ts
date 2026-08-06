@@ -6,6 +6,8 @@ import { type Dictionary, en } from "./dictionaries/en";
 import { type ContentDictionary, enContent } from "./dictionaries/en-content";
 import { es } from "./dictionaries/es";
 import { esContent } from "./dictionaries/es-content";
+import { fr } from "./dictionaries/fr";
+import { frContent } from "./dictionaries/fr-content";
 import { UI_PARTIALS } from "./dictionaries/partials";
 import { ptBR } from "./dictionaries/pt-BR";
 import { ptBRContent } from "./dictionaries/pt-BR-content";
@@ -22,6 +24,7 @@ const FULL_DICTIONARIES: Partial<Record<Locale, Dictionary>> = {
   zh,
   es,
   ar,
+  fr,
   "pt-BR": ptBR,
 };
 
@@ -31,6 +34,7 @@ const FULL_CONTENT: Partial<Record<Locale, ContentDictionary>> = {
   zh: zhContent,
   es: esContent,
   ar: arContent,
+  fr: frContent,
   "pt-BR": ptBRContent,
 };
 
