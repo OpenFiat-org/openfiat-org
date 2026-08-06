@@ -10,6 +10,8 @@ import { fr } from "./dictionaries/fr";
 import { frContent } from "./dictionaries/fr-content";
 import { hi } from "./dictionaries/hi";
 import { hiContent } from "./dictionaries/hi-content";
+import { id as idDict } from "./dictionaries/id";
+import { idContent } from "./dictionaries/id-content";
 import { UI_PARTIALS } from "./dictionaries/partials";
 import { ptBR } from "./dictionaries/pt-BR";
 import { ptBRContent } from "./dictionaries/pt-BR-content";
@@ -31,6 +33,7 @@ const FULL_DICTIONARIES: Partial<Record<Locale, Dictionary>> = {
   fr,
   ru,
   hi,
+  id: idDict,
   "pt-BR": ptBR,
 };
 
@@ -43,6 +46,7 @@ const FULL_CONTENT: Partial<Record<Locale, ContentDictionary>> = {
   fr: frContent,
   ru: ruContent,
   hi: hiContent,
+  id: idContent,
   "pt-BR": ptBRContent,
 };
 
