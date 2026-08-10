@@ -176,13 +176,14 @@ export const fr: Dictionary = {
     },
 
     saleBand: {
-      body: "OPEN est le stake derrière chaque rôle qui garde le marché honnête — commerçants, arbitres, nœuds, oracles. La prévente propose l’allocation communautaire à un taux fixe avant toute vente publique. Aucun contrat de vente n’a encore été déployé ; connecter un portefeuille aujourd’hui ne fait que vérifier votre préparation.",
+      body: "OPEN est le stake derrière chaque rôle qui garde le marché honnête — commerçants, arbitres, nœuds, oracles. La prévente propose l’allocation communautaire à un taux fixe avant toute vente publique. La prévente est active sur devnet ; connecter un portefeuille permet d’y contribuer dès aujourd’hui.",
       presaleRate: "Taux de prévente",
       publicRate: "Vente publique ensuite",
-      publicRateValue: "1 OPEN = 1,25 USDC",
+      publicRateValue: "1 USDC = 80 OPEN",
       supply: "Offre",
-      supplyValue: "1 000 000 000 · autorité d’émission révoquée",
+      supplyValue: "100 000 000 000 · autorité d’émission révoquée",
       status: "Statut",
+      statusLive: "Active sur devnet",
       termsCta: "Conditions de vente et allocation",
     },
 
@@ -630,12 +631,12 @@ export const fr: Dictionary = {
     goalNote:
       "L’objectif est un but, pas un plafond. La prévente propose toute l’allocation de la Prévente communautaire, elle peut donc continuer à vendre au-delà de l’objectif si la demande va plus loin.",
     publicSaleNote:
-      "Ce qui reste invendu de l’allocation de la Prévente communautaire à la clôture de la prévente sera proposé ensuite lors d’une vente publique à 1 OPEN = 1,25 USDC.",
+      "Ce qui reste invendu de l’allocation de la Prévente communautaire à la clôture de la prévente sera proposé ensuite lors d’une vente publique à 1 USDC = 80 OPEN.",
     purchase: "Acheter OPEN",
     purchaseDisabled: "L’achat ouvre quand la vente sera en ligne",
     amount: "Vous payez",
     youReceive: "Vous recevez",
-    rateNote: "1 OPEN = 1 USDC",
+    rateNote: "1 USDC = 100 OPEN",
     estimated: "estimé",
     reviewing: "Simulation de la transaction…",
     submitting: "En attente de la signature du portefeuille…",

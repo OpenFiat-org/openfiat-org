@@ -175,13 +175,14 @@ export const en = {
     },
 
     saleBand: {
-      body: "OPEN is the stake behind every role that keeps the marketplace honest — merchants, arbitrators, nodes, oracles. The presale offers the community allocation at a fixed rate before any public sale. No sale contract is deployed yet; connecting a wallet today only checks readiness.",
+      body: "OPEN is the stake behind every role that keeps the marketplace honest — merchants, arbitrators, nodes, oracles. The presale offers the community allocation at a fixed rate before any public sale. The presale is live on devnet; connecting a wallet lets you contribute today.",
       presaleRate: "Presale rate",
       publicRate: "Public sale after",
-      publicRateValue: "1 OPEN = 1.25 USDC",
+      publicRateValue: "1 USDC = 80 OPEN",
       supply: "Supply",
-      supplyValue: "1,000,000,000 · mint authority unset",
+      supplyValue: "100,000,000,000 · mint authority unset",
       status: "Status",
+      statusLive: "Live on devnet",
       termsCta: "Sale terms & allocation",
     },
 
@@ -644,13 +645,13 @@ export const en = {
     goalNote:
       "The target is a goal, not a cap. The presale offers the entire Community Presale allocation, so it can keep selling past the target if demand goes further.",
     publicSaleNote:
-      "Whatever remains unsold from the Community Presale allocation when the presale closes will be offered afterward in a public sale at 1 OPEN = 1.25 USDC.",
+      "Whatever remains unsold from the Community Presale allocation when the presale closes will be offered afterward in a public sale at 1 USDC = 80 OPEN.",
     purchase: "Purchase OPEN",
     purchaseDisabled: "Purchase opens when the sale goes live",
     amount: "You pay",
     youReceive: "You receive",
     /** The presale price is fixed in the program, not quoted per trade. */
-    rateNote: "1 OPEN = 1 USDC",
+    rateNote: "1 USDC = 100 OPEN",
     estimated: "estimated",
     reviewing: "Simulating transaction…",
     submitting: "Awaiting wallet signature…",

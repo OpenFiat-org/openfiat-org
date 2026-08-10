@@ -66,33 +66,32 @@ export type SaleConfig = {
 };
 
 export const SALE: SaleConfig = {
-  programId: "75rJ9MRAaSnAc8tg4AfeTFVDCVrN6jdD5CqeyE4UoUw7",
-  /* Nonce 0 was initialized against the old (incorrect, 3%-presale-bucket)
-     mint and left in place on devnet — PDAs are namespaced by nonce, so this
-     points at nonce 1's fresh SaleConfig against the corrected 20% mint
-     rather than the stale nonce-0 sale. */
+  /* Re-baselined 2026-08-09/10 (OFS-4100 §3 re-baseline): the old
+     75rJ9…-era sale (nonce 1 against the old 9-decimal, 1B-supply mint) is
+     now closed. This is the fresh sale the re-genesis stood up — see
+     `openfiat-core/programs/devnet-addresses.json`'s `devnet_sale` entry
+     and `programs/scripts/init-devnet-sale.ts`. */
+  programId: "7KaEpDzZuqye1xqqp3RnvBJXnDxbU3W9zVrUr5vBS2fU",
   saleNonce: 1,
-  openMint: "29w8TroBTYoaqrXBDcpv5L54VZRA8Kf7kU5U1cakvFdj",
-  usdcMint: "SK1JEbfsjjTG2WELNirmM7iJVcdnwerqfF32kCnoWsM",
+  openMint: "GwieDVo2mWeWpqAErbH9TQ94Pd2GusrfWQscJeJ4p532",
+  usdcMint: "32HMELETsjxziEGKF61sUV5p6tegQAxqD4AhfFxtRHPn",
   swapProgram: "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
-  /* Mirrors what nonce 1 actually enforces on devnet as of the OFS-4100 §3
-     conformance fix: the full 200,000,000-OPEN Community Presale bucket as
-     the cap, and no soft cap at all. Zero is how "no minimum to raise" is
-     expressed on chain — it is not a missing value. */
-  hardCapUsdc: 200_000_000,
+  /* Mirrors what the live devnet_sale SaleConfig actually enforces: a
+     $1,000 hard cap sized for click-through testing (not OFS-4100 §3's
+     production figure), no soft cap — the program hard-codes soft_cap to
+     zero and rejects any other value now that there is no refund path. */
+  hardCapUsdc: 1_000,
   softCapUsdc: 0,
   /* A floor on a wallet's FIRST contribution only — `contribute_usdc` checks
-     it under `is_first_contribution`, so later top-ups are unbounded below.
-     The devnet faucet grants 100 test USDC per request, so a newcomer can
-     clear this in a single grant. */
-  minContributionUsdc: 50,
+     it under `is_first_contribution`, so later top-ups are unbounded below. */
+  minContributionUsdc: 1,
   /* Published per-wallet limit. The UI prefers the value the program actually
      enforces (see `fetchSaleSnapshot`) and only falls back to this one when
      that read fails, so a figure here that hasn't reached the chain yet cannot
      invite a contribution the program will reject. */
-  maxContributionUsdc: 10_000_000,
-  opensAt: "2026-07-27T18:16:07.000Z",
-  closesAt: "2026-08-26T18:17:07.000Z",
+  maxContributionUsdc: 500,
+  opensAt: "2026-08-10T05:15:31.000Z",
+  closesAt: "2026-09-09T05:16:31.000Z",
   acceptedStablecoins: [],
   cluster: "devnet",
 };

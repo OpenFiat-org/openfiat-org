@@ -179,13 +179,14 @@ export const zh: Dictionary = {
     },
 
     saleBand: {
-      body: "OPEN 是维系市场诚信的每一种角色——商户、仲裁者、节点、预言机——背后的质押品。预售在任何公开销售之前，以固定价格提供社区分配额度。目前尚未部署任何销售合约；今天连接钱包只能用于检查准备状态。",
+      body: "OPEN 是维系市场诚信的每一种角色——商户、仲裁者、节点、预言机——背后的质押品。预售在任何公开销售之前，以固定价格提供社区分配额度。预售已在 devnet 上线；今天连接钱包即可参与认购。",
       presaleRate: "预售价格",
       publicRate: "后续公开销售",
-      publicRateValue: "1 OPEN = 1.25 USDC",
+      publicRateValue: "1 USDC = 80 OPEN",
       supply: "供应量",
-      supplyValue: "1,000,000,000 · 铸造权限已移除",
+      supplyValue: "100,000,000,000 · 铸造权限已移除",
       status: "状态",
+      statusLive: "Devnet 已上线",
       termsCta: "销售条款与分配",
     },
 
@@ -619,12 +620,12 @@ export const zh: Dictionary = {
     goalNote:
       "该目标是募集目标，而非上限。预售发售的是全部社区预售份额，因此在需求持续的情况下，募集额可以超过目标继续销售。",
     publicSaleNote:
-      "预售结束时，社区预售份额中尚未售出的部分，将在其后的公开发售中以 1 OPEN = 1.25 USDC 的价格发售。",
+      "预售结束时，社区预售份额中尚未售出的部分，将在其后的公开发售中以 1 USDC = 80 OPEN 的价格发售。",
     purchase: "购买 OPEN",
     purchaseDisabled: "销售开放后即可购买",
     amount: "你支付",
     youReceive: "你将获得",
-    rateNote: "1 OPEN = 1 USDC",
+    rateNote: "1 USDC = 100 OPEN",
     estimated: "预估",
     reviewing: "正在模拟交易……",
     submitting: "等待钱包签名……",

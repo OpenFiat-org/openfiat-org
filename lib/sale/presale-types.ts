@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/presale.json`.
  */
 export type Presale = {
-  address: "75rJ9MRAaSnAc8tg4AfeTFVDCVrN6jdD5CqeyE4UoUw7";
+  address: "7KaEpDzZuqye1xqqp3RnvBJXnDxbU3W9zVrUr5vBS2fU";
   metadata: {
     name: "presale";
     version: "0.1.0";
@@ -17,7 +17,7 @@ export type Presale = {
     "`openfiat-presale` — the OPEN token presale program (OFS-4200 §3,",
     "OFS-4100 §3). Phase 3: full sale lifecycle — initialize, contribute",
     "(direct USDC or SOL/stablecoin via atomic Jupiter CPI swap), finalize,",
-    "claim, refund.",
+    "claim. There is no refund path (soft_cap is forced to 0).",
   ];
   instructions: [
     {
@@ -115,7 +115,6 @@ export type Presale = {
         },
         {
           name: "tokenProgram";
-          address: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
         },
       ];
       args: [
@@ -133,6 +132,68 @@ export type Presale = {
           name: "buyer";
           writable: true;
           signer: true;
+        },
+        {
+          name: "banRecord";
+          docs: [
+            "non-existence*. Unchecked and uninitialized on purpose — the",
+            "wallet is banned iff this address is occupied, so in the passing",
+            "case there is nothing to deserialize. The soundness lives in the",
+            "constraint, not the type: `seeds`/`seeds::program` force this to",
+            "be the one canonical ban address for `buyer` under",
+            "`openfiat-governance`, so a banned caller cannot substitute an",
+            "unrelated empty account and appear unbanned. Removing either line",
+            "silently disables the ban for this instruction.",
+          ];
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [98, 97, 110];
+              },
+              {
+                kind: "account";
+                path: "buyer";
+              },
+            ];
+            program: {
+              kind: "const";
+              value: [
+                25,
+                230,
+                115,
+                53,
+                57,
+                5,
+                3,
+                235,
+                1,
+                235,
+                148,
+                235,
+                182,
+                64,
+                73,
+                56,
+                188,
+                153,
+                201,
+                236,
+                192,
+                156,
+                232,
+                228,
+                88,
+                13,
+                123,
+                45,
+                163,
+                15,
+                165,
+                230,
+              ];
+            };
+          };
         },
         {
           name: "saleConfig";
@@ -196,7 +257,6 @@ export type Presale = {
         },
         {
           name: "tokenProgram";
-          address: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
         },
         {
           name: "systemProgram";
@@ -222,6 +282,68 @@ export type Presale = {
           name: "buyer";
           writable: true;
           signer: true;
+        },
+        {
+          name: "banRecord";
+          docs: [
+            "non-existence*. Unchecked and uninitialized on purpose — the",
+            "wallet is banned iff this address is occupied, so in the passing",
+            "case there is nothing to deserialize. The soundness lives in the",
+            "constraint, not the type: `seeds`/`seeds::program` force this to",
+            "be the one canonical ban address for `buyer` under",
+            "`openfiat-governance`, so a banned caller cannot substitute an",
+            "unrelated empty account and appear unbanned. Removing either line",
+            "silently disables the ban for this instruction.",
+          ];
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [98, 97, 110];
+              },
+              {
+                kind: "account";
+                path: "buyer";
+              },
+            ];
+            program: {
+              kind: "const";
+              value: [
+                25,
+                230,
+                115,
+                53,
+                57,
+                5,
+                3,
+                235,
+                1,
+                235,
+                148,
+                235,
+                182,
+                64,
+                73,
+                56,
+                188,
+                153,
+                201,
+                236,
+                192,
+                156,
+                232,
+                228,
+                88,
+                13,
+                123,
+                45,
+                163,
+                15,
+                165,
+                230,
+              ];
+            };
+          };
         },
         {
           name: "saleConfig";
@@ -308,6 +430,277 @@ export type Presale = {
       ];
     },
     {
+      name: "deliverContribution";
+      docs: [
+        "Cross-chain auto-delivery entry point for a deBridge Solana Hook",
+        "(SP-B). Credits + delivers OPEN for `recipient` in one instruction,",
+        "funded/signed by `payer` (the deBridge executor) — see",
+        "`deliver_contribution` for the no-free-mint and payer/recipient",
+        "binding invariants.",
+      ];
+      discriminator: [47, 6, 1, 114, 89, 84, 180, 242];
+      accounts: [
+        {
+          name: "payer";
+          docs: [
+            "The deBridge executor filling the order — signs and pays all rents.",
+          ];
+          writable: true;
+          signer: true;
+        },
+        {
+          name: "banRecord";
+          docs: [
+            "exactly as in contribute_usdc — see that instruction's doc comment for",
+            "why the soundness lives in the constraints, not the type.",
+          ];
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [98, 97, 110];
+              },
+              {
+                kind: "arg";
+                path: "recipient";
+              },
+            ];
+            program: {
+              kind: "const";
+              value: [
+                25,
+                230,
+                115,
+                53,
+                57,
+                5,
+                3,
+                235,
+                1,
+                235,
+                148,
+                235,
+                182,
+                64,
+                73,
+                56,
+                188,
+                153,
+                201,
+                236,
+                192,
+                156,
+                232,
+                228,
+                88,
+                13,
+                123,
+                45,
+                163,
+                15,
+                165,
+                230,
+              ];
+            };
+          };
+        },
+        {
+          name: "saleConfig";
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [115, 97, 108, 101, 95, 99, 111, 110, 102, 105, 103];
+              },
+              {
+                kind: "arg";
+                path: "saleNonce";
+              },
+            ];
+          };
+        },
+        {
+          name: "usdcMint";
+          docs: [
+            "The USDC mint — needed as `transfer_checked`'s own mint account for",
+            "the delivered-USDC leg; distinct from `open_mint` and may move under",
+            "a different token program.",
+          ];
+        },
+        {
+          name: "sourceUsdc";
+          docs: ["USDC the DLN delivered, authorized by `payer`."];
+          writable: true;
+        },
+        {
+          name: "usdcVault";
+          writable: true;
+        },
+        {
+          name: "openMint";
+        },
+        {
+          name: "presaleVaultAuthority";
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [
+                  112,
+                  114,
+                  101,
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                ];
+              },
+            ];
+          };
+        },
+        {
+          name: "presaleVault";
+          writable: true;
+        },
+        {
+          name: "recipientAccount";
+          docs: [
+            "seed. Equality against the `recipient` instruction arg is enforced",
+            "below so a caller cannot pass an unrelated account here.",
+          ];
+        },
+        {
+          name: "recipientOpen";
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: "account";
+                path: "recipientAccount";
+              },
+              {
+                kind: "account";
+                path: "openTokenProgram";
+              },
+              {
+                kind: "account";
+                path: "openMint";
+              },
+            ];
+            program: {
+              kind: "const";
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89,
+              ];
+            };
+          };
+        },
+        {
+          name: "contribution";
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: "const";
+                value: [
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110,
+                ];
+              },
+              {
+                kind: "account";
+                path: "saleConfig";
+              },
+              {
+                kind: "arg";
+                path: "recipient";
+              },
+            ];
+          };
+        },
+        {
+          name: "usdcTokenProgram";
+          docs: [
+            "USDC is moved with the source's token program; OPEN with the mint's",
+            "— the two can differ (e.g. one Token-2022, one legacy SPL Token).",
+          ];
+        },
+        {
+          name: "openTokenProgram";
+        },
+        {
+          name: "associatedTokenProgram";
+          address: "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL";
+        },
+        {
+          name: "systemProgram";
+          address: "11111111111111111111111111111111";
+        },
+      ];
+      args: [
+        {
+          name: "saleNonce";
+          type: "u64";
+        },
+        {
+          name: "recipient";
+          type: "pubkey";
+        },
+        {
+          name: "usdcAmount";
+          type: "u64";
+        },
+      ];
+    },
+    {
       name: "finalizeSale";
       discriminator: [62, 138, 254, 160, 192, 113, 177, 58];
       accounts: [
@@ -345,7 +738,6 @@ export type Presale = {
         },
         {
           name: "tokenProgram";
-          address: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
         },
       ];
       args: [
@@ -388,6 +780,15 @@ export type Presale = {
         },
         {
           name: "openMint";
+          docs: [
+            "Deliberately *not* pinned to `token_program`, unlike `usdc_mint`",
+            "below. This instruction dispatches no CPI against OPEN — it only",
+            "reads the mint's decimals and records its address — and `claim`,",
+            "which does move OPEN, carries its own pinned `token_program`.",
+            "Constraining it here would additionally force OPEN and USDC to share",
+            "a token program, which is the exact coupling this migration removes:",
+            "OPEN is Token-2022 while the stablecoin need not be.",
+          ];
         },
         {
           name: "usdcMint";
@@ -479,7 +880,6 @@ export type Presale = {
         },
         {
           name: "tokenProgram";
-          address: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
         },
         {
           name: "systemProgram";
@@ -506,16 +906,17 @@ export type Presale = {
       ];
     },
     {
-      name: "refund";
-      discriminator: [2, 96, 183, 251, 63, 208, 46, 46];
+      name: "sweepProceeds";
+      discriminator: [154, 245, 98, 195, 215, 5, 43, 232];
       accounts: [
         {
-          name: "buyer";
+          name: "admin";
           signer: true;
-          relations: ["contribution"];
+          relations: ["saleConfig"];
         },
         {
           name: "saleConfig";
+          writable: true;
           pda: {
             seeds: [
               {
@@ -534,53 +935,23 @@ export type Presale = {
           writable: true;
         },
         {
+          name: "treasury";
+          writable: true;
+        },
+        {
           name: "usdcMint";
         },
         {
-          name: "contribution";
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: "const";
-                value: [
-                  99,
-                  111,
-                  110,
-                  116,
-                  114,
-                  105,
-                  98,
-                  117,
-                  116,
-                  105,
-                  111,
-                  110,
-                ];
-              },
-              {
-                kind: "account";
-                path: "saleConfig";
-              },
-              {
-                kind: "account";
-                path: "buyer";
-              },
-            ];
-          };
-        },
-        {
-          name: "buyerUsdc";
-          writable: true;
-        },
-        {
           name: "tokenProgram";
-          address: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
         },
       ];
       args: [
         {
           name: "saleNonce";
+          type: "u64";
+        },
+        {
+          name: "amount";
           type: "u64";
         },
       ];
@@ -635,6 +1006,16 @@ export type Presale = {
     {
       name: "saleConfig";
       discriminator: [86, 47, 71, 156, 87, 152, 149, 246];
+    },
+  ];
+  events: [
+    {
+      name: "contributionDelivered";
+      discriminator: [228, 184, 159, 186, 158, 223, 239, 37];
+    },
+    {
+      name: "proceedsSwept";
+      discriminator: [133, 43, 73, 233, 231, 170, 138, 172];
     },
   ];
   errors: [
@@ -753,6 +1134,36 @@ export type Presale = {
       name: "overflow";
       msg: "Arithmetic overflow";
     },
+    {
+      code: 6023;
+      name: "walletBanned";
+      msg: "This wallet is on the governance ban list (OFS-7100 §12)";
+    },
+    {
+      code: 6024;
+      name: "softCapNotSupported";
+      msg: "soft_cap must be zero: this sale has no refund path, so a non-zero soft cap is unsupported";
+    },
+    {
+      code: 6025;
+      name: "nothingToClaim";
+      msg: "Nothing to claim: your full OPEN entitlement has already been claimed";
+    },
+    {
+      code: 6026;
+      name: "invalidSweepAmount";
+      msg: "sweep amount must be greater than zero and at most the vault balance";
+    },
+    {
+      code: 6027;
+      name: "invalidRate";
+      msg: "open_per_usdc must be greater than zero";
+    },
+    {
+      code: 6028;
+      name: "usdcDeliveryMismatch";
+      msg: "The measured usdc_vault balance increase did not match the requested delivery amount";
+    },
   ];
   types: [
     {
@@ -777,22 +1188,53 @@ export type Presale = {
           {
             name: "openEntitlement";
             docs: [
-              "OPEN base units this wallet is entitled to claim (1:1 with amount_usdc",
-              "at the mint's decimals — OFS-4100 §3 confirms no presale vesting).",
+              "OPEN base units this wallet is entitled to claim (`amount_usdc`",
+              "converted via `SaleConfig::open_entitlement_for` at the configured",
+              "`open_per_usdc` rate — OFS-4100 §3 confirms no presale vesting).",
             ];
             type: "u64";
           },
           {
-            name: "claimed";
-            type: "bool";
-          },
-          {
-            name: "refunded";
-            type: "bool";
+            name: "claimedOpen";
+            docs: [
+              "OPEN base units already claimed. Monotonic high-water mark: a claim",
+              "pays `open_entitlement - claimed_open`, so a buyer who contributes",
+              "again after claiming can claim only the newly-accrued delta.",
+            ];
+            type: "u64";
           },
           {
             name: "bump";
             type: "u8";
+          },
+        ];
+      };
+    },
+    {
+      name: "contributionDelivered";
+      docs: [
+        "Emitted once per successful cross-chain delivery — the deBridge-side",
+        "analogue of a direct `contribute_usdc` call, except OPEN lands in the",
+        "same transaction instead of requiring a separate `claim`.",
+      ];
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "recipient";
+            type: "pubkey";
+          },
+          {
+            name: "usdcAmount";
+            type: "u64";
+          },
+          {
+            name: "openDelivered";
+            type: "u64";
+          },
+          {
+            name: "totalRaised";
+            type: "u64";
           },
         ];
       };
@@ -828,6 +1270,14 @@ export type Presale = {
             type: "u16";
           },
           {
+            name: "openPerUsdc";
+            docs: [
+              "OPEN base units credited per 1 USDC base unit's worth of contribution",
+              "(100 for the presale — 1 USDC = 100 OPEN). Must be > 0.",
+            ];
+            type: "u64";
+          },
+          {
             name: "startTime";
             type: "i64";
           },
@@ -840,6 +1290,34 @@ export type Presale = {
             type: {
               vec: "pubkey";
             };
+          },
+        ];
+      };
+    },
+    {
+      name: "proceedsSwept";
+      docs: [
+        "Emitted on every successful sweep so contributors can watch proceeds",
+        "move to the published treasury on-chain.",
+      ];
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "saleConfig";
+            type: "pubkey";
+          },
+          {
+            name: "treasury";
+            type: "pubkey";
+          },
+          {
+            name: "amount";
+            type: "u64";
+          },
+          {
+            name: "vaultRemaining";
+            type: "u64";
           },
         ];
       };
@@ -889,7 +1367,7 @@ export type Presale = {
             docs: [
               "USDC escrow token account (owned by this `SaleConfig` PDA itself)",
               "that holds contributions until `finalize_sale` sweeps them to",
-              "`treasury`, or `refund` returns them if the soft cap is missed.",
+              "`treasury`.",
             ];
             type: "pubkey";
           },
@@ -917,13 +1395,29 @@ export type Presale = {
           {
             name: "hardCap";
             docs: [
-              "USDC base units (6 decimals). OFS-4100 §3 proposes 30_000_000_000_000.",
+              "USDC base units (6 decimals).",
+              "",
+              "OFS-4100 §3 gives the presale no hard cap distinct from the Community",
+              "Presale bucket itself, so the confirmed value is the full bucket:",
+              "20,000,000,000 OPEN at the configured `open_per_usdc` rate (100, i.e.",
+              "1 USDC = 100 OPEN — re-baselined 2026-08-09). It must never be set",
+              "higher — `claim` pays out of a vault holding exactly that much OPEN,",
+              "and entitlements accrue against",
+              "contributions at that rate, so a larger cap would let the sale sell",
+              "OPEN the vault cannot deliver.",
             ];
             type: "u64";
           },
           {
             name: "softCap";
-            docs: ["USDC base units. OFS-4100 §3 proposes 5_000_000_000_000."];
+            docs: [
+              "USDC base units. **Always zero**: OFS-4100 §3 confirms there is no",
+              "soft cap and no refund condition derived from one, and",
+              "`initialize_sale`/`update_sale_params` both reject a non-zero value",
+              'with `ErrorCode::SoftCapNotSupported`. Zero is how "no minimum to',
+              'raise" is expressed here — `finalize_sale` always resolves to',
+              "`Finalized`.",
+            ];
             type: "u64";
           },
           {
@@ -937,6 +1431,7 @@ export type Presale = {
             name: "maxContribution";
             docs: [
               "USDC base units, applies to a wallet's cumulative contributions.",
+              "OFS-4100 §3: 10,000,000 USDC-equivalent.",
             ];
             type: "u64";
           },
@@ -947,6 +1442,15 @@ export type Presale = {
               "`expected_out * (10_000 - max_slippage_bps) / 10_000` is rejected.",
             ];
             type: "u16";
+          },
+          {
+            name: "openPerUsdc";
+            docs: [
+              "OPEN base units credited per 1 USDC base unit's worth of contribution,",
+              "as a whole multiplier (100 for the presale, 80 for the public-sale",
+              "phase). Set at initialize_sale; > 0 enforced.",
+            ];
+            type: "u64";
           },
           {
             name: "openDecimals";
@@ -1007,9 +1511,9 @@ export type Presale = {
       docs: [
         "Lifecycle state of the presale (OFS-4200 §3).",
         "",
-        "`Active -> Finalized` (hard cap reached, or end_time passed with soft cap",
-        "met) or `Active -> SoftCapMissed` (end_time passed, soft cap unmet) are",
-        "the only two transitions out of `Active`; both are terminal.",
+        "`Active -> Finalized` is the only transition out of `Active` and is",
+        "terminal. There is no refund path (soft_cap is forced to 0 at",
+        "initialization), so there is no `SoftCapMissed` state.",
       ];
       type: {
         kind: "enum";
@@ -1019,9 +1523,6 @@ export type Presale = {
           },
           {
             name: "finalized";
-          },
-          {
-            name: "softCapMissed";
           },
         ];
       };
@@ -1050,6 +1551,14 @@ export type Presale = {
           {
             name: "maxSlippageBps";
             type: "u16";
+          },
+          {
+            name: "openPerUsdc";
+            docs: [
+              "OPEN base units credited per 1 USDC base unit's worth of contribution.",
+              "Must be > 0.",
+            ];
+            type: "u64";
           },
           {
             name: "endTime";
@@ -1093,7 +1602,7 @@ export type Presale = {
       name: "saleUsdcVaultSeed";
       docs: [
         "PDA seed for the USDC escrow vault that holds contributions until",
-        "`finalize_sale` sweeps them to the treasury (or `refund` returns them).",
+        "`finalize_sale` sweeps them to the treasury.",
       ];
       type: "bytes";
       value: "[115, 97, 108, 101, 95, 117, 115, 100, 99, 95, 118, 97, 117, 108, 116]";

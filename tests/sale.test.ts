@@ -8,6 +8,7 @@ import {
   ALLOCATIONS,
   allocationTotal,
   presaleTokens,
+  TOTAL_SUPPLY,
 } from "@/lib/sale/tokenomics";
 
 const PUBLIC_DIR = join(process.cwd(), "public");
@@ -45,13 +46,15 @@ describe("payment assets", () => {
 });
 
 describe("OPEN entitlement", () => {
-  it("is 1:1 with USDC, matching the program", () => {
-    // `SaleConfig::open_entitlement_for` in openfiat-core scales by the mints'
-    // decimal difference and applies no other rate. If that ever changes, the
-    // "you receive" figure on the page silently becomes a lie.
-    expect(OPEN_PER_USDC).toBe(1);
-    expect(openFor(1000)).toBe(1000);
-    expect(openFor(0.5)).toBe(0.5);
+  it("is 100 OPEN per USDC, matching the re-baselined program", () => {
+    // `SaleConfig::open_entitlement_for` in openfiat-core scales the USDC
+    // amount by the mints' decimal difference and the configured
+    // `open_per_usdc` rate (100, re-baselined 2026-08-09 — OFS-4100 §3). If
+    // that ever changes, the "you receive" figure on the page silently
+    // becomes a lie.
+    expect(OPEN_PER_USDC).toBe(100);
+    expect(openFor(1000)).toBe(100_000);
+    expect(openFor(0.5)).toBe(50);
   });
 });
 
@@ -71,7 +74,7 @@ describe("solscan links", () => {
 describe("presale terms", () => {
   it("targets $20M", () => {
     // OFS-4100 §3. A goal, not a cap: the presale keeps selling out of the
-    // full 200,000,000 OPEN bucket past this figure rather than stopping.
+    // full 20,000,000,000 OPEN bucket past this figure rather than stopping.
     expect(RAISE_GOAL_USDC).toBe(20_000_000);
   });
 
@@ -85,11 +88,15 @@ describe("presale terms", () => {
     expect(allocationTotal()).toBe(100);
   });
 
+  it("has the re-baselined 100,000,000,000 total supply", () => {
+    expect(TOTAL_SUPPLY).toBe(100_000_000_000);
+  });
+
   it("offers the whole community presale allocation", () => {
     const presale = ALLOCATIONS.find((a) => a.id === "presale");
     expect(presale).toBeDefined();
     expect(presaleTokens()).toBe(
-      1_000_000_000 * ((presale?.sharePct ?? 0) / 100),
+      (TOTAL_SUPPLY ?? 0) * ((presale?.sharePct ?? 0) / 100),
     );
   });
 });

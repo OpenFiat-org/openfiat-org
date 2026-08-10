@@ -106,7 +106,20 @@ export function RewardsCard({
       const signature = await connection.sendTransaction(signed);
       await connection.confirmTransaction(signature, "confirmed");
       setClaim({ status: "success", signature });
-      setStatus((prev) => (prev ? { ...prev, claimed: true } : prev));
+      // `claim` pays out the full unclaimed delta in one instruction (see
+      // `handle_claim`), so a successful signature means claimed_open now
+      // equals open_entitlement — reflect that without waiting on a refetch.
+      setStatus((prev) =>
+        prev
+          ? {
+              ...prev,
+              claimedOpen: prev.openEntitlement,
+              unclaimedOpen: 0,
+              claimed: true,
+              canClaim: false,
+            }
+          : prev,
+      );
     } catch (cause) {
       setClaim({
         status: "error",
@@ -227,42 +240,19 @@ export function RewardsCard({
                   </Button>
                 )}
 
+                {/* `claimed` and `canClaim` are complementary once
+                    `hasContributed` is true (see `fetchMyPresaleStatus`):
+                    there is no finalize gate on `claim` any more — OPEN is
+                    claimable the moment there's an unclaimed balance,
+                    Active or Finalized — so exactly one of these two
+                    branches always renders here, never neither. There is
+                    also no refund path on the re-baselined program:
+                    `soft_cap` is forced to zero at `initialize_sale` and
+                    the account has no `SoftCapMissed` state to reach. */}
                 {status.claimed && (
                   <p className="mt-5 text-body-sm text-teal-mid">
                     ✓ {sale.rewardsClaimedNote}
                   </p>
-                )}
-
-                {!status.claimed &&
-                  !status.canClaim &&
-                  status.saleState === "active" && (
-                    <p className="mt-5 text-body-sm text-muted">
-                      {sale.rewardsPendingNote}
-                    </p>
-                  )}
-
-                {/* Reachable only if the chain reports `softCapMissed`, which
-                    requires a non-zero `soft_cap`. OFS-4100 §3 records no soft
-                    cap, expressed on chain as `soft_cap = 0`, so a correctly
-                    configured sale can never enter that state and this branch
-                    never renders. Kept rather than deleted: it is driven by
-                    real chain state, so if a sale ever is configured with a
-                    soft cap, offering the refund is the right behaviour. The
-                    devnet fixture does carry a small non-zero soft cap, which
-                    is why this path is still exercised there. */}
-                {status.canRefund && (
-                  <div className="mt-5 border-s-2 border-copper ps-4">
-                    <p className="text-body-sm text-body">
-                      {sale.rewardsRefundableNote}
-                    </p>
-                    <Button
-                      href={saleHref}
-                      variant="secondary"
-                      className="mt-4"
-                    >
-                      {sale.rewardsGoToSale}
-                    </Button>
-                  </div>
                 )}
 
                 {claim.status === "success" && (

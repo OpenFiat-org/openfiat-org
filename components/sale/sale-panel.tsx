@@ -42,9 +42,10 @@ function trimZeros(value: number, decimals: number): string {
 }
 
 /**
- * Grouped, at most two decimals. The entitlement is 1:1 with USDC so whole
- * contributions give whole OPEN, and a long fractional tail would only be
- * noise in what is meant to be the panel's headline number.
+ * Grouped, at most two decimals. The entitlement scales with USDC at a fixed
+ * rate (100 OPEN per USDC, re-baselined 2026-08-09 — see `OPEN_PER_USDC`) so
+ * whole contributions give whole OPEN, and a long fractional tail would only
+ * be noise in what is meant to be the panel's headline number.
  */
 function formatOpen(value: number): string {
   return value.toLocaleString(undefined, { maximumFractionDigits: 2 });
@@ -177,10 +178,12 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
   /*
    * OPEN the entered amount buys.
    *
-   * Direct USDC is exact — the program's `open_entitlement_for` is a 1:1 scale
-   * by decimals and nothing else, so no quote is needed or possible to get
-   * wrong. Everything else swaps to USDC first, so the figure is whatever
-   * Jupiter says that swap realizes, and is shown as an estimate.
+   * Direct USDC is exact — the program's `open_entitlement_for` scales the
+   * USDC base-unit amount by the mints' decimal difference and the fixed
+   * `open_per_usdc` rate (100) and nothing else, so no quote is needed or
+   * possible to get wrong. Everything else swaps to USDC first, so the
+   * figure is whatever Jupiter says that swap realizes, and is shown as an
+   * estimate.
    */
   const amountNumber = Number(amount);
   const validAmount = Number.isFinite(amountNumber) && amountNumber > 0;

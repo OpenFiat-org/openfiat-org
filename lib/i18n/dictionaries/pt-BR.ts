@@ -175,13 +175,14 @@ export const ptBR: Dictionary = {
     },
 
     saleBand: {
-      body: "OPEN é o stake por trás de cada papel que mantém o mercado honesto — comerciantes, árbitros, nós, oráculos. A pré-venda oferece a alocação da comunidade a uma taxa fixa antes de qualquer venda pública. Nenhum contrato de venda foi implantado ainda; conectar uma carteira hoje apenas verifica a prontidão.",
+      body: "OPEN é o stake por trás de cada papel que mantém o mercado honesto — comerciantes, árbitros, nós, oráculos. A pré-venda oferece a alocação da comunidade a uma taxa fixa antes de qualquer venda pública. A pré-venda já está ativa na devnet; conectar uma carteira permite contribuir hoje mesmo.",
       presaleRate: "Taxa da pré-venda",
       publicRate: "Venda pública depois",
-      publicRateValue: "1 OPEN = 1,25 USDC",
+      publicRateValue: "1 USDC = 80 OPEN",
       supply: "Fornecimento",
-      supplyValue: "1.000.000.000 · autoridade de emissão anulada",
+      supplyValue: "100.000.000.000 · autoridade de emissão anulada",
       status: "Status",
+      statusLive: "Ativa na devnet",
       termsCta: "Termos de venda e alocação",
     },
 
@@ -628,12 +629,12 @@ export const ptBR: Dictionary = {
     goalNote:
       "A meta é um objetivo, não um teto. A pré-venda oferece toda a alocação da Pré-venda Comunitária, então pode continuar vendendo além da meta se a demanda for mais longe.",
     publicSaleNote:
-      "O que restar sem vender da alocação da Pré-venda Comunitária quando a pré-venda fechar será ofertado depois em uma venda pública a 1 OPEN = 1,25 USDC.",
+      "O que restar sem vender da alocação da Pré-venda Comunitária quando a pré-venda fechar será ofertado depois em uma venda pública a 1 USDC = 80 OPEN.",
     purchase: "Comprar OPEN",
     purchaseDisabled: "A compra abre quando a venda entrar no ar",
     amount: "Você paga",
     youReceive: "Você recebe",
-    rateNote: "1 OPEN = 1 USDC",
+    rateNote: "1 USDC = 100 OPEN",
     estimated: "estimado",
     reviewing: "Simulando a transação…",
     submitting: "Aguardando a assinatura da carteira…",

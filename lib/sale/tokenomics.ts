@@ -1,27 +1,32 @@
 /**
  * OPEN supply and allocation, from OFS-4100 (OpenFiat Tokenomics
- * Specification) §1–2.
+ * Specification) §1–2, re-baselined 2026-08-09/10.
  *
- * The shares below are the specification's own proposal, no longer the
- * placeholders that stood here while Chapter 14 deferred the split. Every
- * bucket is marked `[PROPOSED — NEEDS SIGN-OFF]` in OFS-4100 §2, so
+ * The shares below are the specification's own proposal. Every bucket is
+ * still marked `[PROPOSED — NEEDS SIGN-OFF]` in OFS-4100 §2, so
  * TOKENOMICS_CONFIRMED stays false and the page keeps its provisional note;
- * total supply is `[CONFIRMED]`.
+ * total supply is `[CONFIRMED]` — the re-genesis mint
+ * (GwieDVo2mWeWpqAErbH9TQ94Pd2GusrfWQscJeJ4p532, devnet) was minted directly
+ * at 100,000,000,000 OPEN / 6 decimals, so this is no longer a proposal
+ * pending a mint that doesn't exist yet.
  *
- * The Community Presale bucket is deliberately the entire 20% (200,000,000
- * OPEN) — this is not a raise-ceiling sizing choice, because the presale
- * itself has no hard cap on demand. Per OFS-4100 §3:
+ * The Community Presale bucket is deliberately the entire 20%
+ * (20,000,000,000 OPEN) — this is not a raise-ceiling sizing choice, because
+ * the presale itself has no hard cap on demand distinct from the bucket.
+ * Per OFS-4100 §3 (re-baselined rate):
  *
- *  - Presale: 1 OPEN = 1 USDC, target $20,000,000 (a goal, not a cap — see
+ *  - Presale: 1 USDC = 100 OPEN, target $20,000,000 (a goal, not a cap — see
  *    `RAISE_GOAL_USDC` in ./config). If demand exceeds the target, the sale
- *    keeps selling out of the same 200M bucket rather than stopping.
- *  - Public Sale: whatever of the 200M bucket remains unsold when the
- *    presale closes is offered afterward at 1 OPEN = 1.25 USDC.
+ *    keeps selling out of the same 20B bucket rather than stopping.
+ *  - Public Sale: whatever of the 20B bucket remains unsold when the
+ *    presale closes is offered afterward at 1 USDC = 80 OPEN.
  *
  * The other six buckets absorb the resulting reduction proportionally to
  * their prior share (each roughly ×0.825, individually rounded to the
  * nearest whole percent via largest-remainder so the split sums to exactly
- * 100 — see OFS-4100 §2 for the full derivation).
+ * 100 — see OFS-4100 §2 for the full derivation). The re-baseline changed
+ * the absolute OPEN figures (100x, from the supply move) and the presale/
+ * public-sale rates; it did not change any bucket's percentage share.
  */
 
 export type AllocationId =
@@ -42,7 +47,7 @@ export type Allocation = {
 };
 
 /** Fixed maximum supply, minted once at genesis. */
-export const TOTAL_SUPPLY: number | null = 1_000_000_000;
+export const TOTAL_SUPPLY: number | null = 100_000_000_000;
 
 /** Flip to true when the figures below are final. */
 export const TOKENOMICS_CONFIRMED = false;

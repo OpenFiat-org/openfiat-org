@@ -20,7 +20,8 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check:tokenomics": "bash scripts/check-stale-tokenomics-literals.sh"
   },
   "dependencies": {
     "@anchor-lang/core": "^1.1.2",

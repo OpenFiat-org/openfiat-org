@@ -16,6 +16,7 @@ import {
   localePath,
 } from "@/lib/i18n";
 import { REPOS, repoUrl } from "@/lib/repos";
+import { SALE_LIVE } from "@/lib/sale/config";
 import { SITE } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -71,7 +72,10 @@ export default async function Home({ params }: Props) {
     [t.home.saleBand.presaleRate, t.sale.rateNote],
     [t.home.saleBand.publicRate, t.home.saleBand.publicRateValue],
     [t.home.saleBand.supply, t.home.saleBand.supplyValue],
-    [t.home.saleBand.status, t.sale.notLiveTitle],
+    [
+      t.home.saleBand.status,
+      SALE_LIVE ? t.home.saleBand.statusLive : t.sale.notLiveTitle,
+    ],
   ];
 
   return (

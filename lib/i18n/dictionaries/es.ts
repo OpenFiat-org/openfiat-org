@@ -176,13 +176,14 @@ export const es: Dictionary = {
     },
 
     saleBand: {
-      body: "OPEN es el stake detrás de cada rol que mantiene honesto al mercado: comerciantes, árbitros, nodos, oráculos. La preventa ofrece la asignación comunitaria a un precio fijo antes de cualquier venta pública. Aún no hay contrato de venta desplegado; conectar una billetera hoy solo comprueba la preparación.",
+      body: "OPEN es el stake detrás de cada rol que mantiene honesto al mercado: comerciantes, árbitros, nodos, oráculos. La preventa ofrece la asignación comunitaria a un precio fijo antes de cualquier venta pública. La preventa ya está activa en devnet; conectar una billetera te permite contribuir hoy mismo.",
       presaleRate: "Precio de preventa",
       publicRate: "Venta pública después",
-      publicRateValue: "1 OPEN = 1,25 USDC",
+      publicRateValue: "1 USDC = 80 OPEN",
       supply: "Suministro",
-      supplyValue: "1.000.000.000 · autoridad de emisión anulada",
+      supplyValue: "100.000.000.000 · autoridad de emisión anulada",
       status: "Estado",
+      statusLive: "Activa en devnet",
       termsCta: "Términos de venta y asignación",
     },
 
@@ -627,12 +628,12 @@ export const es: Dictionary = {
     goalNote:
       "El objetivo es una meta, no un tope. La preventa ofrece toda la asignación de Preventa Comunitaria, así que puede seguir vendiendo más allá del objetivo si la demanda va más lejos.",
     publicSaleNote:
-      "Lo que quede sin vender de la asignación de Preventa Comunitaria cuando la preventa cierre se ofrecerá después en una venta pública a 1 OPEN = 1,25 USDC.",
+      "Lo que quede sin vender de la asignación de Preventa Comunitaria cuando la preventa cierre se ofrecerá después en una venta pública a 1 USDC = 80 OPEN.",
     purchase: "Comprar OPEN",
     purchaseDisabled: "La compra se abre cuando la venta entre en vivo",
     amount: "Pagas",
     youReceive: "Recibes",
-    rateNote: "1 OPEN = 1 USDC",
+    rateNote: "1 USDC = 100 OPEN",
     estimated: "estimado",
     reviewing: "Simulando la transacción…",
     submitting: "Esperando la firma de la billetera…",

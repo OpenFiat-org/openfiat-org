@@ -200,18 +200,26 @@ export async function fetchSaleSnapshot(
 /**
  * One wallet's presale standing: what it contributed, what it's owed, and
  * whether that's actually claimable yet. `saleState` mirrors the program's
- * own `SaleState` so a caller never has to duplicate the Active/Finalized/
- * SoftCapMissed logic — `canClaim` and `canRefund` are already resolved here.
+ * own `SaleState`, which as of the 2026-08-09 re-baseline has only two
+ * variants — `soft_cap` is forced to zero at `initialize_sale` and there is
+ * no refund path or `SoftCapMissed` state to reach.
+ *
+ * `claimedOpen`/`unclaimedOpen` split what `claimed` used to collapse into a
+ * bool: `claim` now pays out the delta since the last claim (a monotonic
+ * high-water mark, not a one-shot flag — see `Contribution::claimed_open` in
+ * `openfiat-core`), so a wallet that contributes again after claiming has
+ * more to claim without `claimed` ever having been false again.
  */
 export type MyPresaleStatus = {
-  saleState: "active" | "finalized" | "softCapMissed";
+  saleState: "active" | "finalized";
   hasContributed: boolean;
   amountUsdc: number;
   openEntitlement: number;
+  claimedOpen: number;
+  unclaimedOpen: number;
+  /** True once every OPEN entitled so far has been claimed. */
   claimed: boolean;
-  refunded: boolean;
   canClaim: boolean;
-  canRefund: boolean;
 };
 
 /**
@@ -231,8 +239,7 @@ export async function fetchMyPresaleStatus(
     const saleConfig = await fetchSaleConfig(program);
     const saleState = Object.keys(saleConfig.state)[0] as
       | "active"
-      | "finalized"
-      | "softCapMissed";
+      | "finalized";
 
     const saleConfigPubkey = saleConfigPda(programId, saleNonce);
     const contributionPubkey = contributionPda(
@@ -243,8 +250,7 @@ export async function fetchMyPresaleStatus(
 
     let amountUsdc = 0;
     let openEntitlement = 0;
-    let claimed = false;
-    let refunded = false;
+    let claimedOpen = 0;
     let hasContributed = false;
     try {
       const acc = await program.account.contribution.fetch(contributionPubkey);
@@ -252,21 +258,25 @@ export async function fetchMyPresaleStatus(
       amountUsdc = acc.amountUsdc.toNumber() / 10 ** saleConfig.usdcDecimals;
       openEntitlement =
         acc.openEntitlement.toNumber() / 10 ** saleConfig.openDecimals;
-      claimed = acc.claimed;
-      refunded = acc.refunded;
+      claimedOpen = acc.claimedOpen.toNumber() / 10 ** saleConfig.openDecimals;
     } catch {
       // No contribution account for this wallet — not an error, just none yet.
     }
+
+    const unclaimedOpen = Math.max(0, openEntitlement - claimedOpen);
 
     return {
       saleState,
       hasContributed,
       amountUsdc,
       openEntitlement,
-      claimed,
-      refunded,
-      canClaim: saleState === "finalized" && hasContributed && !claimed,
-      canRefund: saleState === "softCapMissed" && hasContributed && !refunded,
+      claimedOpen,
+      unclaimedOpen,
+      claimed: hasContributed && unclaimedOpen === 0,
+      // No finalize gate on-chain (see `handle_claim`): OPEN is claimable
+      // while the sale is Active or Finalized, on the oversell invariant
+      // that `presale_vault` always holds exactly `hard_cap`'s worth.
+      canClaim: hasContributed && unclaimedOpen > 0,
     };
   } catch {
     return null;
@@ -274,14 +284,14 @@ export async function fetchMyPresaleStatus(
 }
 
 /**
- * OPEN per USDC contributed.
- *
- * The price is fixed at 1:1 and lives in the program, not in config: see
- * `SaleConfig::open_entitlement_for` in `openfiat-core`, which scales the USDC
- * base-unit amount by the two mints' decimal difference and does nothing else.
- * There is no presale vesting, so the entitlement is claimable in full.
+ * OPEN base units credited per 1 USDC base unit's worth of contribution —
+ * the re-baselined presale rate (OFS-4100 §3, deployed 2026-08-09):
+ * 1 USDC = 100 OPEN. Mirrors `SALE`'s live `devnet_sale.openPerUsdc` rather
+ * than a value this module invents; `fetchSaleSnapshot`'s on-chain read is
+ * still the source of truth once the sale account is reachable, this is
+ * only the pre-connect estimate.
  */
-export const OPEN_PER_USDC = 1;
+export const OPEN_PER_USDC = 100;
 
 /** OPEN a contribution of `usdc` whole USDC entitles the buyer to. */
 export function openFor(usdc: number): number {
