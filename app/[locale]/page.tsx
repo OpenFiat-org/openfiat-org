@@ -16,7 +16,7 @@ import {
   localePath,
 } from "@/lib/i18n";
 import { REPOS, repoUrl } from "@/lib/repos";
-import { SALE_LIVE } from "@/lib/sale/config";
+import { saleBandCopy } from "@/lib/sale/copy";
 import { SITE } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -68,14 +68,14 @@ export default async function Home({ params }: Props) {
     { layer: t.home.layers.settlement, tone: "teal" as const },
   ];
 
+  // Body and status pill are resolved together (`saleBandCopy`) so they can
+  // never disagree about whether the sale is live.
+  const { body: saleBandBody, status: saleBandStatus } = saleBandCopy(t);
   const saleFacts: Array<[string, string]> = [
     [t.home.saleBand.presaleRate, t.sale.rateNote],
     [t.home.saleBand.publicRate, t.home.saleBand.publicRateValue],
     [t.home.saleBand.supply, t.home.saleBand.supplyValue],
-    [
-      t.home.saleBand.status,
-      SALE_LIVE ? t.home.saleBand.statusLive : t.sale.notLiveTitle,
-    ],
+    [t.home.saleBand.status, saleBandStatus],
   ];
 
   return (
@@ -376,7 +376,7 @@ export default async function Home({ params }: Props) {
             <div>
               <h2 className="text-h2 text-ink">{t.sale.title}</h2>
               <p className="mt-4 max-w-xl text-body-lg text-body">
-                {t.home.saleBand.body}
+                {saleBandBody}
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Button href={l("/sale")} size="lg">

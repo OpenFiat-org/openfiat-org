@@ -176,7 +176,9 @@ export const es: Dictionary = {
     },
 
     saleBand: {
-      body: "OPEN es el stake detrás de cada rol que mantiene honesto al mercado: comerciantes, árbitros, nodos, oráculos. La preventa ofrece la asignación comunitaria a un precio fijo antes de cualquier venta pública. La preventa ya está activa en devnet; conectar una billetera te permite contribuir hoy mismo.",
+      body: "OPEN es el stake detrás de cada rol que mantiene honesto al mercado: comerciantes, árbitros, nodos, oráculos. La preventa ofrece la asignación comunitaria a un precio fijo antes de cualquier venta pública. Aún no hay contrato de venta desplegado; conectar una billetera hoy solo comprueba la preparación.",
+      bodyLive:
+        "OPEN es el stake detrás de cada rol que mantiene honesto al mercado: comerciantes, árbitros, nodos, oráculos. La preventa ofrece la asignación comunitaria a un precio fijo antes de cualquier venta pública. La preventa ya está activa en devnet; conectar una billetera te permite contribuir hoy mismo.",
       presaleRate: "Precio de preventa",
       publicRate: "Venta pública después",
       publicRateValue: "1 USDC = 80 OPEN",

@@ -176,7 +176,9 @@ export const fr: Dictionary = {
     },
 
     saleBand: {
-      body: "OPEN est le stake derrière chaque rôle qui garde le marché honnête — commerçants, arbitres, nœuds, oracles. La prévente propose l’allocation communautaire à un taux fixe avant toute vente publique. La prévente est active sur devnet ; connecter un portefeuille permet d’y contribuer dès aujourd’hui.",
+      body: "OPEN est le stake derrière chaque rôle qui garde le marché honnête — commerçants, arbitres, nœuds, oracles. La prévente propose l’allocation communautaire à un taux fixe avant toute vente publique. Aucun contrat de vente n’a encore été déployé ; connecter un portefeuille aujourd’hui ne fait que vérifier votre préparation.",
+      bodyLive:
+        "OPEN est le stake derrière chaque rôle qui garde le marché honnête — commerçants, arbitres, nœuds, oracles. La prévente propose l’allocation communautaire à un taux fixe avant toute vente publique. La prévente est active sur devnet ; connecter un portefeuille permet d’y contribuer dès aujourd’hui.",
       presaleRate: "Taux de prévente",
       publicRate: "Vente publique ensuite",
       publicRateValue: "1 USDC = 80 OPEN",

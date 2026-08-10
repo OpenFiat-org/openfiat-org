@@ -175,7 +175,9 @@ export const ptBR: Dictionary = {
     },
 
     saleBand: {
-      body: "OPEN é o stake por trás de cada papel que mantém o mercado honesto — comerciantes, árbitros, nós, oráculos. A pré-venda oferece a alocação da comunidade a uma taxa fixa antes de qualquer venda pública. A pré-venda já está ativa na devnet; conectar uma carteira permite contribuir hoje mesmo.",
+      body: "OPEN é o stake por trás de cada papel que mantém o mercado honesto — comerciantes, árbitros, nós, oráculos. A pré-venda oferece a alocação da comunidade a uma taxa fixa antes de qualquer venda pública. Nenhum contrato de venda foi implantado ainda; conectar uma carteira hoje apenas verifica a prontidão.",
+      bodyLive:
+        "OPEN é o stake por trás de cada papel que mantém o mercado honesto — comerciantes, árbitros, nós, oráculos. A pré-venda oferece a alocação da comunidade a uma taxa fixa antes de qualquer venda pública. A pré-venda já está ativa na devnet; conectar uma carteira permite contribuir hoje mesmo.",
       presaleRate: "Taxa da pré-venda",
       publicRate: "Venda pública depois",
       publicRateValue: "1 USDC = 80 OPEN",

@@ -1,8 +1,14 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { getDictionary } from "@/lib/i18n";
 import { PAYMENT_ASSETS, paymentAsset } from "@/lib/sale/assets";
-import { RAISE_GOAL_USDC, SALE, solscanTxUrl } from "@/lib/sale/config";
+import {
+  RAISE_GOAL_USDC,
+  SALE,
+  SALE_LIVE,
+  solscanTxUrl,
+} from "@/lib/sale/config";
 import { OPEN_PER_USDC, openFor } from "@/lib/sale/presale-client";
 import {
   ALLOCATIONS,
@@ -98,5 +104,54 @@ describe("presale terms", () => {
     expect(presaleTokens()).toBe(
       (TOTAL_SUPPLY ?? 0) * ((presale?.sharePct ?? 0) / 100),
     );
+  });
+});
+
+describe("sale band copy", () => {
+  // Regression test for a real bug: the homepage's status pill was gated on
+  // `SALE_LIVE` but the paragraph beside it was hardcoded, so a closed sale
+  // would show a "not open" pill next to a "contribute today" paragraph.
+  // `saleBandCopy` is the fix — both read the same gate — and this proves
+  // it actually responds to `SALE_LIVE` rather than just having the right
+  // dictionary keys sitting next to unused logic.
+  const t = getDictionary("en");
+
+  it("matches the live config today: SALE_LIVE is true on devnet", () => {
+    // Ground truth for the assertion below — if this ever flips, the
+    // "resolves both fields from the gate" test still holds either way,
+    // but this documents which branch production actually renders.
+    expect(SALE_LIVE).toBe(true);
+  });
+
+  it("resolves both fields from the same SALE_LIVE gate, in both directions", async () => {
+    vi.resetModules();
+    vi.doMock("@/lib/sale/config", async (importOriginal) => {
+      const actual = await importOriginal<typeof import("@/lib/sale/config")>();
+      return { ...actual, SALE_LIVE: true };
+    });
+    const { saleBandCopy: whenLive } = await import("@/lib/sale/copy");
+    expect(whenLive(t)).toEqual({
+      body: t.home.saleBand.bodyLive,
+      status: t.home.saleBand.statusLive,
+    });
+
+    vi.resetModules();
+    vi.doMock("@/lib/sale/config", async (importOriginal) => {
+      const actual = await importOriginal<typeof import("@/lib/sale/config")>();
+      return { ...actual, SALE_LIVE: false };
+    });
+    const { saleBandCopy: whenNotLive } = await import("@/lib/sale/copy");
+    expect(whenNotLive(t)).toEqual({
+      body: t.home.saleBand.body,
+      status: t.sale.notLiveTitle,
+    });
+
+    vi.doUnmock("@/lib/sale/config");
+    vi.resetModules();
+  });
+
+  it("the live and not-live strings actually differ, so the test above isn't vacuous", () => {
+    expect(t.home.saleBand.bodyLive).not.toBe(t.home.saleBand.body);
+    expect(t.home.saleBand.statusLive).not.toBe(t.sale.notLiveTitle);
   });
 });

@@ -176,7 +176,9 @@ export const id: Dictionary = {
     },
 
     saleBand: {
-      body: "OPEN adalah stake di balik setiap peran yang menjaga pasar tetap jujur — merchant, arbiter, node, oracle. Prapenjualan menawarkan alokasi komunitas pada kurs tetap sebelum penjualan publik apa pun. Prapenjualan sudah aktif di devnet; menghubungkan dompet memungkinkan Anda berkontribusi hari ini.",
+      body: "OPEN adalah stake di balik setiap peran yang menjaga pasar tetap jujur — merchant, arbiter, node, oracle. Prapenjualan menawarkan alokasi komunitas pada kurs tetap sebelum penjualan publik apa pun. Belum ada kontrak penjualan yang di-deploy; menghubungkan dompet hari ini hanya memverifikasi kesiapan.",
+      bodyLive:
+        "OPEN adalah stake di balik setiap peran yang menjaga pasar tetap jujur — merchant, arbiter, node, oracle. Prapenjualan menawarkan alokasi komunitas pada kurs tetap sebelum penjualan publik apa pun. Prapenjualan sudah aktif di devnet; menghubungkan dompet memungkinkan Anda berkontribusi hari ini.",
       presaleRate: "Kurs prapenjualan",
       publicRate: "Penjualan publik setelahnya",
       publicRateValue: "1 USDC = 80 OPEN",

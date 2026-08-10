@@ -175,7 +175,9 @@ export const en = {
     },
 
     saleBand: {
-      body: "OPEN is the stake behind every role that keeps the marketplace honest — merchants, arbitrators, nodes, oracles. The presale offers the community allocation at a fixed rate before any public sale. The presale is live on devnet; connecting a wallet lets you contribute today.",
+      body: "OPEN is the stake behind every role that keeps the marketplace honest — merchants, arbitrators, nodes, oracles. The presale offers the community allocation at a fixed rate before any public sale. No sale contract is deployed yet; connecting a wallet today only checks readiness.",
+      bodyLive:
+        "OPEN is the stake behind every role that keeps the marketplace honest — merchants, arbitrators, nodes, oracles. The presale offers the community allocation at a fixed rate before any public sale. The presale is live on devnet; connecting a wallet lets you contribute today.",
       presaleRate: "Presale rate",
       publicRate: "Public sale after",
       publicRateValue: "1 USDC = 80 OPEN",
