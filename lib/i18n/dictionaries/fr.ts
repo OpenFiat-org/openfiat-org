@@ -695,7 +695,24 @@ export const fr: Dictionary = {
       eyebrow: "téléchargements",
       title: "Téléchargements",
       intro:
-        "Rendus PDF chapitre par chapitre du livre blanc. Il n’y a pas de PDF des spécifications OFS — lisez-les sur le site ou dans le dépôt de spécifications.",
+        "Versions logicielles depuis GitHub — binaires du nœud, SDK et application — ainsi que le livre blanc en PDF. Il n’y a pas de PDF des spécifications OFS — lisez-les sur le site ou dans le dépôt de spécifications.",
+      releasesTitle: "Software releases",
+      releasesIntro:
+        "Each project publishes its own tagged releases on GitHub. These links always point at the latest.",
+      nodeTitle: "Node",
+      nodeBody:
+        "The reference node binary and source — the software that runs the network in run-a-node.",
+      sdkTitle: "SDKs",
+      sdkBody:
+        "Client libraries for building against OpenFiat: TypeScript and Rust packages, published alongside their source.",
+      appTitle: "App",
+      appBody:
+        "The reference wallet and trading interface. A preview build — see the app's own releases for what has shipped.",
+      viewReleases: "View releases",
+      whitepaperTitle: "Whitepaper",
+      whitepaperBody:
+        "Per-chapter PDF renders are not published yet — read the whitepaper on the site, or download the full specifications from the specifications repository.",
+      whitepaperCta: "Read the whitepaper",
     },
     documentation: {
       eyebrow: "documentation",
@@ -736,7 +753,19 @@ export const fr: Dictionary = {
       eyebrow: "statut",
       title: "Statut",
       intro:
-        "État du réseau et des services. Aucun réseau public ne tourne encore, il n’y a donc rien à signaler.",
+        "Statut en direct du devnet OpenFiat, lu directement depuis le RPC d’un nœud public. Devnet uniquement — il n’y a aucun déploiement sur le mainnet.",
+      online: "En ligne",
+      offline: "Hors ligne",
+      slotLabel: "Current slot",
+      modeLabel: "Chain mode",
+      ageLabel: "Block age",
+      lastCheckedLabel: "Last checked",
+      checkingLabel: "Checking…",
+      lastKnownNote:
+        "Showing the last known values; the node is not responding right now.",
+      neverReachedNote: "This node has not responded yet.",
+      rpcLabel: "RPC endpoint",
+      autoRefreshNote: "Refreshes automatically every 15 seconds.",
     },
     contact: {
       eyebrow: "contact",

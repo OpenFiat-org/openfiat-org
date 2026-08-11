@@ -693,7 +693,24 @@ export const ru: Dictionary = {
       eyebrow: "загрузки",
       title: "Загрузки",
       intro:
-        "PDF-рендеры whitepaper по главам. PDF спецификаций OFS нет — читайте их на сайте или в репозитории спецификаций.",
+        "Релизы ПО с GitHub — бинарники ноды, SDK и приложение — а также whitepaper в PDF. PDF спецификаций OFS нет — читайте их на сайте или в репозитории спецификаций.",
+      releasesTitle: "Software releases",
+      releasesIntro:
+        "Each project publishes its own tagged releases on GitHub. These links always point at the latest.",
+      nodeTitle: "Node",
+      nodeBody:
+        "The reference node binary and source — the software that runs the network in run-a-node.",
+      sdkTitle: "SDKs",
+      sdkBody:
+        "Client libraries for building against OpenFiat: TypeScript and Rust packages, published alongside their source.",
+      appTitle: "App",
+      appBody:
+        "The reference wallet and trading interface. A preview build — see the app's own releases for what has shipped.",
+      viewReleases: "View releases",
+      whitepaperTitle: "Whitepaper",
+      whitepaperBody:
+        "Per-chapter PDF renders are not published yet — read the whitepaper on the site, or download the full specifications from the specifications repository.",
+      whitepaperCta: "Read the whitepaper",
     },
     documentation: {
       eyebrow: "документация",
@@ -734,7 +751,19 @@ export const ru: Dictionary = {
       eyebrow: "статус",
       title: "Статус",
       intro:
-        "Статус сети и сервисов. Публичная сеть ещё не работает, поэтому сообщать пока не о чем.",
+        "Статус devnet OpenFiat в реальном времени, считанный напрямую из RPC публичной ноды. Только devnet — развёртывания в mainnet нет.",
+      online: "В сети",
+      offline: "Не в сети",
+      slotLabel: "Current slot",
+      modeLabel: "Chain mode",
+      ageLabel: "Block age",
+      lastCheckedLabel: "Last checked",
+      checkingLabel: "Checking…",
+      lastKnownNote:
+        "Showing the last known values; the node is not responding right now.",
+      neverReachedNote: "This node has not responded yet.",
+      rpcLabel: "RPC endpoint",
+      autoRefreshNote: "Refreshes automatically every 15 seconds.",
     },
     contact: {
       eyebrow: "контакты",

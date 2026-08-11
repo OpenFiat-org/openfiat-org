@@ -679,7 +679,24 @@ export const zh: Dictionary = {
       eyebrow: "下载",
       title: "下载",
       intro:
-        "白皮书各章节的 PDF 版本。OFS 协议规范没有 PDF——请在本站或规范仓库中阅读。",
+        "来自 GitHub 的软件版本——节点二进制文件、SDK 与应用——以及 PDF 格式的白皮书。OFS 协议规范没有 PDF——请在本站或规范仓库中阅读。",
+      releasesTitle: "Software releases",
+      releasesIntro:
+        "Each project publishes its own tagged releases on GitHub. These links always point at the latest.",
+      nodeTitle: "Node",
+      nodeBody:
+        "The reference node binary and source — the software that runs the network in run-a-node.",
+      sdkTitle: "SDKs",
+      sdkBody:
+        "Client libraries for building against OpenFiat: TypeScript and Rust packages, published alongside their source.",
+      appTitle: "App",
+      appBody:
+        "The reference wallet and trading interface. A preview build — see the app's own releases for what has shipped.",
+      viewReleases: "View releases",
+      whitepaperTitle: "Whitepaper",
+      whitepaperBody:
+        "Per-chapter PDF renders are not published yet — read the whitepaper on the site, or download the full specifications from the specifications repository.",
+      whitepaperCta: "Read the whitepaper",
     },
     documentation: {
       eyebrow: "文档",
@@ -718,7 +735,20 @@ export const zh: Dictionary = {
     status: {
       eyebrow: "服务状态",
       title: "服务状态",
-      intro: "网络与服务状态。目前尚无公开网络运行，因此没有可报告的内容。",
+      intro:
+        "OpenFiat 开发网的实时状态，直接从一个公共节点的 RPC 读取。仅限开发网——尚无主网部署。",
+      online: "在线",
+      offline: "离线",
+      slotLabel: "Current slot",
+      modeLabel: "Chain mode",
+      ageLabel: "Block age",
+      lastCheckedLabel: "Last checked",
+      checkingLabel: "Checking…",
+      lastKnownNote:
+        "Showing the last known values; the node is not responding right now.",
+      neverReachedNote: "This node has not responded yet.",
+      rpcLabel: "RPC endpoint",
+      autoRefreshNote: "Refreshes automatically every 15 seconds.",
     },
     contact: {
       eyebrow: "联系",
