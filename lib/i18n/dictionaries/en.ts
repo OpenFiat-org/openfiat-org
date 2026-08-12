@@ -661,6 +661,38 @@ export const en = {
     done: "Purchase confirmed",
     txFailed: "The transaction was not sent",
     txSuccess: "Confirmed",
+    /*
+     * Failure messages, keyed by `SaleErrorKey` in lib/sale/errors.ts. Every
+     * one is a sentence about what the person can do next; the chain's own
+     * text is kept behind `detailsLabel` rather than shown as the message,
+     * because "custom program error: 0x1" tells a visitor nothing.
+     *
+     * `{placeholder}`s are substituted by the panel — same reason as
+     * `limitNote` above: this crosses into a client component, so it can't
+     * be a function.
+     */
+    errors: {
+      amountRequired: "Enter an amount to contribute.",
+      amountInvalid: "Enter an amount greater than zero.",
+      insufficientBalance:
+        "You have {balance} {symbol}. Enter an amount your balance covers.",
+      belowMinimum:
+        "A wallet's first contribution must be at least {min} USDC.",
+      aboveMaximum: "A wallet can contribute at most {max} USDC in total.",
+      hardCapReached: "The sale has reached its cap and can't accept more.",
+      saleNotOpen: "The sale isn't open right now.",
+      claimsNotOpen: "Claims open once the sale has been finalized.",
+      nothingToClaim: "You have no OPEN left to claim.",
+      walletBanned: "This wallet isn't able to take part in the sale.",
+      walletRejected: "You cancelled the request in your wallet.",
+      notEnoughSol: "You don't have enough SOL to cover the network fee.",
+      expired: "The request expired before it confirmed. Please try again.",
+      slippage:
+        "The price moved too much while the swap was routed. Try again.",
+      network: "Couldn't reach the network. Check your connection and retry.",
+      generic: "Something went wrong and the purchase wasn't made.",
+      detailsLabel: "Technical details",
+    },
     claim: "Claim OPEN",
     swapNotice:
       "Converted to USDC atomically at the confirmed price before crediting your OPEN allocation. Refunds (if the soft cap is missed) are paid in USDC, not the original asset.",

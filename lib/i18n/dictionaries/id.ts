@@ -644,6 +644,30 @@ export const id: Dictionary = {
     done: "Pembelian dikonfirmasi",
     txFailed: "Transaksi tak terkirim",
     txSuccess: "Dikonfirmasi",
+    errors: {
+      amountRequired: "Masukkan jumlah kontribusi.",
+      amountInvalid: "Masukkan jumlah lebih dari nol.",
+      insufficientBalance:
+        "Anda punya {balance} {symbol}. Masukkan jumlah yang tercakup saldo Anda.",
+      belowMinimum:
+        "Kontribusi pertama sebuah dompet minimal harus {min} USDC.",
+      aboveMaximum:
+        "Satu dompet dapat berkontribusi maksimal {max} USDC total.",
+      hardCapReached: "Penjualan sudah mencapai batas dan tidak menerima lagi.",
+      saleNotOpen: "Penjualan sedang tidak dibuka.",
+      claimsNotOpen: "Klaim dibuka setelah penjualan difinalisasi.",
+      nothingToClaim: "Tidak ada OPEN tersisa untuk diklaim.",
+      walletBanned: "Dompet ini tidak dapat mengikuti penjualan.",
+      walletRejected: "Anda membatalkan permintaan di dompet Anda.",
+      notEnoughSol: "SOL Anda tidak cukup untuk biaya jaringan.",
+      expired:
+        "Permintaan kedaluwarsa sebelum dikonfirmasi. Silakan coba lagi.",
+      slippage: "Harga bergerak terlalu jauh saat swap. Silakan coba lagi.",
+      network:
+        "Tidak dapat menghubungi jaringan. Periksa koneksi lalu coba lagi.",
+      generic: "Terjadi kesalahan dan pembelian tidak dilakukan.",
+      detailsLabel: "Detail teknis",
+    },
     claim: "Klaim OPEN",
     swapNotice:
       "Dikonversi ke USDC secara atomik pada harga terkonfirmasi sebelum mengkreditkan alokasi OPEN Anda. Pengembalian dana (jika soft cap tak tercapai) dibayarkan dalam USDC, bukan aset asalnya.",

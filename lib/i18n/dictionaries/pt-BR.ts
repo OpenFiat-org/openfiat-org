@@ -644,6 +644,30 @@ export const ptBR: Dictionary = {
     done: "Compra confirmada",
     txFailed: "A transação não foi enviada",
     txSuccess: "Confirmada",
+    errors: {
+      amountRequired: "Informe um valor para contribuir.",
+      amountInvalid: "Informe um valor maior que zero.",
+      insufficientBalance:
+        "Você tem {balance} {symbol}. Informe um valor que seu saldo cubra.",
+      belowMinimum:
+        "A primeira contribuição de uma carteira deve ser de no mínimo {min} USDC.",
+      aboveMaximum:
+        "Uma carteira pode contribuir com no máximo {max} USDC no total.",
+      hardCapReached:
+        "A venda atingiu o limite e não aceita mais contribuições.",
+      saleNotOpen: "A venda não está aberta no momento.",
+      claimsNotOpen: "Os resgates abrem quando a venda for finalizada.",
+      nothingToClaim: "Você não tem mais OPEN para resgatar.",
+      walletBanned: "Esta carteira não pode participar da venda.",
+      walletRejected: "Você cancelou a solicitação na sua carteira.",
+      notEnoughSol: "Você não tem SOL suficiente para a taxa de rede.",
+      expired: "A solicitação expirou antes de confirmar. Tente novamente.",
+      slippage: "O preço variou demais durante a troca. Tente novamente.",
+      network:
+        "Não foi possível alcançar a rede. Verifique sua conexão e tente de novo.",
+      generic: "Algo deu errado e a compra não foi feita.",
+      detailsLabel: "Detalhes técnicos",
+    },
     claim: "Reivindicar OPEN",
     swapNotice:
       "Convertido para USDC atomicamente ao preço confirmado antes de creditar sua alocação de OPEN. Reembolsos (se o soft cap não for atingido) são pagos em USDC, não no ativo original.",

@@ -13,11 +13,17 @@ import { Button } from "@/components/ui/button";
 import type { Dictionary } from "@/lib/i18n";
 import { SALE, SALE_LIVE, solscanTxUrl, TOKEN_SYMBOL } from "@/lib/sale/config";
 import {
+  describeSaleError,
+  type SaleMessage,
+  validateContribution,
+} from "@/lib/sale/errors";
+import {
   buildAndSignVersionedTx,
   buildClaimIx,
   buildContributeUsdcIx,
   buildContributeWithSwapPlan,
   estimateUsdcOut,
+  fetchMyPresaleStatus,
   fetchSaleSnapshot,
   fetchTokenBalance,
   getProgram,
@@ -26,6 +32,20 @@ import {
   swapEligibleAssets,
 } from "@/lib/sale/presale-client";
 import { cn } from "@/lib/utils";
+
+/**
+ * Resolves a `SaleMessage` against the dictionary, substituting its
+ * `{placeholder}`s. Kept here rather than in lib/sale/errors.ts so that module
+ * stays free of the dictionary and testable on its own.
+ */
+function saleErrorText(sale: Dictionary["sale"], message: SaleMessage): string {
+  const template = sale.errors[message.key];
+  if (!message.values) return template;
+  return Object.entries(message.values).reduce(
+    (text, [name, value]) => text.replaceAll(`{${name}}`, value),
+    template,
+  );
+}
 
 function truncate(address: string) {
   return `${address.slice(0, 4)}…${address.slice(-4)}`;
@@ -61,7 +81,7 @@ type TxState =
   | { status: "idle" }
   | { status: "pending" }
   | { status: "success"; signature: string }
-  | { status: "error"; message: string };
+  | { status: "error"; message: SaleMessage };
 
 /**
  * Wallet connection (with a sign-in verification step), asset selection with
@@ -85,7 +105,7 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
   const anchorWallet = useAnchorWallet();
   const [pendingConnect, setPendingConnect] = useState(false);
   const [assetPicking, setAssetPicking] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<SaleMessage | null>(null);
   const [amount, setAmount] = useState("");
   const [assetIndex, setAssetIndex] = useState(0);
   const [tx, setTx] = useState<TxState>({ status: "idle" });
@@ -95,6 +115,13 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
   const [snapshot, setSnapshot] = useState<SaleSnapshot | null>(null);
   const [quotedUsdc, setQuotedUsdc] = useState<number | null>(null);
   const [quoting, setQuoting] = useState(false);
+  /*
+   * USDC this wallet has already put in. The per-wallet cap is cumulative and
+   * the minimum applies only to a first contribution, so without this the
+   * panel would either block a legitimate small top-up or wave through a
+   * top-up that breaches the cap — both of which the program then rejects.
+   */
+  const [contributedUsdc, setContributedUsdc] = useState(0);
 
   // The enforced terms, read once. Until this lands (or if it fails) the
   // configured figures stand in — see `fetchSaleSnapshot`.
@@ -150,6 +177,25 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
     };
   }, [connected, publicKey, selectedAsset, connection]);
 
+  // What this wallet has already contributed, refreshed on connect and after
+  // every confirmed purchase. A read failure leaves it at 0, which only ever
+  // makes the local checks stricter than the program's.
+  const confirmedSignature = tx.status === "success" ? tx.signature : null;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: confirmedSignature is the trigger — a settled purchase changes the wallet's total, which is read here rather than derived from it. Keying on `tx` instead would refetch on every "pending" and "error" transition to learn nothing.
+  useEffect(() => {
+    if (!connected || !publicKey) {
+      setContributedUsdc(0);
+      return;
+    }
+    let cancelled = false;
+    fetchMyPresaleStatus(connection, publicKey).then((status) => {
+      if (!cancelled) setContributedUsdc(status?.amountUsdc ?? 0);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [connected, publicKey, connection, confirmedSignature]);
+
   /*
    * The standard modal only *selects* a wallet — it deliberately leaves
    * connecting to the app — and `autoConnect` is off so a remembered wallet
@@ -171,7 +217,7 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
     if (!pendingConnect || !wallet || connected || connecting) return;
     setPendingConnect(false);
     connect().catch((cause) => {
-      setError(cause instanceof Error ? cause.message : String(cause));
+      setError(describeSaleError(cause));
     });
   }, [pendingConnect, wallet, connected, connecting, connect]);
 
@@ -225,6 +271,25 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
         ? null
         : openFor(quotedUsdc);
 
+  /*
+   * Why the amount cannot be submitted, if it can't — checked here rather
+   * than left to the chain, because a transaction that fails in simulation
+   * surfaces as a wall of program logs. `usdcValue` is the amount itself on
+   * the direct path and the Jupiter quote otherwise, since the sale's bounds
+   * are denominated in USDC however you pay.
+   */
+  const problem = validateContribution({
+    amount,
+    decimals: selectedAsset.decimals,
+    balance,
+    symbol: selectedAsset.symbol,
+    usdcValue:
+      assetIndex === 0 ? (validAmount ? amountNumber : null) : quotedUsdc,
+    minUsdc: minContribution,
+    maxUsdc: maxContribution,
+    contributedUsdc,
+  });
+
   async function verify() {
     if (!publicKey) return;
     if (!signMessage) {
@@ -240,7 +305,7 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
       await signMessage(new TextEncoder().encode(message));
       setVerified(true);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : String(cause));
+      setError(describeSaleError(cause));
     } finally {
       setVerifying(false);
     }
@@ -264,11 +329,14 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
 
   async function purchase() {
     if (!publicKey || !anchorWallet || !SALE.programId) return;
-    const amountNum = Number(amount);
-    if (!Number.isFinite(amountNum) || amountNum <= 0) {
-      setTx({ status: "error", message: "Enter a valid amount." });
+    // Belt and braces: the button is already disabled while `problem` is set,
+    // but a stale quote or a balance that moved between render and click
+    // would otherwise send a transaction that cannot land.
+    if (problem) {
+      setTx({ status: "error", message: problem });
       return;
     }
+    const amountNum = Number(amount);
     setTx({ status: "pending" });
     try {
       const program = getProgram(connection, anchorWallet);
@@ -325,10 +393,7 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
         ).then(setBalance);
       }
     } catch (cause) {
-      setTx({
-        status: "error",
-        message: cause instanceof Error ? cause.message : String(cause),
-      });
+      setTx({ status: "error", message: describeSaleError(cause) });
     }
   }
 
@@ -351,14 +416,24 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
       await connection.confirmTransaction(signature, "confirmed");
       setTx({ status: "success", signature });
     } catch (cause) {
-      setTx({
-        status: "error",
-        message: cause instanceof Error ? cause.message : String(cause),
-      });
+      setTx({ status: "error", message: describeSaleError(cause) });
     }
   }
 
-  const canPurchase = SALE_LIVE && connected && verified;
+  const canPurchase = SALE_LIVE && connected && verified && problem === null;
+
+  /** A connect/verify failure, or a transaction that failed — either way, one
+   *  message, shown in one place. */
+  const failure: SaleMessage | null =
+    error ?? (tx.status === "error" ? tx.message : null);
+
+  /*
+   * The blocking reason, shown beside the disabled button — but not before
+   * the field has been touched, since "Enter an amount" on an untouched form
+   * is nagging rather than helpful.
+   */
+  const blockingReason =
+    problem && problem.key !== "amountRequired" ? problem : null;
 
   // Both bounds are set together at `initialize_sale`, so either one being
   // absent means the terms aren't configured and there is nothing to state.
@@ -568,6 +643,14 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
           <p className="mt-2 text-body-sm text-muted">{sale.swapNotice}</p>
         )}
 
+        {/* Why the button below is disabled, said before it's pressed rather
+            than after a transaction fails. */}
+        {connected && blockingReason && (
+          <p className="mt-4 text-body-sm text-copper">
+            {saleErrorText(sale, blockingReason)}
+          </p>
+        )}
+
         {connected && !verified ? (
           <div className="mt-6">
             <Button
@@ -631,10 +714,26 @@ export function SalePanel({ sale }: { sale: Dictionary["sale"] }) {
           </a>
         </p>
       )}
-      {(error || tx.status === "error") && (
-        <p className="mt-4 text-body-sm text-copper">
-          {sale.txFailed}: {error ?? (tx.status === "error" ? tx.message : "")}
-        </p>
+      {/*
+       * A failure states what happened in a sentence, and keeps the chain's
+       * own words behind a disclosure. Showing the raw text as the message —
+       * which is what a visitor used to get — meant a missing test-USDC
+       * balance read as "custom program error: 0x1" and a wall of CPI logs.
+       */}
+      {failure && (
+        <div className="mt-4 text-body-sm text-copper">
+          <p>{saleErrorText(sale, failure)}</p>
+          {failure.detail && (
+            <details className="mt-2">
+              <summary className="cursor-pointer text-muted transition-colors hover:text-ink">
+                {sale.errors.detailsLabel}
+              </summary>
+              <p className="mt-2 max-h-40 overflow-y-auto whitespace-pre-wrap break-words font-mono text-body-sm text-faint">
+                {failure.detail}
+              </p>
+            </details>
+          )}
+        </div>
       )}
     </div>
   );
