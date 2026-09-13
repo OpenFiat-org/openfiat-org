@@ -24,7 +24,7 @@
     "check:tokenomics": "bash scripts/check-stale-tokenomics-literals.sh"
   },
   "dependencies": {
-    "@anchor-lang/core": "^1.1.2",
+    "@anchor-lang/core": "^1.2.0",
     "@solana/spl-token": "^0.4.15",
     "@solana/wallet-adapter-base": "^0.9.27",
     "@solana/wallet-adapter-phantom": "^0.9.29",
